@@ -4,7 +4,12 @@ Laboratorio A - Insubria 2024/2025
 Per far runnare il codice va inserita questa VM option:
 
 ```bash
---module-path "pathToProject\TheKnife\JavaFx\lib" --add-modules javafx.controls,javafx.web
+--module-path
+"PathToProject/TheKnife/lib/javafx/lib"
+--add-modules
+javafx.controls,javafx.fxml,javafx.web
+--add-exports=javafx.web/com.sun.webkit=ALL-UNNAMED
+--add-exports=javafx.web/com.sun.javafx.webkit=ALL-UNNAMED
 --enable-native-access=javafx.graphics,javafx.web
 ```
 
