@@ -1,7 +1,6 @@
-package src.com.example;
+package com.example;
 
 import javafx.application.Application;
-import javafx.concurrent.Worker;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -18,6 +17,19 @@ public class Main extends Application {
             WebView webView = new WebView();
             WebEngine webEngine = webView.getEngine();
 
+            // Crea e configura il bridge
+            JavaScriptBridge bridge = new JavaScriptBridge(webEngine);
+
+            // Registra i metodi che JavaScript può chiamare
+            bridge.registerMethod("getName", args -> {
+                // Ritorna un oggetto Map che verrà convertito in JSON
+                return Map.of("name", "TheKnife");
+            });
+
+            bridge.registerMethod("getHelloWorld", args -> {
+                return Map.of("message", "Hello World from Java!");
+            });
+
             URL url = getClass().getResource("/web/index.html");
             if (url != null) {
                 webEngine.load(url.toExternalForm());
@@ -25,32 +37,6 @@ public class Main extends Application {
             } else {
                 throw new IllegalArgumentException("File HTML non trovato! Verifica il percorso.");
             }
-
-            // Crea e configura il bridge
-            JavaScriptBridge bridge = new JavaScriptBridge(webEngine);
-
-            webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == Worker.State.SUCCEEDED) {
-                    // Inietta la funzione javaInvoke per chiamare il bridge
-                    String invokeFunction =
-                            "window.javaInvoke = function(jsonPayload) { " +
-                                    "   return " + createInvokeCallback(bridge) + ";" +
-                                    "};";
-                    webEngine.executeScript(invokeFunction);
-
-                    // Inietta il meccanismo di callback
-                    bridge.injectBridge();
-
-                    // Registra i metodi disponibili
-                    bridge.registerMethod("getName", args -> {
-                        return Map.of("name", "Stefano");
-                    });
-
-                    bridge.registerMethod("getHelloWorld", args -> {
-                        return Map.of("message", "Hello, World!");
-                    });
-                }
-            });
 
             webEngine.setOnAlert(event -> System.out.println("Console JS: " + event.getData()));
 
@@ -63,10 +49,6 @@ public class Main extends Application {
             System.err.println("Errore durante il caricamento del file HTML: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private String createInvokeCallback(JavaScriptBridge bridge) {
-        return "'" + bridge.invoke("' + jsonPayload + '") + "'";
     }
 
     public static void main(String[] args) {
