@@ -2,12 +2,14 @@ package com.example;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -29,6 +31,14 @@ public class Main extends Application {
             bridge.registerMethod("getHelloWorld", args -> {
                 return Map.of("message", "Hello World from Java!");
             });
+
+            // Carica l'icona dell'applicazione
+            try {
+                Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/Logo.png")));
+                primaryStage.getIcons().add(appIcon);
+            } catch (Exception e) {
+                System.err.println("Errore nel caricamento dell'icona: " + e.getMessage());
+            }
 
             URL url = getClass().getResource("/web/index.html");
             if (url != null) {
