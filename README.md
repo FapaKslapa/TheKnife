@@ -158,3 +158,9 @@ put("dettagli",Map.of("processoCompleto", true,"tempoElaborazione",0.5));
 
 Dopo lo faccio ora non ho voglia
 
+## 7. Fasi del lavoro
+
+- Utenti, Ristoranti, utenti - ristoranti, utenti - ristorantiLike: Alessia
+- recensioni, ristoranti - recensioni, utenti - recensione: Marco
+- risposte, risposte - recensione, utente - recensione (like): Stefano
+- Filtri di ricerca: Ginevra
