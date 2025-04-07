@@ -1,6 +1,7 @@
 # TheKnife
 
 Laboratorio A - Insubria 2024/2025
+
 Per far runnare il codice va inserita questa VM option:
 
 ```bash
