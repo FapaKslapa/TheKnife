@@ -1,5 +1,4 @@
 package com.example;
-
 import com.example.cache.BaseEntity;
 
 public class Utente extends BaseEntity {
