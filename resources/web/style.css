@@ -1,67 +1,165 @@
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #111827;
-    color: #e5e7eb;
+    font-family: "Lexend", system-ui;
+    margin: 0;
+    padding: 0;
+    background-color: #101415;
+}
+
+.sidebar-header, .sidebar-footer {
+    position: absolute; /* Questo permette di posizionare l'header e il footer in qualsiasi punto del loro contenitore */
+    width: 100%; /* Questo fa sì che l'header e il footer occupino tutta la larghezza del loro contenitore */
+    z-index: 1; /* Questo fa sì che l'header e il footer si sovrappongano agli altri elementi */
+}
+
+.btn-outline-primary {
+    color: #8044C5; /* Colore del testo */
+    border-color: #8044C5; /* Colore del bordo */
+}
+
+.btn-outline-primary:hover {
+    color: #fff !important; /* Colore del testo al passaggio del mouse */
+    background-color: #8044C5 !important; /* Colore di sfondo al passaggio del mouse */
+    border-color: #8044C5 !important; /* Colore del bordo al passaggio del mouse */
+}
+
+
+.btn-outline-primary:focus, .btn-outline-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(128, 68, 197, 0.5); /* Personalizza l'ombra per il focus */
+}
+
+.btn-check:checked + .btn-outline-primary, .btn-check:active + .btn-outline-primary {
+    color: #fff; /* Colore del testo quando è selezionato o attivo */
+    background-color: #8044C5; /* Colore di sfondo quando è selezionato o attivo */
+    border-color: #8044C5; /* Colore del bordo quando è selezionato o attivo */
+}
+
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    transition: all 0.3s;
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+/* Sovrascrive il colore di sfondo del modal */
+.modal-content {
+    background-color: #101415 !important; /* Colore di sfondo dei modali */
+}
+
+/* Sovrascrive il colore di sfondo del header del modal */
+.modal-header {
+    background-color: #101415 !important; /* Colore di sfondo dell'header del modal */
+}
+
+/* Sovrascrive il colore di sfondo del body del modal */
+.modal-body {
+    background-color: #101415 !important; /* Colore di sfondo del body del modal */
+}
+
+/* Sovrascrive il colore di sfondo del footer del modal */
+.modal-footer {
+    background-color: #101415 !important; /* Colore di sfondo del footer del modal */
+}
+
+
+.line {
+    width: 100%;
+    height: 0.0625rem;
+    border-bottom: 0.0625rem dashed #ddd;
+    margin: 2.5rem 0;
+}
+
+h1 {
+    font-family: "Lexend Deca", sans-serif;
+    font-size: 4.7em;
+}
+
+h2 {
+    font-family: "Lexend", sans-serif;
+    font-weight: bold;
+}
+
+h3 {
+    font-family: "Lexend", system-ui;
+    font-size: 1.3em;
+}
+
+
+.btn-primary {
+    background-color: #053DEB !important;
+    border: none !important;
+}
+
+
+.customForm {
+    position: relative;
+    width: 100%;
+    padding: 1em;
+    z-index: 1000;
+}
+
+
+/* Nascondi la barra di scorrimento per le finestre del browser più larghe */
+@media (min-width: 800px) {
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    body {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+}
+
+/* Mostra la barra di scorrimento per le finestre del browser più piccole */
+@media (max-width: 800px) {
+    body::-webkit-scrollbar {
+        display: block;
+    }
+
+    body {
+        -ms-overflow-style: auto; /* IE and Edge */
+        scrollbar-width: auto; /* Firefox */
+    }
+}
+
+::-webkit-scrollbar {
+    width: 1.2rem;
+    border-radius: 1.25rem;
+    background-color: #101415;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 1.25rem;
+    border: 0.375rem solid transparent;
+    background-color: #101415;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #B3B3B3;
+    border-radius: 1.25rem;
+    border: 0.375rem solid transparent;
+    background-clip: content-box;
+    width: 1.2rem;;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    border-radius: 1.25rem;
+    background-color: #D9D9D9;
+    width: 1.5rem;
+}
+
+
+#spinner {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
 }
 
-.card {
-    border-radius: 16px;
-    background-color: #1f2937;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    padding: 30px;
-    width: 80%;
-    max-width: 500px;
-    text-align: center;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-h1 {
-    color: #60a5fa;
-    margin-top: 0;
-}
-
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 20px;
-}
-
-button {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-button:hover {
-    background-color: #2563eb;
-}
-
-.status-ok {
-    color: #10b981;
-    font-weight: bold;
-}
-
-.status-error {
-    color: #ef4444;
-    font-weight: bold;
-}
-
-.status-loading {
-    color: #f59e0b;
-    font-weight: bold;
-}

@@ -1,5 +1,10 @@
 package com.example;
 
+import com.example.models.Ristorante;
+import com.example.models.Utente;
+import services.AuthService;
+import services.RistoranteService;
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -8,29 +13,38 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Main extends Application {
+    private AuthService authService;
+    private RistoranteService ristoranteService;
+    private final Gson gson = new Gson();
 
     @Override
     public void start(Stage primaryStage) {
         try {
+            // Inizializza i servizi
+            authService = new AuthService();
+            ristoranteService = new RistoranteService();
+
             WebView webView = new WebView();
             WebEngine webEngine = webView.getEngine();
 
             // Crea e configura il bridge
             JavaScriptBridge bridge = new JavaScriptBridge(webEngine);
 
-            // Registra i metodi che JavaScript può chiamare
-            bridge.registerMethod("getName", args -> {
-                // Ritorna un oggetto Map che verrà convertito in JSON
-                return Map.of("name", "TheKnife");
-            });
+            // Registra i metodi base
+            bridge.registerMethod("getName", args -> Map.of("name", "TheKnife"));
 
-            bridge.registerMethod("getHelloWorld", args -> {
-                return Map.of("message", "Hello World from Java!");
-            });
+            // Registra i metodi di autenticazione
+            registerAuthMethods(bridge);
+
+            // Registra i metodi per i ristoranti
+            registerRistoranteMethods(bridge);
 
             // Carica l'icona dell'applicazione
             try {
@@ -51,14 +65,136 @@ public class Main extends Application {
             webEngine.setOnAlert(event -> System.out.println("Console JS: " + event.getData()));
 
             Scene scene = new Scene(webView, 800, 600);
-            primaryStage.setTitle("App JavaFX con WebView");
+            primaryStage.setTitle("TheKnife");
             primaryStage.setScene(scene);
             primaryStage.show();
 
         } catch (Exception e) {
-            System.err.println("Errore durante il caricamento del file HTML: " + e.getMessage());
+            System.err.println("Errore durante l'inizializzazione dell'applicazione: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void registerAuthMethods(JavaScriptBridge bridge) {
+        // Registrazione utente
+        bridge.registerMethod("registraUtente", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String username = (String) params.get("username");
+            String password = (String) params.get("password");
+            String email = (String) params.get("email");
+            String ruoloStr = (String) params.get("ruolo");
+
+            Utente.Ruolo ruolo = "ristoratore".equalsIgnoreCase(ruoloStr)
+                    ? Utente.Ruolo.RISTORATORE
+                    : Utente.Ruolo.UTENTE;
+
+            boolean success = authService.registraUtente(username, password, email, ruolo);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", success);
+            if (!success) {
+                result.put("error", "Username o email già in uso");
+            }
+            return result;
+        });
+
+        // Login
+        bridge.registerMethod("login", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String usernameOrEmail = (String) params.get("usernameOrEmail");
+            String password = (String) params.get("password");
+
+            Optional<Utente> utenteOpt = authService.login(usernameOrEmail, password);
+
+            Map<String, Object> result = new HashMap<>();
+            if (utenteOpt.isPresent()) {
+                Utente utente = utenteOpt.get();
+                result.put("success", true);
+                result.put("userId", utente.getId());
+                result.put("username", utente.getUsername());
+                result.put("email", utente.getEmail());
+                result.put("ruolo", utente.getRuolo().toString());
+            } else {
+                result.put("success", false);
+                result.put("error", "Credenziali non valide");
+            }
+            return result;
+        });
+
+        // Recupera informazioni utente
+        bridge.registerMethod("getUtenteInfo", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String userId = (String) params.get("userId");
+
+            Optional<Utente> utenteOpt = authService.getUtenteById(userId);
+
+            Map<String, Object> result = new HashMap<>();
+            if (utenteOpt.isPresent()) {
+                Utente utente = utenteOpt.get();
+                result.put("success", true);
+                result.put("userId", utente.getId());
+                result.put("username", utente.getUsername());
+                result.put("email", utente.getEmail());
+                result.put("ruolo", utente.getRuolo().toString());
+            } else {
+                result.put("success", false);
+                result.put("error", "Utente non trovato");
+            }
+            return result;
+        });
+    }
+
+    private void registerRistoranteMethods(JavaScriptBridge bridge) {
+        // Crea/modifica ristorante
+        bridge.registerMethod("salvaRistorante", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+
+            String id = (String) params.get("id");
+            String nome = (String) params.get("nome");
+            String tipoCucina = (String) params.get("tipoCucina");
+            int fasciaPrezzo = ((Double) params.get("fasciaPrezzo")).intValue();
+            Map<String, String> orariApertura = (Map<String, String>) params.get("orariApertura");
+            double latitudine = (Double) params.get("latitudine");
+            double longitudine = (Double) params.get("longitudine");
+            String idProprietario = (String) params.get("idProprietario");
+
+            Ristorante ristorante = new Ristorante(nome, tipoCucina, fasciaPrezzo,
+                    orariApertura, latitudine, longitudine, idProprietario);
+
+            if (id != null && !id.isEmpty()) {
+                ristorante.setId(id); // Per aggiornare un ristorante esistente
+            }
+
+            Ristorante saved = ristoranteService.salvaRistorante(ristorante);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("ristoranteId", saved.getId());
+            return result;
+        });
+
+        // Recupera tutti i ristoranti
+        bridge.registerMethod("getAllRistoranti", args -> {
+            List<Ristorante> ristoranti = ristoranteService.getAllRistoranti();
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("ristoranti", ristoranti);
+            return result;
+        });
+
+        // Recupera ristoranti di un proprietario
+        bridge.registerMethod("getRistorantiByProprietario", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String idProprietario = (String) params.get("idProprietario");
+
+            List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("ristoranti", ristoranti);
+            return result;
+        });
     }
 
     public static void main(String[] args) {

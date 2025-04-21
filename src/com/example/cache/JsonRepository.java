@@ -18,7 +18,8 @@ public class JsonRepository<T extends BaseEntity> {
     public JsonRepository(String filePath, Class<T> entityClass) {
         this.filePath = filePath;
         this.entityClass = entityClass;
-        this.listType = TypeToken.getParameterized(List.class, entityClass).getType();
+// Sostituisci la riga problematica con:
+        this.listType = com.google.gson.internal.$Gson$Types.newParameterizedTypeWithOwner(null, List.class, entityClass);
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.cache = loadData();
     }
