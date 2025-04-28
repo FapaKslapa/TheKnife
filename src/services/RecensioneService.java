@@ -4,6 +4,7 @@ import com.example.cache.JsonRepository;
 import com.example.models.Recensione;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 public class RecensioneService {
     private final JsonRepository<Recensione> recensioneRepository;
@@ -80,5 +81,40 @@ public class RecensioneService {
         }
 
         return "";
+    }
+
+    public void addRecensione(Recensione recensione){
+        recensioneRepository.save(recensione);
+    }
+
+    public void removeRecensione(Recensione recensione){
+        recensioneRepository.deleteById(recensione.getId());
+    }
+
+    public void editRecensione(Recensione recensione, String title, String text){
+        recensioneRepository.deleteById(recensione.getId());
+        recensione.setTitle(title);
+        recensione.setText(text);
+        recensioneRepository.save(recensione);
+    }
+
+    public ArrayList<Recensione> getRecensioneUtente(String key_user){
+        ArrayList<Recensione> recensioni = new ArrayList<>();
+        for(Recensione r: recensioneRepository.findAll()){
+            if(r.getKey_user().equals(key_user)){
+                recensioni.add(r);
+            }
+        }
+        return recensioni;
+    }
+
+    public ArrayList<Recensione> getRecensioneRistornate(String key_r){
+        ArrayList<Recensione> recensioni = new ArrayList<>();
+        for(Recensione r: recensioneRepository.findAll()){
+            if(r.getKey_r().equals(key_r)){
+                recensioni.add(r);
+            }
+        }
+        return recensioni;
     }
 }

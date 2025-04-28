@@ -3,12 +3,12 @@ package com.example.models;
 import com.example.cache.BaseEntity;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 public class Recensione extends BaseEntity {
     //CAMPI
     private String key_r; //chiave del ristorante
     private String key_user; //chiave dell'utente
+    private int id;
     private LocalDateTime date; //data e ora della recensione
     private int rate; //valutazione (da 0 a 5 stelle) del ristorante
     private String title; //titolo della recensione (scritto in grassetto)
@@ -19,9 +19,10 @@ public class Recensione extends BaseEntity {
         //costruttore vuoto
     }
 
-    public Recensione(String key_r, String key_user, LocalDateTime date, int rate, String title, String text) {
+    public Recensione(String key_r, String key_user, int id, LocalDateTime date, int rate, String title, String text) {
         this.key_r = key_r;
         this.key_user = key_user;
+        this.id = id;
         this.date = LocalDateTime.now();
         this.rate = rate;
         this.title = title;
@@ -33,6 +34,8 @@ public class Recensione extends BaseEntity {
     public void setKey_r(String key_r) {this.key_r = key_r;}
     public String getKey_user() {return key_user;}
     public void setKey_user(String key_user) {this.key_user = key_user;}
+    public String getId(){return Integer.toString(id);}
+    public void setId(int id){this.id = id;}
     public int getRate() {return rate;}
     public void setRate(int rate) {this.rate = rate;}
     public String getTitle() {return title;}
