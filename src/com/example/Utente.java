@@ -1,17 +1,22 @@
 package com.example;
+
 import com.example.cache.BaseEntity;
+
+import java.util.UUID;
 
 public class Utente extends BaseEntity {
     private String username;
     private String password;
     private String email;
     private String ruolo;
+    private String idUtente;
 
     public Utente(String username, String password, String email, String ruolo) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.ruolo = ruolo;
+        this.idUtente = idUtente;
     }
 
     public String getUsername() {
@@ -44,5 +49,13 @@ public class Utente extends BaseEntity {
 
     public void setRuolo(String ruolo) {
         this.ruolo = ruolo;
+    }
+
+    public String getIdUtente() {
+        return idUtente;
+    }
+
+    public void setIdUtente(String idUtente) {
+        this.idUtente = idUtente;
     }
 }

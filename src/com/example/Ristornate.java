@@ -4,6 +4,7 @@ import com.example.cache.BaseEntity;
 
 public class Ristornate extends BaseEntity {
     private String nome;
+    private String idProprietario;
     private String indirizzo;
     private String categoria;
     private double latitudine;
@@ -16,6 +17,7 @@ public class Ristornate extends BaseEntity {
 
     public Ristornate(String nome, String indirizzo) {
         this.nome = nome;
+        this.idProprietario = idProprietario;
         this.indirizzo = indirizzo;
         this.latitudine = latitudine;
         this.longitudine = longitudine;
@@ -32,6 +34,12 @@ public class Ristornate extends BaseEntity {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+    public String getIdProprietario() {
+        return idProprietario;
+    }
+    public void setIdProprietario(String idProprietario) {
+        this.idProprietario = idProprietario;
     }
 
     public String getIndirizzo() {
