@@ -1,5 +1,6 @@
 package com.example;
 
+
 import com.example.cache.BaseEntity;
 
 public class Ristornate extends BaseEntity {
