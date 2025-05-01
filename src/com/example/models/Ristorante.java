@@ -1,6 +1,7 @@
 package com.example.models;
 
 import com.example.cache.BaseEntity;
+import com.example.cache.BaseEntity;
 
 import java.util.Map;
 
