@@ -6,6 +6,7 @@ public class Ristornate extends BaseEntity {
     private String nome;
     private String idProprietario;
     private String indirizzo;
+    private int numeroTelefono;
     private String categoria;
     private double latitudine;
     private double longitudine;
@@ -19,6 +20,8 @@ public class Ristornate extends BaseEntity {
         this.nome = nome;
         this.idProprietario = idProprietario;
         this.indirizzo = indirizzo;
+        this.numeroTelefono = numeroTelefono;
+        this.categoria = categoria;
         this.latitudine = latitudine;
         this.longitudine = longitudine;
         this.fasciaPrezzo = fasciaPrezzo;
@@ -35,9 +38,11 @@ public class Ristornate extends BaseEntity {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
     public String getIdProprietario() {
         return idProprietario;
     }
+
     public void setIdProprietario(String idProprietario) {
         this.idProprietario = idProprietario;
     }
@@ -48,6 +53,14 @@ public class Ristornate extends BaseEntity {
 
     public void setIndirizzo(String indirizzo) {
         this.indirizzo = indirizzo;
+    }
+
+    public int getNumeroTelefono() {
+        return numeroTelefono;
+    }
+
+    public void setNumeroTelefono(int numeroTelefono) {
+        this.numeroTelefono = numeroTelefono;
     }
 
     public String getCategoria() {
