@@ -1,7 +1,6 @@
 package com.example.models;
 
 import com.example.cache.BaseEntity;
-import com.example.cache.BaseEntity;
 
 import java.util.Map;
 
@@ -13,6 +12,8 @@ public class Ristorante extends BaseEntity {
     private double latitudine;
     private double longitudine;
     private String idProprietario; // ID dell'utente ristoratore
+    private String numeroTelefono; // numero di telefono del ristorante
+    private boolean consegnaDomicilio; // indica se il ristorante effettua consegne a domicilio
 
     public Ristorante() {
         // Costruttore vuoto necessario per Gson
@@ -20,7 +21,8 @@ public class Ristorante extends BaseEntity {
 
     public Ristorante(String nome, String tipoCucina, int fasciaPrezzo,
                       Map<String, String> orariApertura, double latitudine,
-                      double longitudine, String idProprietario) {
+                      double longitudine, String idProprietario, String numeroTelefono,
+                      boolean consegnaDomicilio) {
         this.nome = nome;
         this.tipoCucina = tipoCucina;
         setFasciaPrezzo(fasciaPrezzo); // Usa il setter per la validazione
@@ -28,6 +30,8 @@ public class Ristorante extends BaseEntity {
         this.latitudine = latitudine;
         this.longitudine = longitudine;
         this.idProprietario = idProprietario;
+        this.numeroTelefono = numeroTelefono;
+        this.consegnaDomicilio = consegnaDomicilio;
     }
 
     public String getNome() {
@@ -87,5 +91,21 @@ public class Ristorante extends BaseEntity {
 
     public void setIdProprietario(String idProprietario) {
         this.idProprietario = idProprietario;
+    }
+
+    public String getNumeroTelefono() {
+        return numeroTelefono;
+    }
+
+    public void setNumeroTelefono(String numeroTelefono) {
+        this.numeroTelefono = numeroTelefono;
+    }
+
+    public boolean isConsegnaDomicilio() {
+        return consegnaDomicilio;
+    }
+
+    public void setConsegnaDomicilio(boolean consegnaDomicilio) {
+        this.consegnaDomicilio = consegnaDomicilio;
     }
 }

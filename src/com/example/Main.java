@@ -1,8 +1,10 @@
 package com.example;
 
+import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
 import services.AuthService;
+import services.RecensioneService;
 import services.RistoranteService;
 import com.google.gson.Gson;
 import javafx.application.Application;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class Main extends Application {
     private AuthService authService;
     private RistoranteService ristoranteService;
+    private RecensioneService recensioneService;
     private final Gson gson = new Gson();
 
     @Override
@@ -30,6 +33,7 @@ public class Main extends Application {
             // Inizializza i servizi
             authService = new AuthService();
             ristoranteService = new RistoranteService();
+            recensioneService = new RecensioneService();
 
             WebView webView = new WebView();
             WebEngine webEngine = webView.getEngine();
@@ -45,6 +49,9 @@ public class Main extends Application {
 
             // Registra i metodi per i ristoranti
             registerRistoranteMethods(bridge);
+
+            // Registra i metodi per le recensioni
+            registerRecensioneMethods(bridge);
 
             // Carica l'icona dell'applicazione
             try {
@@ -84,9 +91,7 @@ public class Main extends Application {
             String email = (String) params.get("email");
             String ruoloStr = (String) params.get("ruolo");
 
-            Utente.Ruolo ruolo = "ristoratore".equalsIgnoreCase(ruoloStr)
-                    ? Utente.Ruolo.RISTORATORE
-                    : Utente.Ruolo.UTENTE;
+            Utente.Ruolo ruolo = Utente.Ruolo.valueOf(ruoloStr);
 
             boolean success = authService.registraUtente(username, password, email, ruolo);
 
@@ -145,8 +150,33 @@ public class Main extends Application {
     }
 
     private void registerRistoranteMethods(JavaScriptBridge bridge) {
-        // Crea/modifica ristorante
-        bridge.registerMethod("salvaRistorante", args -> {
+        // Crea nuovo ristorante
+        bridge.registerMethod("creaRistorante", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+
+            String nome = (String) params.get("nome");
+            String tipoCucina = (String) params.get("tipoCucina");
+            int fasciaPrezzo = ((Double) params.get("fasciaPrezzo")).intValue();
+            Map<String, String> orariApertura = (Map<String, String>) params.get("orariApertura");
+            double latitudine = (Double) params.get("latitudine");
+            double longitudine = (Double) params.get("longitudine");
+            String idProprietario = (String) params.get("idProprietario");
+            String numeroTelefono = (String) params.get("numeroTelefono");
+            boolean consegnaDomicilio = (Boolean) params.get("consegnaDomicilio");
+
+            Ristorante ristorante = ristoranteService.creaRistorante(
+                    nome, tipoCucina, fasciaPrezzo, orariApertura,
+                    latitudine, longitudine, idProprietario,
+                    numeroTelefono, consegnaDomicilio);
+
+            return Map.of(
+                    "success", true,
+                    "ristoranteId", ristorante.getId()
+            );
+        });
+
+        // Modifica ristorante
+        bridge.registerMethod("modificaRistorante", args -> {
             Map<String, Object> params = gson.fromJson(args, Map.class);
 
             String id = (String) params.get("id");
@@ -156,30 +186,61 @@ public class Main extends Application {
             Map<String, String> orariApertura = (Map<String, String>) params.get("orariApertura");
             double latitudine = (Double) params.get("latitudine");
             double longitudine = (Double) params.get("longitudine");
-            String idProprietario = (String) params.get("idProprietario");
+            String numeroTelefono = (String) params.get("numeroTelefono");
+            boolean consegnaDomicilio = (Boolean) params.get("consegnaDomicilio");
 
-            Ristorante ristorante = new Ristorante(nome, tipoCucina, fasciaPrezzo,
-                    orariApertura, latitudine, longitudine, idProprietario);
-
-            if (id != null && !id.isEmpty()) {
-                ristorante.setId(id); // Per aggiornare un ristorante esistente
-            }
-
-            Ristorante saved = ristoranteService.salvaRistorante(ristorante);
+            Optional<Ristorante> ristoranteModificato = ristoranteService.modificaRistorante(
+                    id, nome, tipoCucina, fasciaPrezzo, orariApertura,
+                    latitudine, longitudine, numeroTelefono, consegnaDomicilio);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("success", true);
-            result.put("ristoranteId", saved.getId());
+            if (ristoranteModificato.isPresent()) {
+                result.put("success", true);
+                result.put("ristorante", ristoranteModificato.get());
+            } else {
+                result.put("success", false);
+                result.put("error", "Ristorante non trovato");
+            }
             return result;
+        });
+
+        // Elimina ristorante
+        bridge.registerMethod("eliminaRistorante", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String id = (String) params.get("id");
+
+            boolean eliminato = ristoranteService.eliminaRistorante(id);
+
+            return Map.of(
+                    "success", eliminato,
+                    "error", eliminato ? "" : "Ristorante non trovato"
+            );
         });
 
         // Recupera tutti i ristoranti
         bridge.registerMethod("getAllRistoranti", args -> {
             List<Ristorante> ristoranti = ristoranteService.getAllRistoranti();
+            return Map.of(
+                    "success", true,
+                    "ristoranti", ristoranti
+            );
+        });
+
+        // Recupera ristorante per ID
+        bridge.registerMethod("getRistoranteById", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String id = (String) params.get("id");
+
+            Optional<Ristorante> ristoranteOpt = ristoranteService.getRistoranteById(id);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("success", true);
-            result.put("ristoranti", ristoranti);
+            if (ristoranteOpt.isPresent()) {
+                result.put("success", true);
+                result.put("ristorante", ristoranteOpt.get());
+            } else {
+                result.put("success", false);
+                result.put("error", "Ristorante non trovato");
+            }
             return result;
         });
 
@@ -189,11 +250,123 @@ public class Main extends Application {
             String idProprietario = (String) params.get("idProprietario");
 
             List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
+            return Map.of(
+                    "success", true,
+                    "ristoranti", ristoranti
+            );
+        });
+
+        // Recupera ristoranti per tipo di cucina
+        bridge.registerMethod("getRistorantiByTipoCucina", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String tipoCucina = (String) params.get("tipoCucina");
+
+            List<Ristorante> ristoranti = ristoranteService.getRistorantiByTipoCucina(tipoCucina);
+            return Map.of(
+                    "success", true,
+                    "ristoranti", ristoranti
+            );
+        });
+    }
+
+    private void registerRecensioneMethods(JavaScriptBridge bridge) {
+        // Crea una nuova recensione
+        bridge.registerMethod("creaRecensione", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+
+            String idRistorante = (String) params.get("idRistorante");
+            String idUtente = (String) params.get("idUtente");
+            int voto = ((Double) params.get("voto")).intValue();
+            String titolo = (String) params.get("titolo");
+            String testo = (String) params.get("testo");
+
+            Recensione recensione = recensioneService.creaRecensione(
+                    idRistorante, idUtente, voto, titolo, testo);
+
+            return Map.of(
+                    "success", true,
+                    "recensioneId", recensione.getId()
+            );
+        });
+
+        // Modifica una recensione esistente
+        bridge.registerMethod("modificaRecensione", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+
+            String recensioneId = (String) params.get("recensioneId");
+            String titolo = (String) params.get("titolo");
+            String testo = (String) params.get("testo");
+            int voto = ((Double) params.get("voto")).intValue();
+
+            Optional<Recensione> recensioneModificata = recensioneService.modificaRecensione(
+                    recensioneId, titolo, testo, voto);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("success", true);
-            result.put("ristoranti", ristoranti);
+            if (recensioneModificata.isPresent()) {
+                result.put("success", true);
+                result.put("recensione", recensioneModificata.get());
+            } else {
+                result.put("success", false);
+                result.put("error", "Recensione non trovata");
+            }
             return result;
+        });
+
+        // Elimina una recensione
+        bridge.registerMethod("eliminaRecensione", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String recensioneId = (String) params.get("recensioneId");
+
+            recensioneService.eliminaRecensione(recensioneId);
+
+            return Map.of("success", true);
+        });
+
+        // Recupera tutte le recensioni
+        bridge.registerMethod("getAllRecensioni", args -> {
+            List<Recensione> recensioni = recensioneService.getAllRecensioni();
+            return Map.of(
+                    "success", true,
+                    "recensioni", recensioni
+            );
+        });
+
+        // Recupera recensioni di un utente
+        bridge.registerMethod("getRecensioniByUtente", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String idUtente = (String) params.get("idUtente");
+
+            List<Recensione> recensioni = recensioneService.getRecensioniByUtente(idUtente);
+            return Map.of(
+                    "success", true,
+                    "recensioni", recensioni
+            );
+        });
+
+        // Recupera recensioni di un ristorante
+        bridge.registerMethod("getRecensioniByRistorante", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String idRistorante = (String) params.get("idRistorante");
+
+            List<Recensione> recensioni = recensioneService.getRecensioniByRistorante(idRistorante);
+            return Map.of(
+                    "success", true,
+                    "recensioni", recensioni
+            );
+        });
+
+        // Recupera recensioni filtrate per ristorante e voto
+        bridge.registerMethod("getRecensioniByRistoranteAndVoto", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String idRistorante = (String) params.get("idRistorante");
+            int voto = ((Double) params.get("voto")).intValue();
+
+            List<Recensione> recensioni = recensioneService.getRecensioniByRistoranteAndVoto(
+                    idRistorante, voto);
+            return Map.of(
+                    "success", true,
+                    "recensioni", recensioni
+            );
         });
     }
 
