@@ -3,6 +3,7 @@ package com.example;
 import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
+import javafx.concurrent.Worker;
 import services.AuthService;
 import services.RecensioneService;
 import services.RistoranteService;
@@ -61,6 +62,44 @@ public class Main extends Application {
                 System.err.println("Errore nel caricamento dell'icona: " + e.getMessage());
             }
 
+            // Reindirizza console.log, console.error e altri metodi della console JS a Java
+            webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+                if (newState == Worker.State.SUCCEEDED) {
+                    String script =
+                            "(function() {" +
+                                    "    var oldLog = console.log;" +
+                                    "    var oldError = console.error;" +
+                                    "    var oldWarn = console.warn;" +
+                                    "    var oldInfo = console.info;" +
+                                    "    console.log = function() {" +
+                                    "        var message = Array.from(arguments).map(String).join(' ');" +
+                                    "        alert('LOG: ' + message);" +
+                                    "        oldLog.apply(console, arguments);" +
+                                    "    };" +
+                                    "    console.error = function() {" +
+                                    "        var message = Array.from(arguments).map(String).join(' ');" +
+                                    "        alert('ERROR: ' + message);" +
+                                    "        oldError.apply(console, arguments);" +
+                                    "    };" +
+                                    "    console.warn = function() {" +
+                                    "        var message = Array.from(arguments).map(String).join(' ');" +
+                                    "        alert('WARN: ' + message);" +
+                                    "        oldWarn.apply(console, arguments);" +
+                                    "    };" +
+                                    "    console.info = function() {" +
+                                    "        var message = Array.from(arguments).map(String).join(' ');" +
+                                    "        alert('INFO: ' + message);" +
+                                    "        oldInfo.apply(console, arguments);" +
+                                    "    };" +
+                                    "    window.onerror = function(message, source, lineno, colno, error) {" +
+                                    "        alert('JS ERROR: ' + message + ' at ' + source + ':' + lineno + ':' + colno);" +
+                                    "        return false;" +
+                                    "    };" +
+                                    "})();";
+                    webEngine.executeScript(script);
+                }
+            });
+
             URL url = getClass().getResource("/web/index.html");
             if (url != null) {
                 webEngine.load(url.toExternalForm());
@@ -69,7 +108,23 @@ public class Main extends Application {
                 throw new IllegalArgumentException("File HTML non trovato! Verifica il percorso.");
             }
 
-            webEngine.setOnAlert(event -> System.out.println("Console JS: " + event.getData()));
+            // Gestisce gli alert (inclusi i log reindirizzati)
+            webEngine.setOnAlert(event -> {
+                String message = event.getData();
+                if (message.startsWith("LOG: ")) {
+                    System.out.println("JS Log: " + message.substring(5));
+                } else if (message.startsWith("ERROR: ")) {
+                    System.err.println("JS Error: " + message.substring(7));
+                } else if (message.startsWith("WARN: ")) {
+                    System.out.println("JS Warning: " + message.substring(6));
+                } else if (message.startsWith("INFO: ")) {
+                    System.out.println("JS Info: " + message.substring(6));
+                } else if (message.startsWith("JS ERROR: ")) {
+                    System.err.println(message);
+                } else {
+                    System.out.println("JS Alert: " + message);
+                }
+            });
 
             Scene scene = new Scene(webView, 800, 600);
             primaryStage.setTitle("TheKnife");
