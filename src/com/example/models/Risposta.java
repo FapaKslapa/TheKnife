@@ -9,8 +9,12 @@ public class Risposta extends BaseEntity {
     private String ristoratoreId;
     private String testo;
     private Date dataCreazione;
+    private Date dataModifica;
 
-    // getter e setter
+    public Risposta() {
+        // Costruttore vuoto per GSON
+    }
+
     public String getRecensioneId() {
         return recensioneId;
     }
@@ -41,5 +45,13 @@ public class Risposta extends BaseEntity {
 
     public void setDataCreazione(Date dataCreazione) {
         this.dataCreazione = dataCreazione;
+    }
+
+    public Date getDataModifica() {
+        return dataModifica;
+    }
+
+    public void setDataModifica(Date dataModifica) {
+        this.dataModifica = dataModifica;
     }
 }
