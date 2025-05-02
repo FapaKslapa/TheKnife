@@ -13,6 +13,7 @@ javafx.controls,javafx.fxml,javafx.web
 --enable-native-access=javafx.graphics,javafx.web
 ```
 
+Inoltre vanno inserite le librerie Gson, JavaFX e Bcrypt (sono nella cartella lib)
 ## 1. Introduzione al Bridge
 
 Questo progetto utilizza un bridge personalizzato che permette la comunicazione bidirezionale tra JavaScript (lato
