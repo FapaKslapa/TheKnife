@@ -3,6 +3,7 @@ package com.example;
 import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import services.AuthService;
 import services.RecensioneService;
@@ -14,6 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -50,7 +54,7 @@ public class Main extends Application {
 
             // Registra i metodi per i ristoranti
             registerRistoranteMethods(bridge);
-
+            System.out.println("Metodi ristorante registrati");
             // Registra i metodi per le recensioni
             registerRecensioneMethods(bridge);
 
@@ -73,34 +77,66 @@ public class Main extends Application {
                                     "    var oldInfo = console.info;" +
                                     "    console.log = function() {" +
                                     "        var message = Array.from(arguments).map(String).join(' ');" +
-                                    "        alert('LOG: ' + message);" +
+                                    "        window.javaConnector.consoleLog({ message: message, type: 'log' });" + // Corretto qui
                                     "        oldLog.apply(console, arguments);" +
                                     "    };" +
                                     "    console.error = function() {" +
                                     "        var message = Array.from(arguments).map(String).join(' ');" +
-                                    "        alert('ERROR: ' + message);" +
+                                    "        window.javaConnector.consoleLog({ message: message, type: 'error' });" + // Corretto qui
                                     "        oldError.apply(console, arguments);" +
                                     "    };" +
                                     "    console.warn = function() {" +
                                     "        var message = Array.from(arguments).map(String).join(' ');" +
-                                    "        alert('WARN: ' + message);" +
+                                    "        window.javaConnector.consoleLog({ message: message, type: 'warn' });" + // Corretto qui
                                     "        oldWarn.apply(console, arguments);" +
                                     "    };" +
                                     "    console.info = function() {" +
                                     "        var message = Array.from(arguments).map(String).join(' ');" +
-                                    "        alert('INFO: ' + message);" +
+                                    "        window.javaConnector.consoleLog({ message: message, type: 'info' });" + // Corretto qui
                                     "        oldInfo.apply(console, arguments);" +
                                     "    };" +
                                     "    window.onerror = function(message, source, lineno, colno, error) {" +
-                                    "        alert('JS ERROR: ' + message + ' at ' + source + ':' + lineno + ':' + colno);" +
+                                    "        window.javaConnector.consoleLog({ message: 'Errore: ' + message + ' a ' + source + ':' + lineno + ':' + colno, type: 'error' });" + // Corretto qui
                                     "        return false;" +
                                     "    };" +
                                     "})();";
                     webEngine.executeScript(script);
                 }
             });
-
             URL url = getClass().getResource("/web/index.html");
+            // Registra il metodo per i log della console JavaScript
+            // Registra il metodo per i log della console JavaScript
+            bridge.registerMethod("consoleLog", args -> {
+                try {
+                    Map<String, Object> params = gson.fromJson(args, Map.class);
+
+                    // Controllo per valori null
+                    String message = params != null && params.get("message") != null ? (String) params.get("message") : "(messaggio vuoto)";
+                    String type = params != null && params.get("type") != null ? (String) params.get("type") : "log";
+
+                    switch (type) {
+                        case "error":
+                            System.err.println("JS Error: " + message);
+                            break;
+                        case "warn":
+                            System.out.println("JS Warning: " + message);
+                            break;
+                        case "info":
+                            System.out.println("JS Info: " + message);
+                            break;
+                        case "log":
+                        default:
+                            System.out.println("JS Log: " + message);
+                            break;
+                    }
+
+                    return Map.of("success", true);
+                } catch (Exception e) {
+                    System.err.println("Errore nella gestione del log della console: " + e.getMessage());
+                    e.printStackTrace();
+                    return Map.of("success", false, "error", e.getMessage());
+                }
+            });
             if (url != null) {
                 webEngine.load(url.toExternalForm());
                 System.out.println("File HTML caricato correttamente da: " + url);
@@ -108,22 +144,26 @@ public class Main extends Application {
                 throw new IllegalArgumentException("File HTML non trovato! Verifica il percorso.");
             }
 
-            // Gestisce gli alert (inclusi i log reindirizzati)
-            webEngine.setOnAlert(event -> {
-                String message = event.getData();
-                if (message.startsWith("LOG: ")) {
-                    System.out.println("JS Log: " + message.substring(5));
-                } else if (message.startsWith("ERROR: ")) {
-                    System.err.println("JS Error: " + message.substring(7));
-                } else if (message.startsWith("WARN: ")) {
-                    System.out.println("JS Warning: " + message.substring(6));
-                } else if (message.startsWith("INFO: ")) {
-                    System.out.println("JS Info: " + message.substring(6));
-                } else if (message.startsWith("JS ERROR: ")) {
-                    System.err.println(message);
-                } else {
-                    System.out.println("JS Alert: " + message);
-                }
+            // Aggiungi qui il codice per gestire la navigazione tra pagine e reinizializzare il bridge
+            webEngine.locationProperty().addListener((observable, oldValue, newValue) -> {
+                System.out.println("Navigazione a: " + newValue);
+
+                // Attendi il completamento del caricamento della nuova pagina
+                webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldState, Worker.State newState) {
+                        if (newState == Worker.State.SUCCEEDED) {
+                            // Rimuovi questo listener per evitare chiamate multiple
+                            webEngine.getLoadWorker().stateProperty().removeListener(this);
+
+                            // Attendi un momento per garantire che il DOM sia completamente caricato
+                            Platform.runLater(() -> {
+                                System.out.println("Reinizializzazione bridge dopo cambio pagina");
+                                bridge.setupJavaScriptBridge();
+                            });
+                        }
+                    }
+                });
             });
 
             Scene scene = new Scene(webView, 800, 600);
@@ -158,12 +198,13 @@ public class Main extends Application {
             return result;
         });
 
+
         // Login
         bridge.registerMethod("login", args -> {
+            System.out.println("login");
             Map<String, Object> params = gson.fromJson(args, Map.class);
             String usernameOrEmail = (String) params.get("usernameOrEmail");
             String password = (String) params.get("password");
-
             Optional<Utente> utenteOpt = authService.login(usernameOrEmail, password);
 
             Map<String, Object> result = new HashMap<>();
@@ -183,6 +224,7 @@ public class Main extends Application {
 
         // Recupera informazioni utente
         bridge.registerMethod("getUtenteInfo", args -> {
+            System.out.println("getUtenteInfo");
             Map<String, Object> params = gson.fromJson(args, Map.class);
             String userId = (String) params.get("userId");
 
@@ -219,15 +261,9 @@ public class Main extends Application {
             String numeroTelefono = (String) params.get("numeroTelefono");
             boolean consegnaDomicilio = (Boolean) params.get("consegnaDomicilio");
 
-            Ristorante ristorante = ristoranteService.creaRistorante(
-                    nome, tipoCucina, fasciaPrezzo, orariApertura,
-                    latitudine, longitudine, idProprietario,
-                    numeroTelefono, consegnaDomicilio);
+            Ristorante ristorante = ristoranteService.creaRistorante(nome, tipoCucina, fasciaPrezzo, orariApertura, latitudine, longitudine, idProprietario, numeroTelefono, consegnaDomicilio);
 
-            return Map.of(
-                    "success", true,
-                    "ristoranteId", ristorante.getId()
-            );
+            return Map.of("success", true, "ristoranteId", ristorante.getId());
         });
 
         // Modifica ristorante
@@ -244,9 +280,7 @@ public class Main extends Application {
             String numeroTelefono = (String) params.get("numeroTelefono");
             boolean consegnaDomicilio = (Boolean) params.get("consegnaDomicilio");
 
-            Optional<Ristorante> ristoranteModificato = ristoranteService.modificaRistorante(
-                    id, nome, tipoCucina, fasciaPrezzo, orariApertura,
-                    latitudine, longitudine, numeroTelefono, consegnaDomicilio);
+            Optional<Ristorante> ristoranteModificato = ristoranteService.modificaRistorante(id, nome, tipoCucina, fasciaPrezzo, orariApertura, latitudine, longitudine, numeroTelefono, consegnaDomicilio);
 
             Map<String, Object> result = new HashMap<>();
             if (ristoranteModificato.isPresent()) {
@@ -266,28 +300,21 @@ public class Main extends Application {
 
             boolean eliminato = ristoranteService.eliminaRistorante(id);
 
-            return Map.of(
-                    "success", eliminato,
-                    "error", eliminato ? "" : "Ristorante non trovato"
-            );
+            return Map.of("success", eliminato, "error", eliminato ? "" : "Ristorante non trovato");
         });
 
         // Recupera tutti i ristoranti
         bridge.registerMethod("getAllRistoranti", args -> {
+
             List<Ristorante> ristoranti = ristoranteService.getAllRistoranti();
-            return Map.of(
-                    "success", true,
-                    "ristoranti", ristoranti
-            );
+            return Map.of("success", true, "ristoranti", ristoranti);
         });
 
         // Recupera ristorante per ID
         bridge.registerMethod("getRistoranteById", args -> {
             Map<String, Object> params = gson.fromJson(args, Map.class);
             String id = (String) params.get("id");
-
             Optional<Ristorante> ristoranteOpt = ristoranteService.getRistoranteById(id);
-
             Map<String, Object> result = new HashMap<>();
             if (ristoranteOpt.isPresent()) {
                 result.put("success", true);
@@ -301,26 +328,25 @@ public class Main extends Application {
 
         // Recupera ristoranti di un proprietario
         bridge.registerMethod("getRistorantiByProprietario", args -> {
+            System.out.println("getRistorantiByProprietario");
             Map<String, Object> params = gson.fromJson(args, Map.class);
             String idProprietario = (String) params.get("idProprietario");
 
             List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
-            return Map.of(
-                    "success", true,
-                    "ristoranti", ristoranti
-            );
-        });
 
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("ristoranti", ristoranti);
+            System.out.println(ristoranti);
+            return result;
+        });
         // Recupera ristoranti per tipo di cucina
         bridge.registerMethod("getRistorantiByTipoCucina", args -> {
             Map<String, Object> params = gson.fromJson(args, Map.class);
             String tipoCucina = (String) params.get("tipoCucina");
 
             List<Ristorante> ristoranti = ristoranteService.getRistorantiByTipoCucina(tipoCucina);
-            return Map.of(
-                    "success", true,
-                    "ristoranti", ristoranti
-            );
+            return Map.of("success", true, "ristoranti", ristoranti);
         });
     }
 
@@ -335,13 +361,9 @@ public class Main extends Application {
             String titolo = (String) params.get("titolo");
             String testo = (String) params.get("testo");
 
-            Recensione recensione = recensioneService.creaRecensione(
-                    idRistorante, idUtente, voto, titolo, testo);
+            Recensione recensione = recensioneService.creaRecensione(idRistorante, idUtente, voto, titolo, testo);
 
-            return Map.of(
-                    "success", true,
-                    "recensioneId", recensione.getId()
-            );
+            return Map.of("success", true, "recensioneId", recensione.getId());
         });
 
         // Modifica una recensione esistente
@@ -353,8 +375,7 @@ public class Main extends Application {
             String testo = (String) params.get("testo");
             int voto = ((Double) params.get("voto")).intValue();
 
-            Optional<Recensione> recensioneModificata = recensioneService.modificaRecensione(
-                    recensioneId, titolo, testo, voto);
+            Optional<Recensione> recensioneModificata = recensioneService.modificaRecensione(recensioneId, titolo, testo, voto);
 
             Map<String, Object> result = new HashMap<>();
             if (recensioneModificata.isPresent()) {
@@ -380,10 +401,7 @@ public class Main extends Application {
         // Recupera tutte le recensioni
         bridge.registerMethod("getAllRecensioni", args -> {
             List<Recensione> recensioni = recensioneService.getAllRecensioni();
-            return Map.of(
-                    "success", true,
-                    "recensioni", recensioni
-            );
+            return Map.of("success", true, "recensioni", recensioni);
         });
 
         // Recupera recensioni di un utente
@@ -392,10 +410,7 @@ public class Main extends Application {
             String idUtente = (String) params.get("idUtente");
 
             List<Recensione> recensioni = recensioneService.getRecensioniByUtente(idUtente);
-            return Map.of(
-                    "success", true,
-                    "recensioni", recensioni
-            );
+            return Map.of("success", true, "recensioni", recensioni);
         });
 
         // Recupera recensioni di un ristorante
@@ -404,10 +419,7 @@ public class Main extends Application {
             String idRistorante = (String) params.get("idRistorante");
 
             List<Recensione> recensioni = recensioneService.getRecensioniByRistorante(idRistorante);
-            return Map.of(
-                    "success", true,
-                    "recensioni", recensioni
-            );
+            return Map.of("success", true, "recensioni", recensioni);
         });
 
         // Recupera recensioni filtrate per ristorante e voto
@@ -416,12 +428,8 @@ public class Main extends Application {
             String idRistorante = (String) params.get("idRistorante");
             int voto = ((Double) params.get("voto")).intValue();
 
-            List<Recensione> recensioni = recensioneService.getRecensioniByRistoranteAndVoto(
-                    idRistorante, voto);
-            return Map.of(
-                    "success", true,
-                    "recensioni", recensioni
-            );
+            List<Recensione> recensioni = recensioneService.getRecensioniByRistoranteAndVoto(idRistorante, voto);
+            return Map.of("success", true, "recensioni", recensioni);
         });
     }
 

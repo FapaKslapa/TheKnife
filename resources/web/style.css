@@ -309,3 +309,30 @@ a:hover::after {
     background: rgba(0, 50, 39, 0.7);
     color: #E6DBD0;
 }
+
+/* Rimuovi i filtri esistenti e sostituiscili con questi */
+.material-symbols-rounded {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 4px;
+    filter: brightness(0) saturate(100%);
+}
+
+/* Per i bottoni outline, le icone devono ereditare il colore del bottone */
+.btn-outline-primary .material-symbols-rounded {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(90%) saturate(2157%) hue-rotate(182deg) brightness(96%) contrast(101%);
+}
+
+.btn-outline-warning .material-symbols-rounded {
+    filter: brightness(0) saturate(100%) invert(72%) sepia(78%) saturate(789%) hue-rotate(347deg) brightness(105%) contrast(102%);
+}
+
+.btn-outline-danger .material-symbols-rounded {
+    filter: brightness(0) saturate(100%) invert(23%) sepia(83%) saturate(3119%) hue-rotate(343deg) brightness(92%) contrast(78%);
+}
+
+/* Quando si passa sopra il bottone, l'icona diventa bianca */
+.btn:hover .material-symbols-rounded {
+    filter: brightness(0) saturate(100%) invert(100%);
+}

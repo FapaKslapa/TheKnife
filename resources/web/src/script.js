@@ -26,7 +26,8 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
                 // Reindirizzamento alla home dopo 1 secondo
                 setTimeout(() => {
-                    window.location.href = 'home.html';
+                    // Passa i dati utente tramite parametri URL
+                    window.location.href = `home.html`;
                 }, 1000);
             } else {
                 alertArea.innerHTML = `

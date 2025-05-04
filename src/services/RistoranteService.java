@@ -79,6 +79,7 @@ public class RistoranteService {
      * Trova un ristorante per ID
      */
     public Optional<Ristorante> getRistoranteById(String id) {
+        System.out.println("Ristorante id: " + id);
         return ristoranteRepository.findById(id);
     }
 
@@ -93,6 +94,7 @@ public class RistoranteService {
      * Recupera i ristoranti di un proprietario
      */
     public List<Ristorante> getRistorantiByProprietario(String idUtente) {
+        System.out.println("Ristorante id: " + idUtente);
         return ristoranteRepository.findAll().stream()
                 .filter(r -> r.getIdProprietario().equals(idUtente))
                 .collect(Collectors.toList());
