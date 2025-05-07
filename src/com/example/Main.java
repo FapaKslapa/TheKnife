@@ -180,22 +180,37 @@ public class Main extends Application {
     private void registerAuthMethods(JavaScriptBridge bridge) {
         // Registrazione utente
         bridge.registerMethod("registraUtente", args -> {
-            Map<String, Object> params = gson.fromJson(args, Map.class);
-            String username = (String) params.get("username");
-            String password = (String) params.get("password");
-            String email = (String) params.get("email");
-            String ruoloStr = (String) params.get("ruolo");
+            try {
+                Map<String, Object> params = gson.fromJson(args, Map.class);
+                String username = (String) params.get("username");
+                String password = (String) params.get("password");
+                String email = (String) params.get("email");
+                String ruoloStr = (String) params.get("ruolo");
 
-            Utente.Ruolo ruolo = Utente.Ruolo.valueOf(ruoloStr);
+                // Validazione dei parametri
+                if (username == null || password == null || email == null || ruoloStr == null) {
+                    return Map.of("success", false, "error", "Parametri mancanti");
+                }
 
-            boolean success = authService.registraUtente(username, password, email, ruolo);
+                Utente.Ruolo ruolo;
+                try {
+                    ruolo = Utente.Ruolo.valueOf(ruoloStr);
+                } catch (IllegalArgumentException e) {
+                    return Map.of("success", false, "error", "Ruolo non valido");
+                }
 
-            Map<String, Object> result = new HashMap<>();
-            result.put("success", success);
-            if (!success) {
-                result.put("error", "Username o email già in uso");
+                boolean success = authService.registraUtente(username, password, email, ruolo);
+
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", success);
+                if (!success) {
+                    result.put("error", "Username o email già in uso");
+                }
+                return result;
+            } catch (Exception e) {
+                System.err.println("Errore durante la registrazione: " + e.getMessage());
+                return Map.of("success", false, "error", "Errore durante la registrazione");
             }
-            return result;
         });
 
 
