@@ -23,74 +23,300 @@ function waitForBridge(callback, maxAttempts = 10) {
     checkBridge();
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Verifica se l'utente è loggato
-    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-    const userId = sessionStorage.getItem('userId');
-    const username = sessionStorage.getItem('username');
-    const ruolo = sessionStorage.getItem('ruolo');
+// Implementazione completa del geocoding utilizzando OpenStreetMap Nominatim
+function geocodeAddress(address, callback) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                const result = data[0];
+                callback(null, {
+                    lat: parseFloat(result.lat),
+                    lng: parseFloat(result.lon)
+                });
+            } else {
+                callback("Indirizzo non trovato", null);
+            }
+        })
+        .catch(error => {
+            callback(error.toString(), null);
+        });
+}
 
-    // Mostra username nella navbar
-    document.getElementById('username-display').textContent = username || '';
+// Funzione per caricare i ristoranti di un proprietario
+function caricaRistoranti(idProprietario) {
+    // Mostra l'indicatore di caricamento
+    document.getElementById('loading-indicator').classList.remove('d-none');
+    document.getElementById('no-ristoranti').classList.add('d-none');
 
-    // Reindirizza alla pagina di login se l'utente non è loggato o non è un ristoratore
-    if (!isLoggedIn || ruolo !== 'RISTORATORE') {
-        window.location.href = "index.html";
+    // Chiama il backend per ottenere i ristoranti
+    window.javaConnector.getRistorantiByProprietario({
+        idProprietario: idProprietario
+    })
+        .then(response => {
+            // Nascondi l'indicatore di caricamento
+            document.getElementById('loading-indicator').classList.add('d-none');
+
+            // Ottieni il container dove inserire i ristoranti
+            const ristorantiContainer = document.getElementById('ristoranti-container');
+
+            if (response.success && response.ristoranti && response.ristoranti.length > 0) {
+                // Svuota il container prima di aggiungere i ristoranti
+                ristorantiContainer.innerHTML = '';
+
+                // Aggiungi ogni ristorante al container
+                response.ristoranti.forEach(ristorante => {
+                    const card = creaRistoranteCard(ristorante);
+                    ristorantiContainer.appendChild(card);
+                });
+            } else {
+                // Mostra il messaggio di nessun ristorante
+                document.getElementById('no-ristoranti').classList.remove('d-none');
+            }
+        })
+        .catch(error => {
+            // Nascondi l'indicatore di caricamento e mostra l'errore
+            document.getElementById('loading-indicator').classList.add('d-none');
+            document.getElementById('alertArea').innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                Errore durante il caricamento dei ristoranti: ${error}
+            </div>
+        `;
+        });
+}
+
+// Funzione per creare una card di ristorante
+function creaRistoranteCard(ristorante) {
+    // Crea un elemento div per la colonna
+    const colDiv = document.createElement('div');
+    colDiv.className = 'col-md-6 col-lg-4 mb-4';
+    colDiv.id = `ristorante-${ristorante.id}`;
+
+    // Crea la card con i dettagli del ristorante
+    colDiv.innerHTML = `
+        <div class="card h-100 bg-dark-subtle border-0 shadow-sm">
+            <div class="card-header bg-dark-subtle border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">${ristorante.nome}</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item edit-ristorante" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-pencil me-2"></i>Modifica</a></li>
+                        <li><a class="dropdown-item view-menu" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-list-ul me-2"></i>Gestisci menu</a></li>
+                        <li><a class="dropdown-item view-orders" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-bag me-2"></i>Ordini</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger delete-ristorante" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-trash me-2"></i>Elimina</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><i class="bi bi-tag me-2"></i>${ristorante.tipoCucina}</p>
+                <p class="card-text"><i class="bi bi-cash-coin me-2"></i>${'€'.repeat(ristorante.fasciaPrezzo)}</p>
+                <p class="card-text"><i class="bi bi-telephone me-2"></i>${ristorante.numeroTelefono}</p>
+                <p class="card-text">
+                    <i class="bi bi-${ristorante.consegnaDomicilio ? 'bicycle' : 'x-circle'} me-2"></i>
+                    ${ristorante.consegnaDomicilio ? 'Consegna a domicilio disponibile' : 'Nessuna consegna a domicilio'}
+                </p>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <button class="btn btn-sm btn-outline-primary view-recensioni" data-id="${ristorante.id}">
+                    <i class="bi bi-star me-2"></i>Recensioni
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Aggiungi event listener per i pulsanti nella card
+    setTimeout(() => {
+        const editBtn = colDiv.querySelector('.edit-ristorante');
+        const deleteBtn = colDiv.querySelector('.delete-ristorante');
+        const menuBtn = colDiv.querySelector('.view-menu');
+        const ordersBtn = colDiv.querySelector('.view-orders');
+        const recensioniBtn = colDiv.querySelector('.view-recensioni');
+
+        if (editBtn) editBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const ristoranteId = this.getAttribute('data-id');
+            // Redirigi alla pagina di modifica o apri un modal
+            console.log(`Modifica ristorante: ${ristoranteId}`);
+        });
+
+        if (deleteBtn) deleteBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const ristoranteId = this.getAttribute('data-id');
+            confermaEliminaRistorante(ristoranteId);
+        });
+
+        if (menuBtn) menuBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const ristoranteId = this.getAttribute('data-id');
+            // Redirigi alla pagina di gestione menu
+            console.log(`Gestisci menu: ${ristoranteId}`);
+        });
+
+        if (ordersBtn) ordersBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const ristoranteId = this.getAttribute('data-id');
+            // Redirigi alla pagina di gestione ordini
+            console.log(`Visualizza ordini: ${ristoranteId}`);
+        });
+
+        if (recensioniBtn) recensioniBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const ristoranteId = this.getAttribute('data-id');
+            // Redirigi alla pagina delle recensioni
+            console.log(`Visualizza recensioni: ${ristoranteId}`);
+        });
+    }, 0);
+
+    return colDiv;
+}
+
+// Funzione per confermare l'eliminazione di un ristorante
+function confermaEliminaRistorante(ristoranteId) {
+    if (confirm('Sei sicuro di voler eliminare questo ristorante? Questa azione non può essere annullata.')) {
+        eliminaristorante(ristoranteId);
+    }
+}
+
+// Funzione per eliminare effettivamente un ristorante
+function eliminaristorante(ristoranteId) {
+    window.javaConnector.eliminaRistorante({
+        id: ristoranteId
+    })
+        .then(response => {
+            if (response.success) {
+                // Rimuovi la card del ristorante dalla UI
+                document.getElementById(`ristorante-${ristoranteId}`).remove();
+
+                // Mostra messaggio di successo
+                document.getElementById('alertArea').innerHTML = `
+                <div class="alert alert-success" role="alert">
+                    Ristorante eliminato con successo!
+                </div>
+            `;
+
+                // Controlla se ci sono ancora ristoranti
+                const ristorantiContainer = document.getElementById('ristoranti-container');
+                if (ristorantiContainer.querySelectorAll('.col-md-6').length === 0) {
+                    document.getElementById('no-ristoranti').classList.remove('d-none');
+                }
+            } else {
+                // Mostra messaggio di errore
+                document.getElementById('alertArea').innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    Errore durante l'eliminazione: ${response.error}
+                </div>
+            `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('alertArea').innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                Errore di sistema: ${error}
+            </div>
+        `;
+        });
+}
+
+// Funzione per gestire la ricerca dell'indirizzo
+function cercaIndirizzoHandler(e) {
+    if (e) e.preventDefault();
+
+    const indirizzo = document.getElementById('indirizzo').value;
+
+    if (!indirizzo) {
+        document.getElementById('modalAlertArea').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
+            </div>
+        `;
         return;
     }
 
-    console.log("Attendo che il bridge sia pronto...");
-    // Attendi che il bridge sia disponibile prima di chiamare la funzione
-    waitForBridge(function () {
-        caricaRistoranti(userId);
-    });
+    // Mostra un indicatore di caricamento
+    document.getElementById('cercaIndirizzo').innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Ricerca in corso...
+    `;
 
-    // Gestisci click sul pulsante "Nuovo ristorante"
-    document.getElementById('nuovo-ristorante').addEventListener('click', function () {
-        window.location.href = "crearistorante.html";
-    });
+    // Usa la funzione geocodeAddress invece della simulazione con setTimeout
+    geocodeAddress(indirizzo, function (error, coordinates) {
+        document.getElementById('cercaIndirizzo').innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
 
-    // Gestisci il logout
-    document.getElementById('logout-link').addEventListener('click', function (e) {
-        e.preventDefault();
-        // Pulisci i dati di sessione
-        sessionStorage.clear();
-        // Reindirizza alla pagina di login
-        window.location.href = "index.html";
-    });
-
-    document.getElementById('salvaRistorante').addEventListener('click', function () {
-        const nome = document.getElementById('nome').value;
-        const tipoCucina = document.getElementById('tipoCucina').value;
-        const fasciaPrezzo = parseInt(document.getElementById('fasciaPrezzo').value);
-        const latitudine = parseFloat(document.getElementById('latitudine').value);
-        const longitudine = parseFloat(document.getElementById('longitudine').value);
-        const numeroTelefono = document.getElementById('numeroTelefono').value;
-        const consegnaDomicilio = document.getElementById('consegnaDomicilio').checked;
-        const idProprietario = sessionStorage.getItem('userId');
-
-        // Costruzione dell'oggetto orari
-        const orariApertura = {
-            lunedi: document.getElementById('orariLunedi').value,
-            martedi: document.getElementById('orariMartedi').value,
-            mercoledi: document.getElementById('orariMercoledi').value,
-            giovedi: document.getElementById('orariGiovedi').value,
-            venerdi: document.getElementById('orariVenerdi').value,
-            sabato: document.getElementById('orariSabato').value,
-            domenica: document.getElementById('orariDomenica').value
-        };
-
-        // Validazione dei campi obbligatori
-        if (!nome || !tipoCucina || isNaN(latitudine) || isNaN(longitudine) || !numeroTelefono) {
-            document.getElementById('modalAlertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Compila tutti i campi obbligatori.
+        if (error) {
+            document.getElementById('risultatoRicerca').style.display = 'block';
+            document.getElementById('risultatoRicerca').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${error}
                 </div>
             `;
             return;
         }
 
-        // Chiamata al backend per creare il ristorante
+        // Mostra il risultato
+        document.getElementById('risultatoRicerca').style.display = 'block';
+        document.getElementById('risultatoRicerca').innerHTML = `
+            <div class="alert alert-info">
+                <span id="indirizzoTrovato">Trovato: "${indirizzo}" (lat: ${coordinates.lat}, lng: ${coordinates.lng})</span>
+                <button type="button" class="btn btn-sm btn-outline-info float-end" id="confermaIndirizzo">Conferma</button>
+            </div>
+        `;
+
+        // Quando l'utente conferma l'indirizzo
+        const confermaBtn = document.getElementById('confermaIndirizzo');
+        if (confermaBtn) {
+            confermaBtn.addEventListener('click', function (e) {
+                if (e) e.preventDefault();
+                document.getElementById('latitudine').value = coordinates.lat;
+                document.getElementById('longitudine').value = coordinates.lng;
+                document.getElementById('risultatoRicerca').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle me-2"></i>Indirizzo confermato: ${indirizzo}
+                    </div>
+                `;
+            });
+        }
+    });
+}
+
+// Funzione per gestire il salvataggio del ristorante
+function salvaRistoranteHandler(e) {
+    if (e) e.preventDefault();
+
+    const nome = document.getElementById('nome').value;
+    const tipoCucina = document.getElementById('tipoCucina').value;
+    const fasciaPrezzo = parseInt(document.getElementById('fasciaPrezzo').value);
+    const latitudine = parseFloat(document.getElementById('latitudine').value);
+    const longitudine = parseFloat(document.getElementById('longitudine').value);
+    const numeroTelefono = document.getElementById('numeroTelefono').value;
+    const consegnaDomicilio = document.getElementById('consegnaDomicilio').checked;
+    const idProprietario = sessionStorage.getItem('userId');
+
+    // Costruzione dell'oggetto orari
+    const orariApertura = {
+        lunedi: document.getElementById('orariLunedi').value,
+        martedi: document.getElementById('orariMartedi').value,
+        mercoledi: document.getElementById('orariMercoledi').value,
+        giovedi: document.getElementById('orariGiovedi').value,
+        venerdi: document.getElementById('orariVenerdi').value,
+        sabato: document.getElementById('orariSabato').value,
+        domenica: document.getElementById('orariDomenica').value
+    };
+
+    // Validazione dei campi obbligatori
+    if (!nome || !tipoCucina || isNaN(latitudine) || isNaN(longitudine) || !numeroTelefono) {
+        document.getElementById('modalAlertArea').innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>Compila tutti i campi obbligatori.
+            </div>
+        `;
+        return;
+    }
+
+    // Chiamata al backend per creare il ristorante
+    waitForBridge(function () {
         window.javaConnector.creaRistorante({
             nome: nome,
             tipoCucina: tipoCucina,
@@ -110,9 +336,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Mostra messaggio di successo
                     document.getElementById('alertArea').innerHTML = `
-                    <div class="alert alert-success" role="alert">
-                        Ristorante creato con successo!
-                    </div>
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>Ristorante creato con successo!
+                </div>
                 `;
 
                     // Ricarica la lista dei ristoranti
@@ -121,156 +347,100 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 1000);
                 } else {
                     document.getElementById('modalAlertArea').innerHTML = `
-                    <div class="alert alert-danger" role="alert">
-                        Errore: ${response.error}
-                    </div>
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
+                </div>
                 `;
                 }
             })
             .catch(error => {
                 document.getElementById('modalAlertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Errore di sistema: ${error}
-                </div>
-            `;
-            });
-    });
-});
-
-function caricaRistoranti(idProprietario) {
-    const ristorantiContainer = document.getElementById('ristoranti-container');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const noRistoranti = document.getElementById('no-ristoranti');
-
-    console.log("Chiamata al backend per recuperare i ristoranti con ID proprietario:", idProprietario);
-
-    // Chiamata al backend per recuperare i ristoranti
-    window.javaConnector.getRistorantiByProprietario({
-        idProprietario: idProprietario
-    })
-        .then(response => {
-            console.log("Risposta ricevuta:", response);
-            // Nascondi l'indicatore di caricamento
-            loadingIndicator.classList.add('d-none');
-
-            if (response.success && response.ristoranti && response.ristoranti.length > 0) {
-                // Mostra i ristoranti
-                renderizzaRistoranti(response.ristoranti);
-            } else {
-                // Mostra il messaggio "nessun ristorante"
-                noRistoranti.classList.remove('d-none');
-            }
-        })
-        .catch(error => {
-            console.error("Errore nella chiamata:", error);
-            loadingIndicator.classList.add('d-none');
-            document.getElementById('alertArea').innerHTML = `
             <div class="alert alert-danger" role="alert">
-                Errore nel caricamento dei ristoranti: ${error}
+                <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
             </div>
-        `;
-        });
-}
-
-function renderizzaRistoranti(ristoranti) {
-    const container = document.getElementById('ristoranti-container');
-
-    // Pulisci il container (rimuovi l'indicatore di caricamento)
-    container.innerHTML = '';
-
-    // Crea una card per ogni ristorante
-    ristoranti.forEach(ristorante => {
-        const ristoranteCard = document.createElement('div');
-        ristoranteCard.className = 'col-md-6 col-lg-4 mb-4';
-
-        // Genera le icone per la fascia di prezzo
-        let fasciaPrezzo = '';
-        for (let i = 0; i < ristorante.fasciaPrezzo; i++) {
-            fasciaPrezzo += '€';
-        }
-
-        ristoranteCard.innerHTML = `
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">${ristorante.nome}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${ristorante.tipoCucina}</h6>
-                    <p class="card-text mb-2">
-                        <span class="badge bg-info">${fasciaPrezzo}</span>
-                        ${ristorante.consegnaDomicilio ?
-            '<span class="badge bg-success ms-2">Consegna a domicilio</span>' : ''}
-                    </p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <img src="../assets/icons/add.call" alt="" class="material-symbols-rounded">
-                            ${ristorante.numeroTelefono}
-                        </small>
-                    </p>
-                </div>
-               <div class="card-footer d-flex justify-content-around">
-                    <button class="btn btn-sm btn-outline-primary"
-                            onclick="visualizzaDettaglio('${ristorante.id}')">
-                       <img src="../assets/icons/expand.svg" alt="Open" class="material-symbols-rounded icon-color">
-                        Dettagli
-                    </button>
-                    <button class="btn btn-sm btn-outline-warning"
-                            onclick="modificaRistorante('${ristorante.id}')">
-                       <img src="../assets/icons/edit.svg" alt="Edit" class="material-symbols-rounded icon-color">
-                        Modifica
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger"
-                            onclick="eliminaRistorante('${ristorante.id}', '${ristorante.nome}')">
-                       <img src="../assets/icons/delete.svg" alt="Delete" class="material-symbols-rounded icon-color">
-                        Elimina
-                    </button>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(ristoranteCard);
+            `;
+            });
     });
 }
 
-function visualizzaDettaglio(ristoranteId) {
-    // Reindirizza alla pagina di dettaglio del ristorante
-    window.location.href = `dettaglioristorante.html?id=${ristoranteId}`;
-}
+// Inizializzazione all'avvio della pagina
+document.addEventListener('DOMContentLoaded', function () {
+    // Verifica se l'utente è loggato
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const userId = sessionStorage.getItem('userId');
+    const username = sessionStorage.getItem('username');
+    const ruolo = sessionStorage.getItem('ruolo');
 
-function modificaRistorante(ristoranteId) {
-    // Reindirizza alla pagina di modifica del ristorante
-    window.location.href = `modificaristorante.html?id=${ristoranteId}`;
-}
+    // Mostra username nella navbar
+    const usernameElement = document.getElementById('username-display');
+    if (usernameElement) usernameElement.textContent = username || '';
 
-function eliminaRistorante(ristoranteId, nomeRistorante) {
-    if (confirm(`Sei sicuro di voler eliminare il ristorante "${nomeRistorante}"?`)) {
-        window.javaConnector.eliminaRistorante({
-            id: ristoranteId
-        })
-            .then(response => {
-                if (response.success) {
-                    document.getElementById('alertArea').innerHTML = `
-                    <div class="alert alert-success" role="alert">
-                        Ristorante eliminato con successo!
-                    </div>
-                `;
-
-                    // Ricarica la lista dei ristoranti
-                    setTimeout(() => {
-                        caricaRistoranti(sessionStorage.getItem('userId'));
-                    }, 1000);
-                } else {
-                    document.getElementById('alertArea').innerHTML = `
-                    <div class="alert alert-danger" role="alert">
-                        Errore: ${response.error}
-                    </div>
-                `;
-                }
-            })
-            .catch(error => {
-                document.getElementById('alertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Errore: ${error}
-                </div>
-            `;
-            });
+    // Reindirizza alla pagina di login se l'utente non è loggato o non è un ristoratore
+    if (!isLoggedIn || ruolo !== 'RISTORATORE') {
+        window.location.href = "index.html";
+        return;
     }
-}
+
+    // CORREZIONI PER PREVENIRE IL REFRESH DELLA PAGINA
+
+    // 1. Blocca tutti i form per impedirne l'invio automatico
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            console.log("Invio form bloccato");
+            return false;
+        });
+    });
+
+    // 2. Imposta l'attributo type="button" a tutti i bottoni all'interno dei form
+    document.querySelectorAll('form button:not([type])').forEach(button => {
+        button.setAttribute('type', 'button');
+    });
+
+    // 3. Modifica tutti i link con href="#"
+    document.querySelectorAll('a[href="#"]').forEach(link => {
+        link.setAttribute('href', 'javascript:void(0)');
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+        });
+    });
+
+    console.log("Attendo che il bridge sia pronto...");
+    // Attendi che il bridge sia disponibile prima di chiamare la funzione
+    waitForBridge(function () {
+        caricaRistoranti(userId);
+    });
+
+    // Gestisci il logout
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        });
+    }
+
+    // Gestisci il click su cercaIndirizzo
+    const cercaIndirizzoBtn = document.getElementById('cercaIndirizzo');
+    if (cercaIndirizzoBtn) {
+        cercaIndirizzoBtn.addEventListener('click', cercaIndirizzoHandler);
+    }
+
+    // Gestisci il click su salvaRistorante
+    const salvaRistoranteBtn = document.getElementById('salvaRistorante');
+    if (salvaRistoranteBtn) {
+        salvaRistoranteBtn.addEventListener('click', salvaRistoranteHandler);
+    }
+
+    // Specifica correzione per il form nuovoRistoranteForm
+    const nuovoRistoranteForm = document.getElementById('nuovoRistoranteForm');
+    if (nuovoRistoranteForm) {
+        nuovoRistoranteForm.setAttribute('onsubmit', 'return false;');
+        nuovoRistoranteForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            console.log("Tentativo di invio del form nuovoRistoranteForm bloccato");
+            return false;
+        });
+    }
+});
