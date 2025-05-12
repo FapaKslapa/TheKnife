@@ -78,14 +78,16 @@
 </div>
 
 <!-- Modal a tutto schermo per nuovo ristorante -->
-<div class="modal fade" id="nuovoRistoranteModal" tabindex="-1" aria-labelledby="nuovoRistoranteModalLabel" aria-hidden="true">
+<div class="modal fade" id="nuovoRistoranteModal" tabindex="-1" aria-labelledby="nuovoRistoranteModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-dark">
             <div class="modal-header border-bottom border-secondary">
                 <h5 class="modal-title" id="nuovoRistoranteModalLabel">
                     <i class="bi bi-shop me-2"></i>Crea nuovo ristorante
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -100,19 +102,25 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="form-label-group outline">
-                                                    <input type="text" id="nome" class="form-control" placeholder=" " required>
-                                                    <span><label for="nome" class="text-white">Nome del ristorante</label></span>
+                                                    <input type="text" id="nome" class="form-control" placeholder=" "
+                                                           required>
+                                                    <span><label for="nome"
+                                                                 class="text-white">Nome del ristorante</label></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-label-group outline">
-                                                    <input type="text" id="tipoCucina" class="form-control" placeholder=" " required>
-                                                    <span><label for="tipoCucina" class="text-white">Tipo di cucina</label></span>
+                                                    <input type="text" id="tipoCucina" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="tipoCucina"
+                                                                 class="text-white">Tipo di cucina</label></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <select id="fasciaPrezzo" class="form-select bg-dark text-white border-secondary" required>
+                                                    <select id="fasciaPrezzo"
+                                                            class="form-select bg-dark text-white border-secondary"
+                                                            required>
                                                         <option value="1">€ - Economico</option>
                                                         <option value="2" selected>€€ - Medio</option>
                                                         <option value="3">€€€ - Costoso</option>
@@ -122,15 +130,18 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-label-group outline">
-                                                    <input type="tel" id="numeroTelefono" class="form-control" placeholder=" " required>
+                                                    <input type="tel" id="numeroTelefono" class="form-control"
+                                                           placeholder=" " required>
                                                     <span><label for="numeroTelefono" class="text-white">Numero di telefono</label></span>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="consegnaDomicilio">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           id="consegnaDomicilio">
                                                     <label class="form-check-label" for="consegnaDomicilio">
-                                                        <i class="bi bi-bicycle me-1"></i>Consegna a domicilio disponibile
+                                                        <i class="bi bi-bicycle me-1"></i>Consegna a domicilio
+                                                        disponibile
                                                     </label>
                                                 </div>
                                             </div>
@@ -146,19 +157,24 @@
                                         <div class="row g-3">
                                             <div class="col-md-8">
                                                 <div class="form-label-group outline">
-                                                    <input type="text" id="indirizzo" class="form-control" placeholder=" " required>
-                                                    <span><label for="indirizzo" class="text-white">Indirizzo completo</label></span>
+                                                    <input type="text" id="indirizzo" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="indirizzo"
+                                                                 class="text-white">Indirizzo completo</label></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <button type="button" class="btn btn-primary h-100 w-100" id="cercaIndirizzo">
+                                                <button type="button" class="btn btn-primary h-100 w-100"
+                                                        id="cercaIndirizzo">
                                                     <i class="bi bi-search me-2"></i>Verifica indirizzo
                                                 </button>
                                             </div>
                                             <div class="col-12 mt-3" id="risultatoRicerca" style="display:none">
                                                 <div class="alert alert-info">
                                                     <span id="indirizzoTrovato"></span>
-                                                    <button type="button" class="btn btn-sm btn-outline-info float-end" id="confermaIndirizzo">Conferma</button>
+                                                    <button type="button" class="btn btn-sm btn-outline-info float-end"
+                                                            id="confermaIndirizzo">Conferma
+                                                    </button>
                                                 </div>
                                             </div>
                                             <!-- Campi nascosti per le coordinate -->
@@ -177,43 +193,59 @@
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Lunedì</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariLunedi">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariLunedi">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Martedì</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariMartedi">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariMartedi">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Mercoledì</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariMercoledi">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="orariMercoledi">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Giovedì</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariGiovedi">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariGiovedi">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Venerdì</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariVenerdi">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariVenerdi">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Sabato</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariSabato">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariSabato">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-dark border-secondary text-white">Domenica</span>
-                                                    <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariDomenica">
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="orariDomenica">
                                                 </div>
                                             </div>
                                         </div>
@@ -232,6 +264,203 @@
                 </button>
                 <button type="button" class="btn btn-primary" id="salvaRistorante">
                     <i class="bi bi-check-circle me-2"></i>Crea ristorante
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal a tutto schermo per modifica ristorante -->
+<div class="modal fade" id="modificaRistoranteModal" tabindex="-1" aria-labelledby="modificaRistoranteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title" id="modificaRistoranteModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>Modifica ristorante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="modificaRistoranteForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="ristoranteId">
+                        <div class="row mb-4">
+                            <div class="col-lg-8 offset-lg-2">
+                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
+                                    <div class="card-header bg-dark-subtle border-0">
+                                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informazioni di base</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-label-group outline">
+                                                    <input type="text" id="edit-nome" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="edit-nome"
+                                                                 class="text-white">Nome del ristorante</label></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-label-group outline">
+                                                    <input type="text" id="edit-tipoCucina" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="edit-tipoCucina"
+                                                                 class="text-white">Tipo di cucina</label></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <select id="edit-fasciaPrezzo"
+                                                            class="form-select bg-dark text-white border-secondary"
+                                                            required>
+                                                        <option value="1">€ - Economico</option>
+                                                        <option value="2">€€ - Medio</option>
+                                                        <option value="3">€€€ - Costoso</option>
+                                                    </select>
+                                                    <label for="edit-fasciaPrezzo">Fascia di prezzo</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-label-group outline">
+                                                    <input type="tel" id="edit-numeroTelefono" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="edit-numeroTelefono" class="text-white">Numero di telefono</label></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           id="edit-consegnaDomicilio">
+                                                    <label class="form-check-label" for="edit-consegnaDomicilio">
+                                                        <i class="bi bi-bicycle me-1"></i>Consegna a domicilio
+                                                        disponibile
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
+                                    <div class="card-header bg-dark-subtle border-0">
+                                        <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Posizione</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-8">
+                                                <div class="form-label-group outline">
+                                                    <input type="text" id="edit-indirizzo" class="form-control"
+                                                           placeholder=" " required>
+                                                    <span><label for="edit-indirizzo" class="text-white">Indirizzo completo</label></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button type="button" class="btn btn-primary h-100 w-100"
+                                                        id="edit-cercaIndirizzo">
+                                                    <i class="bi bi-search me-2"></i>Verifica indirizzo
+                                                </button>
+                                            </div>
+                                            <div class="col-12 mt-3" id="edit-risultatoRicerca" style="display:none">
+                                                <div class="alert alert-info">
+                                                    <span id="edit-indirizzoTrovato"></span>
+                                                    <button type="button" class="btn btn-sm btn-outline-info float-end"
+                                                            id="edit-confermaIndirizzo">Conferma
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- Campi nascosti per le coordinate -->
+                                            <input type="hidden" id="edit-latitudine" value="">
+                                            <input type="hidden" id="edit-longitudine" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-dark-subtle border-0 shadow-sm">
+                                    <div class="card-header bg-dark-subtle border-0">
+                                        <h5 class="mb-0"><i class="bi bi-clock me-2"></i>Orari di apertura</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Lunedì</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariLunedi">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Martedì</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariMartedi">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Mercoledì</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariMercoledi">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Giovedì</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariGiovedi">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Venerdì</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariVenerdi">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Sabato</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariSabato">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-dark border-secondary text-white">Domenica</span>
+                                                    <input type="text"
+                                                           class="form-control bg-dark border-secondary text-white"
+                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
+                                                           id="edit-orariDomenica">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="edit-modalAlertArea" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Annulla
+                </button>
+                <button type="button" class="btn btn-primary" id="salvaModificheRistorante">
+                    <i class="bi bi-check-circle me-2"></i>Salva modifiche
                 </button>
             </div>
         </div>
