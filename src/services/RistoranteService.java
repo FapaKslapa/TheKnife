@@ -2,6 +2,7 @@ package services;
 
 import com.example.cache.DataManager;
 import com.example.cache.JsonRepository;
+import com.example.models.FiltriDiRicerca;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
 
@@ -107,5 +108,17 @@ public class RistoranteService {
         return ristoranteRepository.findAll().stream()
                 .filter(r -> r.getTipoCucina().equalsIgnoreCase(tipoCucina))
                 .collect(Collectors.toList());
+    }
+
+    public List<Ristorante> filtriRicerca(FiltriDiRicerca filtri){
+        return filtriRicerca(
+                filtri.getApertoOra(),
+                filtri.getConsegnaDomicilio(),
+                filtri.getDistanzaMassima(),
+                filtri.getFasciaPrezzo(),
+                filtri.getTipoCucina(),
+                filtri.getLatitudineUtente(),
+                filtri.getLongitudineUtente()
+        );
     }
 }
