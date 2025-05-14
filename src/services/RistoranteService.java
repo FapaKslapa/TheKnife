@@ -110,15 +110,64 @@ public class RistoranteService {
                 .collect(Collectors.toList());
     }
 
-    public List<Ristorante> filtriRicerca(FiltriDiRicerca filtri){
-        return filtriRicerca(
-                filtri.getApertoOra(),
-                filtri.getConsegnaDomicilio(),
-                filtri.getDistanzaMassima(),
-                filtri.getFasciaPrezzo(),
-                filtri.getTipoCucina(),
-                filtri.getLatitudineUtente(),
-                filtri.getLongitudineUtente()
-        );
+    public List<Ristorante> filtriRicerca(FiltriDiRicerca filtri) {
+        List<Ristorante> risultati = ristoranteRepository.findAll();
+
+        // Filtra per tipo cucina se specificato
+        if (filtri.getTipoCucina() != null) {
+            risultati = risultati.stream()
+                    .filter(r -> r.getTipoCucina().equalsIgnoreCase(filtri.getTipoCucina()))
+                    .collect(Collectors.toList());
+        }
+
+        // Filtra per fascia prezzo
+        if (filtri.getFasciaPrezzo() != null) {
+            risultati = risultati.stream()
+                    .filter(r -> r.getFasciaPrezzo() == filtri.getFasciaPrezzo())
+                    .collect(Collectors.toList());
+        }
+
+        // Filtra per consegna a domicilio
+        if (filtri.getConsegnaDomicilio() != null && filtri.getConsegnaDomicilio()) {
+            risultati = risultati.stream()
+                    .filter(Ristorante::isConsegnaDomicilio)
+                    .collect(Collectors.toList());
+        }
+
+        // Filtra per distanza se le coordinate e la distanza massima sono specificate
+        if (filtri.getLatitudineUtente() != null && filtri.getLongitudineUtente() != null &&
+                filtri.getDistanzaMassima() != null) {
+            double latUtente = filtri.getLatitudineUtente();
+            double lonUtente = filtri.getLongitudineUtente();
+            int distanzaMassima = filtri.getDistanzaMassima();
+
+            risultati = risultati.stream()
+                    .filter(r -> calcolaDistanza(latUtente, lonUtente, r.getLatitudine(), r.getLongitudine()) <= distanzaMassima)
+                    .collect(Collectors.toList());
+        }
+
+        // Filtro per "aperto ora" (richiede implementazione della logica oraria)
+        if (filtri.getApertoOra() != null && filtri.getApertoOra()) {
+            // Implementazione per verificare se il ristorante è aperto nell'ora corrente
+            // Qui andrebbe inserita la logica che controlla gli orari di apertura
+        }
+
+        return risultati;
+    }
+
+    // Metodo di supporto per calcolare la distanza in km tra due punti
+    private double calcolaDistanza(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Raggio della Terra in km
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Distanza in km
     }
 }
