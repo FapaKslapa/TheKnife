@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.models.FiltriDiRicerca;
 import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
@@ -362,6 +363,51 @@ public class Main extends Application {
 
             List<Ristorante> ristoranti = ristoranteService.getRistorantiByTipoCucina(tipoCucina);
             return Map.of("success", true, "ristoranti", ristoranti);
+        });
+
+        // Registra il metodo di ricerca con filtri
+        bridge.registerMethod("filtriRicerca", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+
+            // Crea il builder per FiltriDiRicerca
+            FiltriDiRicerca.Builder builder = new FiltriDiRicerca.Builder();
+
+            // Aggiungi i filtri in base ai parametri ricevuti
+            if (params.containsKey("tipoCucina") && params.get("tipoCucina") != null) {
+                builder.tipoCucina((String) params.get("tipoCucina"));
+            }
+
+            if (params.containsKey("fasciaPrezzo") && params.get("fasciaPrezzo") != null) {
+                builder.fasciaPrezzo(((Double) params.get("fasciaPrezzo")).intValue());
+            }
+
+            if (params.containsKey("consegnaDomicilio") && params.get("consegnaDomicilio") != null) {
+                builder.consegnaDomicilio((Boolean) params.get("consegnaDomicilio"));
+            }
+
+            if (params.containsKey("apertoOra") && params.get("apertoOra") != null) {
+                builder.apertoOra((Boolean) params.get("apertoOra"));
+            }
+
+            // Se sono presenti latitudine, longitudine e distanza massima
+            if (params.containsKey("latitudine") && params.get("latitudine") != null &&
+                    params.containsKey("longitudine") && params.get("longitudine") != null &&
+                    params.containsKey("distanzaMassima") && params.get("distanzaMassima") != null) {
+
+                Double latitudine = (Double) params.get("latitudine");
+                Double longitudine = (Double) params.get("longitudine");
+                Integer distanzaMassima = ((Double) params.get("distanzaMassima")).intValue();
+                builder.posizione(latitudine, longitudine, distanzaMassima);
+            }
+
+            // Costruisci l'oggetto filtri
+            FiltriDiRicerca filtri = builder.build();
+
+            // Esegui la ricerca
+            List<Ristorante> risultati = ristoranteService.filtriRicerca(filtri);
+
+            // Restituisci i risultati
+            return Map.of("success", true, "ristoranti", risultati);
         });
     }
 
