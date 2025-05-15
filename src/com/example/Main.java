@@ -104,7 +104,7 @@ public class Main extends Application {
                     webEngine.executeScript(script);
                 }
             });
-            URL url = getClass().getResource("/web/index.html");
+            URL url = getClass().getResource("/web/homeutente.html");
             // Registra il metodo per i log della console JavaScript
             // Registra il metodo per i log della console JavaScript
             bridge.registerMethod("consoleLog", args -> {
