@@ -4,6 +4,8 @@ import com.example.models.FiltriDiRicerca;
 import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
+import com.example.utils.LocalDateTimeAdapter;
+import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import services.AuthService;
@@ -21,6 +23,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +34,9 @@ public class Main extends Application {
     private AuthService authService;
     private RistoranteService ristoranteService;
     private RecensioneService recensioneService;
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
 
     @Override
     public void start(Stage primaryStage) {
@@ -52,12 +57,15 @@ public class Main extends Application {
 
             // Registra i metodi di autenticazione
             registerAuthMethods(bridge);
+            System.out.println("Metodi di autenticazione registrati");
 
             // Registra i metodi per i ristoranti
             registerRistoranteMethods(bridge);
             System.out.println("Metodi ristorante registrati");
+            
             // Registra i metodi per le recensioni
             registerRecensioneMethods(bridge);
+            System.out.println("Metodi recensione registrati");
 
             // Carica l'icona dell'applicazione
             try {
@@ -342,19 +350,31 @@ public class Main extends Application {
             return result;
         });
 
-        // Recupera ristoranti di un proprietario
+        // Recupera ristoranti di un proprietario - CORREZIONE
         bridge.registerMethod("getRistorantiByProprietario", args -> {
-            System.out.println("getRistorantiByProprietario");
-            Map<String, Object> params = gson.fromJson(args, Map.class);
-            String idProprietario = (String) params.get("idProprietario");
+            try {
+                System.out.println("Chiamata a getRistorantiByProprietario ricevuta");
+                Map<String, Object> params = gson.fromJson(args, Map.class);
+                String idProprietario = (String) params.get("idProprietario");
+                
+                System.out.println("Recupero ristoranti per proprietario ID: " + idProprietario);
 
-            List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("success", true);
-            result.put("ristoranti", ristoranti);
-            System.out.println(ristoranti);
-            return result;
+                List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
+                
+                System.out.println("Trovati " + ristoranti.size() + " ristoranti");
+                
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", true);
+                result.put("ristoranti", ristoranti);
+                return result;
+            } catch (Exception e) {
+                System.err.println("Errore in getRistorantiByProprietario: " + e.getMessage());
+                e.printStackTrace();
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", false);
+                result.put("error", e.getMessage());
+                return result;
+            }
         });
         // Recupera ristoranti per tipo di cucina
         bridge.registerMethod("getRistorantiByTipoCucina", args -> {

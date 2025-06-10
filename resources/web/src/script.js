@@ -24,10 +24,15 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
                             Login effettuato con successo! Reindirizzamento in corso...
                         </div>`;
 
-                // Reindirizzamento alla home dopo 1 secondo
+                // Reindirizzamento in base al ruolo dell'utente
                 setTimeout(() => {
-                    // Passa i dati utente tramite parametri URL
-                    window.location.href = `home.html`;
+                    if (response.ruolo === 'UTENTE') {
+                        window.location.href = 'homeutente.html';
+                    } else if (response.ruolo === 'RISTORATORE') {
+                        window.location.href = 'home.html';
+                    } else {
+                        window.location.href = 'homeutente.html'; // Default fallback
+                    }
                 }, 1000);
             } else {
                 alertArea.innerHTML = `

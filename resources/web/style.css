@@ -1,338 +1,857 @@
-/* Stile principale */
+/* Stili di base */
+:root {
+    --primary-color: #8256D0;
+    --primary-hover: #6A45A5;
+    --dark-bg: #121212;
+    --card-bg: #1E1E1E;
+    --border-color: #333;
+    --accent-color: #FF9F43;
+    --success-color: #28C76F;
+    --danger-color: #EA5455;
+    --info-color: #00CFE8;
+
+    --primary-color-rgb: 130, 86, 208;
+    --danger-color-rgb: 234, 84, 85;
+}
+
 body {
     font-family: 'Lexend', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #003227 0%, #32332E 100%);
+    background-color: var(--dark-bg);
+    color: #fff;
     min-height: 100vh;
-    animation: gradientBG 20s ease infinite;
-    background-size: 400% 400%;
+    padding-bottom: 2rem;
 }
 
-@keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.navbar {
-    background-color: rgba(0, 50, 39, 0.8) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(230, 219, 208, 0.1);
-    padding: 15px 0;
-}
-
-.navbar-brand img {
-    filter: drop-shadow(0 0 8px rgba(173, 52, 62, 0.4));
-    transition: transform 0.3s ease;
-}
-
-.navbar-brand:hover img {
-    transform: scale(1.05);
-}
-
-/* Card login */
-.login-card {
-    background: rgba(50, 51, 46, 0.8);
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    padding: 40px 30px;
-    border: 1px solid rgba(230, 219, 208, 0.1);
-    transform: translateY(0);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(8px);
-    margin-top: 3rem;
-}
-
-.login-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(173, 52, 62, 0.15);
-}
-
-h2 {
-    color: #E6DBD0;
-    text-align: center;
-    margin-bottom: 30px;
+/* Stile per il testo del brand */
+.brand-text {
     font-weight: 600;
-    letter-spacing: 1px;
-    position: relative;
+    letter-spacing: 0.5px;
 }
 
-h2:after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(90deg, #AD343E, #003227);
-    margin: 15px auto;
-    border-radius: 2px;
-}
-
-/* Input fields */
-.form-control {
-    border-radius: 8px;
-    padding: 12px 15px;
-    background: rgba(0, 50, 39, 0.3);
-    border: 1px solid rgba(230, 219, 208, 0.15);
-    color: #E6DBD0;
-    box-shadow: none !important;
+/* Stile per la navbar */
+.navbar {
+    padding: 0.75rem 0;
     transition: all 0.3s ease;
 }
 
-.form-control:focus {
-    background: rgba(0, 50, 39, 0.5);
-    border-color: #AD343E;
-    box-shadow: 0 0 0 3px rgba(173, 52, 62, 0.2) !important;
+.navbar-dark.bg-dark-subtle {
+    background-color: rgba(30, 30, 30, 0.95) !important;
+    backdrop-filter: blur(10px);
 }
 
-.form-label-group {
-    position: relative;
-    margin-bottom: 20px;
+.navbar .nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.3s ease;
 }
 
-.form-label-group label {
-    color: #E6DBD0;
-    opacity: 0.8;
+.navbar .nav-link:hover, 
+.navbar .nav-link.active {
+    color: white;
+}
+
+.navbar .dropdown-menu {
+    background-color: #2a2a2a;
+    border: 1px solid var(--border-color);
+}
+
+.navbar .dropdown-item {
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem 1rem;
     transition: all 0.2s ease;
 }
 
-.form-label-group input:focus + span label,
-.form-label-group input:not(:placeholder-shown) + span label {
-    color: #AD343E !important;
-    opacity: 1;
+.navbar .dropdown-item:hover {
+    background-color: #333;
+    color: white;
 }
 
-/* Button */
-.btn-primary {
-    background: linear-gradient(45deg, #AD343E, #003227) !important;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
+.navbar .dropdown-divider {
+    border-color: var(--border-color);
+}
+
+/* Card login e registrazione */
+.login-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.login-card h2 {
+    margin-bottom: 1.5rem;
     font-weight: 600;
-    letter-spacing: 1px;
-    box-shadow: 0 5px 15px rgba(173, 52, 62, 0.3);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    color: #E6DBD0;
+    color: white;
 }
 
-.btn-primary:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(230, 219, 208, 0.2), transparent);
-    transition: 0.5s;
+/* Bottoni */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.btn-primary:hover:before {
-    left: 100%;
+.btn-primary:hover, 
+.btn-primary:focus {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
 }
 
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(173, 52, 62, 0.4);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-/* Alert area */
-#alertArea .alert {
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-    animation: fadeInUp 0.5s ease;
-}
-
-.alert-success {
-    background: rgba(0, 50, 39, 0.8);
-    border-color: #003227;
-    color: #E6DBD0;
-}
-
-.alert-danger {
-    background: rgba(173, 52, 62, 0.8);
-    border-color: #AD343E;
-    color: #E6DBD0;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Link */
-a {
-    color: #AD343E;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-a:hover {
-    color: #E6DBD0;
-}
-
-a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -2px;
-    left: 0;
-    background: linear-gradient(90deg, #AD343E, #E6DBD0);
-    transition: width 0.3s ease;
-}
-
-a:hover::after {
-    width: 100%;
-}
-
-/* Lista elementi */
-.list-group-item {
-    background: rgba(50, 51, 46, 0.7) !important;
-    border: 1px solid rgba(230, 219, 208, 0.1);
-    color: #E6DBD0;
-    transition: all 0.3s ease;
-}
-
-.list-group-item:hover {
-    background: rgba(0, 50, 39, 0.8) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Floating elements background */
+/* Effetto elementi fluttuanti */
 .floating-elements {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
     overflow: hidden;
-    top: 0;
-    left: 0;
+    pointer-events: none;
 }
 
 .element {
     position: absolute;
-    bottom: -20px;
-    width: 30px;
-    height: 30px;
-    background: rgba(173, 52, 62, 0.1);
-    border-radius: 8px;
-    opacity: 0.4;
-    animation: floating 12s infinite ease-in;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle at center, rgba(130, 86, 208, 0.15) 0%, rgba(130, 86, 208, 0) 70%);
+    border-radius: 50%;
+    bottom: -125px;
+    animation: float linear infinite;
 }
 
-.element:nth-child(odd) {
-    background: rgba(230, 219, 208, 0.1);
-}
-
-@keyframes floating {
+@keyframes float {
     0% {
         transform: translateY(0) rotate(0deg);
-        opacity: 0;
+        opacity: 0.2;
     }
     50% {
         opacity: 0.4;
     }
     100% {
-        transform: translateY(-1000px) rotate(720deg);
+        transform: translateY(-100vh) rotate(360deg);
         opacity: 0;
     }
 }
 
-/* Card e sezioni della home */
-.card {
-    background: rgba(50, 51, 46, 0.8);
-    border: 1px solid rgba(230, 219, 208, 0.1);
+/* Stile per i form */
+.form-label-group.outline {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.form-label-group.outline input {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    height: 50px;
+    padding: 0.75rem 1rem;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.form-label-group.outline input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(130, 86, 208, 0.25);
+}
+
+.form-label-group.outline label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+    padding: 0.75rem 1rem;
+    height: 100%;
+    pointer-events: none;
+}
+
+.form-label-group.outline input:focus ~ span label,
+.form-label-group.outline input:not(:placeholder-shown) ~ span label {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 12px;
+    color: var(--primary-color);
+    transform: translateY(-70%);
+    background-color: var(--card-bg);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: 0.5rem;
+    width: auto;
+    height: auto;
+}
+
+/* Stile per i form negli elementi scuri */
+.bg-dark .form-label-group.outline input:focus ~ span label,
+.bg-dark .form-label-group.outline input:not(:placeholder-shown) ~ span label {
+    background-color: var(--dark-bg);
+}
+
+/* Card ristorante migliorata */
+.restaurant-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1.5rem; /* Aggiunto margine inferiore */
+}
+
+.restaurant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(130, 86, 208, 0.4);
+}
+
+.restaurant-card .card-header {
+    background-color: rgba(25, 25, 25, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.restaurant-card .card-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(130, 86, 208, 0.05),
+        rgba(25, 25, 25, 0)
+    );
+    z-index: 1;
+}
+
+.restaurant-card .card-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+    margin: 0; /* Rimuove i margini */
+    padding: 0.25rem 0; /* Aggiunge padding verticale */
+    line-height: 1.3; /* Migliora l'altezza della linea */
+}
+
+.restaurant-card .badge {
+    font-size: 0.75rem;
+    padding: 0.35em 1em;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+}
+
+.restaurant-card .card-body {
+    flex-grow: 1;
+    padding: 1.5rem;
+}
+
+.restaurant-card .card-footer {
+    background-color: rgba(25, 25, 25, 0.95);
+    border-top: 1px solid var(--border-color);
+    padding: 0.75rem;
+}
+
+.restaurant-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.price-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(130, 86, 208, 0.1);
+    border-radius: 30px;
+    margin-bottom: 0.75rem;
+}
+
+.price-tag i {
+    color: var(--accent-color);
+    margin-right: 3px;
+}
+
+.restaurant-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.detail-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--primary-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.detail-icon.delivery-available {
+    background-color: rgba(40, 199, 111, 0.1);
+    color: var(--success-color);
+}
+
+.detail-icon.delivery-unavailable {
+    background-color: rgba(234, 84, 85, 0.1);
+    color: var(--danger-color);
+}
+
+.detail-text {
+    flex-grow: 1;
+    line-height: 1.4;
+}
+
+/* Gestione dei modal */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+/* Fix per prevenire bug con backdrop dei modal */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 0 !important;
+}
+
+/* Stili per pulsanti eleganti */
+.btn-slim {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-slim:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-slim-danger {
+    color: var(--danger-color);
+}
+
+.btn-slim-danger:hover {
+    background: rgba(234, 84, 85, 0.1);
+    color: var(--danger-color);
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-action:hover {
+    background: rgba(130, 86, 208, 0.1);
+    color: var(--primary-color);
+}
+
+.action-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.favorite-active {
+    color: #FF9F43;
+}
+
+.btn-primary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-action:hover {
+    background: var(--primary-hover);
+}
+
+.btn-search {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-search:hover {
+    background: var(--primary-hover);
+}
+
+.toggle-hours {
+    border-color: rgba(0, 207, 232, 0.3);
+    color: var(--info-color);
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.toggle-hours:hover {
+    background-color: rgba(0, 207, 232, 0.1);
+}
+
+.hours-details {
+    padding: 0.75rem;
+    background-color: rgba(30, 30, 30, 0.5);
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* Card recensioni compatta ed elegante */
+.review-card-compact {
+    background-color: var(--card-bg);
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid var(--primary-color);
+}
+
+.review-card-compact:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.review-header {
+    margin-bottom: 0.75rem;
+}
+
+.review-title-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.review-title {
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.review-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.review-stars i {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.review-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.review-author, .review-date {
+    display: flex;
+    align-items: center;
+}
+
+.review-author::before {
+    content: '\F4E1';
+    font-family: 'bootstrap-icons';
+    margin-right: 0.3rem;
+}
+
+.review-date::before {
+    content: '\F1F6';
+    font-family: 'bootstrap-icons';
+    margin-right: 0.3rem;
+}
+
+.review-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.review-body p {
+    margin-bottom: 0;
+}
+
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animazione per le stelle */
+@keyframes star-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.review-rating i.bi-star-fill {
+    animation: star-pulse 1.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.3s);
+}
+
+.review-rating i.bi-star-fill:nth-child(1) { --i: 0; }
+.review-rating i.bi-star-fill:nth-child(2) { --i: 1; }
+.review-rating i.bi-star-fill:nth-child(3) { --i: 2; }
+.review-rating i.bi-star-fill:nth-child(4) { --i: 3; }
+.review-rating i.bi-star-fill:nth-child(5) { --i: 4; }
+
+/* Media queries per responsività */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 1.5rem;
+    }
+
+    .review-title-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .review-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .filter-option-group {
+        padding-top: 0;
+    }
+}
+
+/* Stile per il modal di conferma eliminazione */
+.modal-header.border-danger {
+    border-color: var(--danger-color) !important;
+}
+
+#confermaEliminazioneModal .modal-content {
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(234, 84, 85, 0.15);
+}
+
+#confermaEliminazioneModal .modal-title {
+    color: var(--danger-color);
+}
+
+#confermaEliminazioneModal strong {
+    color: white;
+    font-weight: 600;
+}
+
+/* Stili per il nuovo selettore di orari */
+.orari-container {
+    background-color: rgba(35, 35, 35, 0.6);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.day-selector {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.day-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.day-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.day-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.time-slots-container {
+    position: relative;
+    min-height: 200px;
+}
+
+.day-time-slots {
+    background-color: rgba(40, 40, 40, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.day-title {
+    margin: 0;
+    font-weight: 600;
+}
+
+.day-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(45, 45, 45, 0.7);
+    border-radius: 5px;
+    padding: 0.75rem;
+}
+
+.slot-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.time-input {
+    flex: 1;
+}
+
+.time-input label {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.time-separator {
+    font-weight: bold;
+    margin: 0 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn-add-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    background-color: rgba(var(--primary-color-rgb), 0.2);
+    color: var(--primary-color);
+    border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+    border-radius: 5px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-slot:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.3);
+}
+
+.btn-remove-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(var(--danger-color-rgb), 0.2);
+    color: var(--danger-color);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-remove-slot:hover {
+    background-color: rgba(var(--danger-color-rgb), 0.3);
+}
+
+.orari-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Stile per il selettore di orari quando è disabilitato */
+.time-slot.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Animazione per il cambio di tab dei giorni */
+.day-time-slots {
     transition: all 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+/* Stili migliorati per la visualizzazione degli orari */
+.orari-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    font-size: 0.9rem;
 }
 
-.card-header {
-    background: rgba(0, 50, 39, 0.7);
-    color: #E6DBD0;
-    border-bottom: 1px solid rgba(230, 219, 208, 0.1);
+.giorno-orario {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(40, 40, 40, 0.5);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
 }
 
-/* Form elements */
-.form-check-input:checked {
-    background-color: #AD343E;
-    border-color: #AD343E;
+.giorno-orario:hover {
+    background-color: rgba(45, 45, 45, 0.7);
 }
 
-/* Text colors */
-.text-white {
-    color: #E6DBD0 !important;
+.giorno-chiuso {
+    opacity: 0.7;
 }
 
-.text-muted {
-    color: rgba(230, 219, 208, 0.7) !important;
+.giorno-label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-/* Dropdown menus */
-.dropdown-menu {
-    background: rgba(50, 51, 46, 0.9);
-    border: 1px solid rgba(230, 219, 208, 0.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+.orario-value {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
-.dropdown-item {
-    color: #E6DBD0;
+.badge.bg-success-soft {
+    background-color: rgba(40, 199, 111, 0.15);
+    color: #28C76F;
+    font-weight: 500;
 }
 
-.dropdown-item:hover {
-    background: rgba(0, 50, 39, 0.7);
-    color: #E6DBD0;
+.badge.bg-danger-soft {
+    background-color: rgba(234, 84, 85, 0.15);
+    color: #EA5455;
+    font-weight: 500;
 }
 
-/* Rimuovi i filtri esistenti e sostituiscili con questi */
-.material-symbols-rounded {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    margin-right: 4px;
-    filter: brightness(0) saturate(100%);
+.hours-details {
+    padding: 1rem;
+    background-color: rgba(30, 30, 30, 0.7);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.3s ease;
 }
 
-/* Per i bottoni outline, le icone devono ereditare il colore del bottone */
-.btn-outline-primary .material-symbols-rounded {
-    filter: brightness(0) saturate(100%) invert(18%) sepia(90%) saturate(2157%) hue-rotate(182deg) brightness(96%) contrast(101%);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.btn-outline-warning .material-symbols-rounded {
-    filter: brightness(0) saturate(100%) invert(72%) sepia(78%) saturate(789%) hue-rotate(347deg) brightness(105%) contrast(102%);
+.toggle-hours {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    background-color: rgba(0, 207, 232, 0.1);
+    border: 1px solid rgba(0, 207, 232, 0.2);
+    border-radius: 8px;
+    color: var(--info-color);
+    transition: all 0.2s ease;
 }
 
-.btn-outline-danger .material-symbols-rounded {
-    filter: brightness(0) saturate(100%) invert(23%) sepia(83%) saturate(3119%) hue-rotate(343deg) brightness(92%) contrast(78%);
+.toggle-hours:hover {
+    background-color: rgba(0, 207, 232, 0.15);
+    border-color: rgba(0, 207, 232, 0.3);
 }
 
-/* Quando si passa sopra il bottone, l'icona diventa bianca */
-.btn:hover .material-symbols-rounded {
-    filter: brightness(0) saturate(100%) invert(100%);
+.toggle-hours i.bi-chevron-down,
+.toggle-hours i.bi-chevron-up {
+    transition: transform 0.3s ease;
+}
+
+.toggle-hours:hover i.bi-chevron-down {
+    transform: translateY(2px);
+}
+
+.toggle-hours:hover i.bi-chevron-up {
+    transform: translateY(-2px);
 }

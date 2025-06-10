@@ -23,28 +23,32 @@
     <div class="element" style="left: 80%; animation-delay: 5s; animation-duration: 16s;"></div>
     <div class="element" style="left: 90%; animation-delay: 6s; animation-duration: 13s;"></div>
 </div>
-<nav class="navbar navbar-expand-lg">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark-subtle shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="../assets/Logo.png" alt="TheKnife" width="80">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="../assets/Logo.png" alt="TheKnife" width="60" class="me-2">
+            <span class="brand-text">TheKnife</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#"><i class="bi bi-shop me-1"></i>I miei ristoranti</a>
+                </li>
+            </ul>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link me-2" href="#" data-bs-toggle="modal" data-bs-target="#nuovoRistoranteModal">
-                        <img src="../assets/icons/add.svg" alt="" class="material-symbols-rounded"> Nuovo
-                        ristorante
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i><span id="username-display">Utente</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <span class="nav-link" id="username-display"></span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html" id="logout-link"> <img src="../assets/icons/logout.svg" alt=""
-                                                                                 class="material-symbols-rounded">Logout</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Profilo</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logout-link"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -52,14 +56,27 @@
 </nav>
 
 <div class="container mt-4">
+    <!-- Intestazione della pagina -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>I miei ristoranti</h2>
+        <h2><i class="bi bi-shop me-2"></i>I miei ristoranti</h2>
+        <button class="btn-primary-action" data-bs-toggle="modal" data-bs-target="#nuovoRistoranteModal">
+            <i class="bi bi-plus-circle me-2"></i>Nuovo ristorante
+        </button>
     </div>
 
+    <!-- Area messaggi -->
     <div id="alertArea"></div>
+    
+    <!-- Debug info visibile solo in caso di problemi -->
+    <div id="debug-info" class="alert alert-warning mb-3" style="display: none;">
+        <h5><i class="bi bi-bug"></i> Informazioni di debug</h5>
+        <div id="debug-content">Caricamento...</div>
+        <button class="btn btn-sm btn-outline-dark mt-2" onclick="mostraDettagliDebug()">Mostra dettagli</button>
+    </div>
 
-    <div class="row" id="ristoranti-container">
-        <!-- I ristoranti verranno caricati dinamicamente qui -->
+    <!-- Contenuto principale -->
+    <div class="row g-4" id="ristoranti-container">
+        <!-- Indicatore di caricamento (AGGIUNTO) -->
         <div class="col-12 text-center py-5" id="loading-indicator">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Caricamento...</span>
@@ -67,11 +84,12 @@
             <p class="mt-2">Caricamento ristoranti...</p>
         </div>
 
+        <!-- Messaggio nessun ristorante (AGGIUNTO) -->
         <div class="col-12 text-center py-5 d-none" id="no-ristoranti">
             <div class="empty-state">
-                <span class="material-symbols-rounded display-1">restaurant</span>
-                <h3 class="mt-3">Nessun ristorante trovato</h3>
-                <p class="text-muted">Inizia aggiungendo il tuo primo ristorante!</p>
+                <i class="bi bi-shop display-1"></i>
+                <h3 class="mt-3">Non hai ancora ristoranti</h3>
+                <p class="text-muted">Crea il tuo primo ristorante cliccando su "Nuovo ristorante".</p>
             </div>
         </div>
     </div>
@@ -79,393 +97,823 @@
 
 <!-- Modal a tutto schermo per nuovo ristorante -->
 <div class="modal fade" id="nuovoRistoranteModal" tabindex="-1" aria-labelledby="nuovoRistoranteModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content bg-dark">
-            <div class="modal-header border-bottom border-secondary">
+     aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h5 class="modal-title" id="nuovoRistoranteModalLabel">
-                    <i class="bi bi-shop me-2"></i>Crea nuovo ristorante
+                    <i class="bi bi-shop me-2"></i>Nuovo ristorante
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Chiudi"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    <form id="nuovoRistoranteForm" class="needs-validation" novalidate>
-                        <div class="row mb-4">
-                            <div class="col-lg-8 offset-lg-2">
-                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informazioni di base</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="nome" class="form-control" placeholder=" "
-                                                           required>
-                                                    <span><label for="nome"
-                                                                 class="text-white">Nome del ristorante</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="tipoCucina" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="tipoCucina"
-                                                                 class="text-white">Tipo di cucina</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating">
-                                                    <select id="fasciaPrezzo"
-                                                            class="form-select bg-dark text-white border-secondary"
-                                                            required>
-                                                        <option value="1">€ - Economico</option>
-                                                        <option value="2" selected>€€ - Medio</option>
-                                                        <option value="3">€€€ - Costoso</option>
-                                                    </select>
-                                                    <label for="fasciaPrezzo">Fascia di prezzo</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="tel" id="numeroTelefono" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="numeroTelefono" class="text-white">Numero di telefono</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox"
-                                                           id="consegnaDomicilio">
-                                                    <label class="form-check-label" for="consegnaDomicilio">
-                                                        <i class="bi bi-bicycle me-1"></i>Consegna a domicilio
-                                                        disponibile
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Posizione</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-8">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="indirizzo" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="indirizzo"
-                                                                 class="text-white">Indirizzo completo</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <button type="button" class="btn btn-primary h-100 w-100"
-                                                        id="cercaIndirizzo">
-                                                    <i class="bi bi-search me-2"></i>Verifica indirizzo
-                                                </button>
-                                            </div>
-                                            <div class="col-12 mt-3" id="risultatoRicerca" style="display:none">
-                                                <div class="alert alert-info">
-                                                    <span id="indirizzoTrovato"></span>
-                                                    <button type="button" class="btn btn-sm btn-outline-info float-end"
-                                                            id="confermaIndirizzo">Conferma
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- Campi nascosti per le coordinate -->
-                                            <input type="hidden" id="latitudine" value="">
-                                            <input type="hidden" id="longitudine" value="">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card bg-dark-subtle border-0 shadow-sm">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-clock me-2"></i>Orari di apertura</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Lunedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariLunedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Martedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariMartedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Mercoledì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="orariMercoledi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Giovedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariGiovedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Venerdì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariVenerdi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Sabato</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00" id="orariSabato">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Domenica</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="orariDomenica">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="modalAlertArea" class="mt-3"></div>
+                <div id="modalAlertArea"></div>
+                
+                <form id="nuovoRistoranteForm">
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="nome" placeholder=" " required>
+                            <label for="nome">Nome del ristorante</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="tipoCucina" placeholder=" " required>
+                                <label for="tipoCucina">Tipo di cucina</label>
                             </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="fasciaPrezzo" required>
+                                    <option value="1">€ - Economico</option>
+                                    <option value="2" selected>€€ - Medio</option>
+                                    <option value="3">€€€ - Costoso</option>
+                                </select>
+                                <label for="fasciaPrezzo">Fascia di prezzo</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="numeroTelefono" placeholder=" " required>
+                                <label for="numeroTelefono">Numero di telefono</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch pt-3 mt-2">
+                                <input class="form-check-input" type="checkbox" id="consegnaDomicilio">
+                                <label class="form-check-label" for="consegnaDomicilio">
+                                    <i class="bi bi-bicycle me-1"></i>Offre consegna a domicilio
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Indirizzo del ristorante</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="indirizzo" placeholder="Via, Città, CAP">
+                            <button class="btn btn-outline-primary" type="button" id="cercaIndirizzo">
+                                <i class="bi bi-search me-2"></i>Verifica indirizzo
+                            </button>
+                        </div>
+                        <div id="risultatoRicerca" class="mt-2" style="display: none;"></div>
+                        <input type="hidden" id="latitudine">
+                        <input type="hidden" id="longitudine">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Orari di apertura</label>
+                        <div class="orari-container">
+                            <!-- Giorni della settimana -->
+                            <div class="day-selector">
+                                <div class="day-item active" data-day="lunedi">Lun</div>
+                                <div class="day-item" data-day="martedi">Mar</div>
+                                <div class="day-item" data-day="mercoledi">Mer</div>
+                                <div class="day-item" data-day="giovedi">Gio</div>
+                                <div class="day-item" data-day="venerdi">Ven</div>
+                                <div class="day-item" data-day="sabato">Sab</div>
+                                <div class="day-item" data-day="domenica">Dom</div>
+                            </div>
+                            
+                            <!-- Container per gli orari dei giorni -->
+                            <div class="time-slots-container">
+                                <!-- Lunedì -->
+                                <div class="day-time-slots" id="slots-lunedi">
+                                    <div class="day-header">
+                                        <h6 class="day-title">Lunedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-lunedi">
+                                                <label class="form-check-label" for="chiuso-lunedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="lunedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="lunedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariLunedi" name="orariLunedi">
+                                </div>
+                                
+                                <!-- Martedì -->
+                                <div class="day-time-slots d-none" id="slots-martedi">
+                                    <div class="day-header">
+                                        <h6 class="day-title">Martedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-martedi">
+                                                <label class="form-check-label" for="chiuso-martedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="martedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="martedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariMartedi" name="orariMartedi">
+                                </div>
+                                
+                                <!-- Altri giorni seguono lo stesso pattern -->
+                                <!-- Mercoledì -->
+                                <div class="day-time-slots d-none" id="slots-mercoledi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Mercoledì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-mercoledi">
+                                                <label class="form-check-label" for="chiuso-mercoledi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="mercoledi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="mercoledi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariMercoledi" name="orariMercoledi">
+                                </div>
+                                
+                                <!-- Giovedì -->
+                                <div class="day-time-slots d-none" id="slots-giovedi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Giovedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-giovedi">
+                                                <label class="form-check-label" for="chiuso-giovedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="giovedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="giovedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariGiovedi" name="orariGiovedi">
+                                </div>
+                                
+                                <!-- Venerdì -->
+                                <div class="day-time-slots d-none" id="slots-venerdi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Venerdì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-venerdi">
+                                                <label class="form-check-label" for="chiuso-venerdi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="venerdi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="venerdi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariVenerdi" name="orariVenerdi">
+                                </div>
+                                
+                                <!-- Sabato -->
+                                <div class="day-time-slots d-none" id="slots-sabato">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Sabato</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-sabato">
+                                                <label class="form-check-label" for="chiuso-sabato">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="sabato"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="sabato-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariSabato" name="orariSabato">
+                                </div>
+                                
+                                <!-- Domenica -->
+                                <div class="day-time-slots d-none" id="slots-domenica">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Domenica</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="chiuso-domenica">
+                                                <label class="form-check-label" for="chiuso-domenica">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="domenica"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="domenica-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="orariDomenica" name="orariDomenica">
+                                </div>
+                            </div>
+                            
+                            <!-- Azioni aggiuntive -->
+                            <div class="orari-actions">
+                                <div class="dropdown">
+                                    <button class="btn-slim dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear"></i> Azioni
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" id="btn-copia-orari"><i class="bi bi-clipboard"></i> Copia orari dal giorno precedente</a></li>
+                                        <li><a class="dropdown-item" href="#" id="btn-aggiungi-pranzo-cena"><i class="bi bi-clock"></i> Aggiungi orari pranzo e cena</a></li>
+                                        <li><a class="dropdown-item" href="#" id="btn-reset-orari"><i class="bi bi-arrow-counterclockwise"></i> Reimposta orari</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer border-top border-secondary">
-                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-2"></i>Annulla
-                </button>
-                <button type="button" class="btn btn-primary" id="salvaRistorante">
-                    <i class="bi bi-check-circle me-2"></i>Crea ristorante
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn-primary-action" id="salvaRistorante">
+                    <i class="bi bi-save me-2"></i>Salva ristorante
                 </button>
             </div>
         </div>
     </div>
 </div>
+
 <!-- Modal a tutto schermo per modifica ristorante -->
 <div class="modal fade" id="modificaRistoranteModal" tabindex="-1" aria-labelledby="modificaRistoranteModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content bg-dark">
-            <div class="modal-header border-bottom border-secondary">
+     aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h5 class="modal-title" id="modificaRistoranteModalLabel">
-                    <i class="bi bi-pencil-square me-2"></i>Modifica ristorante
+                    <i class="bi bi-pencil me-2"></i>Modifica ristorante
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Chiudi"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    <form id="modificaRistoranteForm" class="needs-validation" novalidate>
-                        <input type="hidden" id="ristoranteId">
-                        <div class="row mb-4">
-                            <div class="col-lg-8 offset-lg-2">
-                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informazioni di base</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="edit-nome" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="edit-nome"
-                                                                 class="text-white">Nome del ristorante</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="edit-tipoCucina" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="edit-tipoCucina"
-                                                                 class="text-white">Tipo di cucina</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-floating">
-                                                    <select id="edit-fasciaPrezzo"
-                                                            class="form-select bg-dark text-white border-secondary"
-                                                            required>
-                                                        <option value="1">€ - Economico</option>
-                                                        <option value="2">€€ - Medio</option>
-                                                        <option value="3">€€€ - Costoso</option>
-                                                    </select>
-                                                    <label for="edit-fasciaPrezzo">Fascia di prezzo</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-label-group outline">
-                                                    <input type="tel" id="edit-numeroTelefono" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="edit-numeroTelefono" class="text-white">Numero di telefono</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox"
-                                                           id="edit-consegnaDomicilio">
-                                                    <label class="form-check-label" for="edit-consegnaDomicilio">
-                                                        <i class="bi bi-bicycle me-1"></i>Consegna a domicilio
-                                                        disponibile
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Posizione</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-8">
-                                                <div class="form-label-group outline">
-                                                    <input type="text" id="edit-indirizzo" class="form-control"
-                                                           placeholder=" " required>
-                                                    <span><label for="edit-indirizzo" class="text-white">Indirizzo completo</label></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <button type="button" class="btn btn-primary h-100 w-100"
-                                                        id="edit-cercaIndirizzo">
-                                                    <i class="bi bi-search me-2"></i>Verifica indirizzo
-                                                </button>
-                                            </div>
-                                            <div class="col-12 mt-3" id="edit-risultatoRicerca" style="display:none">
-                                                <div class="alert alert-info">
-                                                    <span id="edit-indirizzoTrovato"></span>
-                                                    <button type="button" class="btn btn-sm btn-outline-info float-end"
-                                                            id="edit-confermaIndirizzo">Conferma
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- Campi nascosti per le coordinate -->
-                                            <input type="hidden" id="edit-latitudine" value="">
-                                            <input type="hidden" id="edit-longitudine" value="">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card bg-dark-subtle border-0 shadow-sm">
-                                    <div class="card-header bg-dark-subtle border-0">
-                                        <h5 class="mb-0"><i class="bi bi-clock me-2"></i>Orari di apertura</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Lunedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariLunedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Martedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariMartedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Mercoledì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariMercoledi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Giovedì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariGiovedi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Venerdì</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariVenerdi">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Sabato</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariSabato">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-dark border-secondary text-white">Domenica</span>
-                                                    <input type="text"
-                                                           class="form-control bg-dark border-secondary text-white"
-                                                           placeholder="Es. 12:00-15:00, 19:00-23:00"
-                                                           id="edit-orariDomenica">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="edit-modalAlertArea" class="mt-3"></div>
+                <div id="edit-modalAlertArea"></div>
+                
+                <form id="modificaRistoranteForm">
+                    <input type="hidden" id="ristoranteId">
+                    
+                    <div class="mb-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="edit-nome" placeholder=" " required>
+                            <label for="edit-nome">Nome del ristorante</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="edit-tipoCucina" placeholder=" " required>
+                                <label for="edit-tipoCucina">Tipo di cucina</label>
                             </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="edit-fasciaPrezzo" required>
+                                    <option value="1">€ - Economico</option>
+                                    <option value="2" selected>€€ - Medio</option>
+                                    <option value="3">€€€ - Costoso</option>
+                                </select>
+                                <label for="edit-fasciaPrezzo">Fascia di prezzo</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="edit-numeroTelefono" placeholder=" " required>
+                                <label for="edit-numeroTelefono">Numero di telefono</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch pt-3 mt-2">
+                                <input class="form-check-input" type="checkbox" id="edit-consegnaDomicilio">
+                                <label class="form-check-label" for="edit-consegnaDomicilio">
+                                    <i class="bi bi-bicycle me-1"></i>Offre consegna a domicilio
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Indirizzo del ristorante</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="edit-indirizzo" placeholder="Via, Città, CAP">
+                            <button class="btn btn-outline-primary" type="button" id="edit-cercaIndirizzo">
+                                <i class="bi bi-search me-2"></i>Verifica indirizzo
+                            </button>
+                        </div>
+                        <div id="edit-risultatoRicerca" class="mt-2" style="display: none;"></div>
+                        <input type="hidden" id="edit-latitudine">
+                        <input type="hidden" id="edit-longitudine">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Orari di apertura</label>
+                        <div class="orari-container">
+                            <!-- Giorni della settimana -->
+                            <div class="day-selector">
+                                <div class="day-item active" data-day="lunedi">Lun</div>
+                                <div class="day-item" data-day="martedi">Mar</div>
+                                <div class="day-item" data-day="mercoledi">Mer</div>
+                                <div class="day-item" data-day="giovedi">Gio</div>
+                                <div class="day-item" data-day="venerdi">Ven</div>
+                                <div class="day-item" data-day="sabato">Sab</div>
+                                <div class="day-item" data-day="domenica">Dom</div>
+                            </div>
+                            
+                            <!-- Container per gli orari dei giorni -->
+                            <div class="time-slots-container">
+                                <!-- Lunedì -->
+                                <div class="day-time-slots" id="edit-slots-lunedi">
+                                    <div class="day-header">
+                                        <h6 class="day-title">Lunedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-lunedi">
+                                                <label class="form-check-label" for="edit-chiuso-lunedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="lunedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-lunedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariLunedi" name="edit-orariLunedi">
+                                </div>
+                                
+                                <!-- Martedì -->
+                                <div class="day-time-slots d-none" id="edit-slots-martedi">
+                                    <div class="day-header">
+                                        <h6 class="day-title">Martedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-martedi">
+                                                <label class="form-check-label" for="edit-chiuso-martedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="martedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-martedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariMartedi" name="edit-orariMartedi">
+                                </div>
+                                
+                                <!-- Altri giorni seguono lo stesso pattern -->
+                                <!-- Mercoledì -->
+                                <div class="day-time-slots d-none" id="edit-slots-mercoledi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Mercoledì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-mercoledi">
+                                                <label class="form-check-label" for="edit-chiuso-mercoledi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="mercoledi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-mercoledi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariMercoledi" name="edit-orariMercoledi">
+                                </div>
+                                
+                                <!-- Giovedì -->
+                                <div class="day-time-slots d-none" id="edit-slots-giovedi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Giovedì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-giovedi">
+                                                <label class="form-check-label" for="edit-chiuso-giovedi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="giovedi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-giovedi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariGiovedi" name="edit-orariGiovedi">
+                                </div>
+                                
+                                <!-- Venerdì -->
+                                <div class="day-time-slots d-none" id="edit-slots-venerdi">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Venerdì</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-venerdi">
+                                                <label class="form-check-label" for="edit-chiuso-venerdi">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="venerdi"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-venerdi-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariVenerdi" name="edit-orariVenerdi">
+                                </div>
+                                
+                                <!-- Sabato -->
+                                <div class="day-time-slots d-none" id="edit-slots-sabato">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Sabato</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-sabato">
+                                                <label class="form-check-label" for="edit-chiuso-sabato">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="sabato"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-sabato-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariSabato" name="edit-orariSabato">
+                                </div>
+                                
+                                <!-- Domenica -->
+                                <div class="day-time-slots d-none" id="edit-slots-domenica">
+                                    <!-- Contenuto simile -->
+                                    <div class="day-header">
+                                        <h6 class="day-title">Domenica</h6>
+                                        <div class="day-actions">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input day-closed-toggle" type="checkbox" id="edit-chiuso-domenica">
+                                                <label class="form-check-label" for="edit-chiuso-domenica">Chiuso</label>
+                                            </div>
+                                            <button type="button" class="btn-add-slot" data-day="domenica"><i class="bi bi-plus-circle"></i> Aggiungi fascia</button>
+                                        </div>
+                                    </div>
+                                    <div class="time-slots" id="edit-domenica-slots">
+                                        <div class="time-slot">
+                                            <div class="slot-inputs">
+                                                <div class="time-input">
+                                                    <label>Apertura</label>
+                                                    <input type="time" class="form-control time-start" value="12:00">
+                                                </div>
+                                                <div class="time-separator">-</div>
+                                                <div class="time-input">
+                                                    <label>Chiusura</label>
+                                                    <input type="time" class="form-control time-end" value="15:00">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="edit-orariDomenica" name="edit-orariDomenica">
+                                </div>
+                            </div>
+                            
+                            <!-- Azioni aggiuntive -->
+                            <div class="orari-actions">
+                                <div class="dropdown">
+                                    <button class="btn-slim dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear"></i> Azioni
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" id="edit-btn-copia-orari"><i class="bi bi-clipboard"></i> Copia orari dal giorno precedente</a></li>
+                                        <li><a class="dropdown-item" href="#" id="edit-btn-aggiungi-pranzo-cena"><i class="bi bi-clock"></i> Aggiungi orari pranzo e cena</a></li>
+                                        <li><a class="dropdown-item" href="#" id="edit-btn-reset-orari"><i class="bi bi-arrow-counterclockwise"></i> Reimposta orari</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer border-top border-secondary">
-                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-2"></i>Annulla
-                </button>
-                <button type="button" class="btn btn-primary" id="salvaModificheRistorante">
-                    <i class="bi bi-check-circle me-2"></i>Salva modifiche
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn-primary-action" id="salvaModificheRistorante">
+                    <i class="bi bi-save me-2"></i>Salva modifiche
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal per visualizzare le recensioni -->
+<div class="modal fade" id="recensioniModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title">
+                    <i class="bi bi-star me-2"></i>Recensioni per <span id="recensioni-ristorante-nome">Ristorante</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <div id="recensioni-container">
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Caricamento recensioni...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="no-recensioni" class="d-none">
+                    <div class="empty-state py-4">
+                        <i class="bi bi-chat-square-text display-4 mb-3"></i>
+                        <h5>Nessuna recensione disponibile</h5>
+                        <p class="text-muted">I clienti non hanno ancora lasciato recensioni per questo ristorante.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal per conferma eliminazione ristorante -->
+<div class="modal fade" id="confermaEliminazioneModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-bottom border-danger">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Conferma eliminazione
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <p>Sei sicuro di voler eliminare il ristorante <strong id="nome-ristorante-eliminazione"></strong>?</p>
+                <p class="text-danger">Questa azione non può essere annullata.</p>
+                
+                <input type="hidden" id="id-ristorante-eliminazione">
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-danger" id="conferma-elimina-btn">
+                    <i class="bi bi-trash me-2"></i>Elimina ristorante
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script per navigazione tra sezioni del form -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+});
+</script>
+
+<!-- Script per assicurarsi che i modal vengano puliti correttamente quando chiusi -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestione corretta della chiusura dei modal
+    document.querySelectorAll('.modal').forEach(modalEl => {
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            // Rimuove eventuali backdrop rimasti e altri elementi problematici
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+    });
+});
+</script>
+
+<!-- Script per debug -->
+<script>
+let debugInfo = [];
+
+// Salva informazioni di debug
+function addDebugInfo(info) {
+    debugInfo.push({
+        timestamp: new Date().toISOString(),
+        info: info
+    });
+    
+    // Mostra solo se ci sono problemi
+    if (debugInfo.length > 10) {
+        document.getElementById('debug-info').style.display = 'block';
+        document.getElementById('debug-content').textContent = 
+            `Ci sono ${debugInfo.length} messaggi di debug. Verificato un possibile problema.`;
+    }
+}
+
+// Mostra dettagli di debug in console
+function mostraDettagliDebug() {
+    console.log("INFORMAZIONI DI DEBUG:", debugInfo);
+    document.getElementById('debug-content').innerHTML = 
+        `<pre style="max-height: 200px; overflow: auto;">${JSON.stringify(debugInfo, null, 2)}</pre>`;
+}
+
+// Sovrascrivi console.log per registrare info di debug
+const originalConsoleLog = console.log;
+console.log = function() {
+    const args = Array.from(arguments);
+    addDebugInfo(args.join(' '));
+    originalConsoleLog.apply(console, arguments);
+};
+
+// Sovrascrivi console.error per registrare errori
+const originalConsoleError = console.error;
+console.error = function() {
+    const args = Array.from(arguments);
+    addDebugInfo("ERROR: " + args.join(' '));
+    originalConsoleError.apply(console, arguments);
+};
+
+// Aggiungi listener errori globali
+window.addEventListener('error', function(event) {
+    addDebugInfo("UNCAUGHT ERROR: " + event.message + " at " + event.filename + ":" + event.lineno);
+});
+
+// Verifica bridge ogni 2 secondi e aggiorna info di debug
+setInterval(() => {
+    if (window.javaConnector) {
+        const methods = Object.keys(window.javaConnector);
+        addDebugInfo("Bridge disponibile con metodi: " + methods.join(", "));
+    } else {
+        addDebugInfo("Bridge non disponibile");
+    }
+}, 2000);
+</script>
+
 <script src="./src/homeristoratore.js"></script>
 </body>
 </html>

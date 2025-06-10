@@ -1,19 +1,26 @@
 package com.example;
 
+import com.example.utils.LocalDateTimeAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class JavaScriptBridge {
     private final WebEngine webEngine;
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
     private final Map<String, Function<String, Map<String, Object>>> methods = new HashMap<>();
+    private final Map<String, Object> cache = new HashMap<>();
 
     public JavaScriptBridge(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -114,29 +121,21 @@ public class JavaScriptBridge {
     // Metodo chiamato direttamente da JavaScript
     public void callMethod(String methodName, String callbackId, String jsonArgs) {
         try {
-            // Verifica che jsonArgs sia un oggetto JSON valido
-            if (jsonArgs == null || jsonArgs.trim().isEmpty() ||
-                    (!jsonArgs.trim().startsWith("{") && !jsonArgs.trim().startsWith("["))) {
-                // Se non è un oggetto JSON valido, crea un oggetto vuoto
-                jsonArgs = "{}";
-            }
-
-            if (methods.containsKey(methodName)) {
-                Map<String, Object> result;
+            // Usa un executor service per operazioni pesanti
+            CompletableFuture.supplyAsync(() -> {
                 try {
-                    // Tenta la deserializzazione con controllo d'errore
-                    result = methods.get(methodName).apply(jsonArgs);
-                } catch (com.google.gson.JsonSyntaxException e) {
-                    System.err.println("Errore di sintassi JSON: " + e.getMessage() + " per i dati: " + jsonArgs);
-                    result = Map.of("error", "Formato JSON non valido", "details", e.getMessage());
+                    if (methods.containsKey(methodName)) {
+                        return methods.get(methodName).apply(jsonArgs);
+                    } else {
+                        return Map.of("error", "Metodo non trovato: " + methodName);
+                    }
+                } catch (Exception e) {
+                    return Map.of("error", "Errore interno: " + e.getMessage());
                 }
-
+            }).thenAccept(result -> {
                 String jsonResult = gson.toJson(result);
                 sendCallbackToJS(callbackId, jsonResult);
-            } else {
-                String error = gson.toJson(Map.of("error", "Metodo non trovato: " + methodName));
-                sendCallbackToJS(callbackId, error);
-            }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             String error = gson.toJson(Map.of("error", "Errore interno: " + e.getMessage()));

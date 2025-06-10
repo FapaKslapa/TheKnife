@@ -1,9 +1,11 @@
 package com.example.cache;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.lang.reflect.*;
 
+import com.example.utils.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,7 +22,9 @@ public class JsonRepository<T extends BaseEntity> {
         this.entityClass = entityClass;
 // Sostituisci la riga problematica con:
         this.listType = com.google.gson.internal.$Gson$Types.newParameterizedTypeWithOwner(null, List.class, entityClass);
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
         this.cache = loadData();
     }
 
