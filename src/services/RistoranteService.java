@@ -15,10 +15,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+    /**
+    * Servizio per la gestione dei ristpranti.
+    * Si occupa delle operazioni  Creatre,Read,Update e Delate(CRUD), ricerca e filtri avantazi deui ristoranti.
+    */
+
 public class RistoranteService {
     private final JsonRepository<Ristorante> ristoranteRepository;
     private final DateTimeFormatter orarioFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
+    /**
+     * Costruttore che inizializza il repository dei ristoranti e lo registra nel DataManager se non è già stato registrato.
+     */
     public RistoranteService() {
         DataManager dataManager = DataManager.getInstance();
         // Registra il repository se non è già fatto
@@ -28,6 +36,8 @@ public class RistoranteService {
 
     /**
      * Crea un nuovo ristorante
+     *
+     * @return Il ristornate appena creato.
      */
     public Ristorante creaRistorante(String nome, String tipoCucina, int fasciaPrezzo,
                                      Map<String, String> orariApertura, double latitudine,
@@ -41,6 +51,9 @@ public class RistoranteService {
 
     /**
      * Salva un ristorante nuovo o esistente
+     *
+     * @param ristorante Oggetto Ristorente da salvare.
+     * @return Il ristornate salvato.
      */
     public Ristorante salvaRistorante(Ristorante ristorante) {
         return ristoranteRepository.save(ristorante);
@@ -49,6 +62,7 @@ public class RistoranteService {
     /**
      * Modifica un ristorante esistente
      *
+     * @param id ID del ristornate da modificare.
      * @return Il ristorante modificato o Optional vuoto se non trovato
      */
     public Optional<Ristorante> modificaRistorante(String id, String nome, String tipoCucina,
@@ -73,6 +87,9 @@ public class RistoranteService {
 
     /**
      * Elimina un ristorante dato il suo ID
+     *
+     * @param id ID del ristorante
+     * @return true se il ristorante è stato eliminato, flase se non torvato.
      */
     public boolean eliminaRistorante(String id) {
         if (ristoranteRepository.findById(id).isPresent()) {
@@ -91,7 +108,7 @@ public class RistoranteService {
     }
 
     /**
-     * Recupera tutti i ristoranti
+     * Recupera tutti i ristoranti tramite il suo iD.
      */
     public List<Ristorante> getAllRistoranti() {
         return ristoranteRepository.findAll();
