@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="javafx-swt1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx-swt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.base.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.controls.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.fxml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.graphics.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.media.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.swing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/javafx.web.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/jdk.jsobject.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/jfx.incubator.input.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaFx-MacOs/lib/jfx.incubator.richtext.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
