@@ -5,7 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Classe utente che rappresenta un utente del sistema.
- *Estende la classe BaseEntity; Presubibilmente per ereditare attributi comuni.
+ * Estende la classe BaseEntity; Presubibilmente per ereditare attributi comuni.
  * Contiene la informazioni principali dell'utente:udername,password(criptata),email e ruolo.
  */
 public class Utente extends BaseEntity {
@@ -28,7 +28,7 @@ public class Utente extends BaseEntity {
     /**
      * Costruttore vuoto della classe Utente.
      * Nessessario per la deserializzazione aitomatica da parte di librerie come Gson.
-     *
+     * <p>
      * Gson richiede un costruttore senza argomenti per poter creare oggetti tramite riflessione.
      */
 
@@ -41,10 +41,10 @@ public class Utente extends BaseEntity {
      * Inizialiazza un nuovo ogetto Utente con i dati forniti.
      * La password viene cripitata prima di essere salvata.
      *
-     * @param username         Nome utente scelto dall'utente.
-     * @param passwordChiara   Password in chiaro fornita dall'utente, che verrà criptata.
-     * @param email            Indirizo email associato all'utente.
-     * @param ruolo            Ruolo asseganto all'utente.
+     * @param username       Nome utente scelto dall'utente.
+     * @param passwordChiara Password in chiaro fornita dall'utente, che verrà criptata.
+     * @param email          Indirizo email associato all'utente.
+     * @param ruolo          Ruolo asseganto all'utente.
      */
     public Utente(String username, String passwordChiara, String email, Ruolo ruolo) {
         this.username = username;  // Assegna l'username all'utente
@@ -56,7 +56,7 @@ public class Utente extends BaseEntity {
     /**
      * Restityuisce l'username dell'utente.
      *
-     * @return  L'username attualemnte assegnato all'utente.
+     * @return L'username attualemnte assegnato all'utente.
      */
     public String getUsername() {
         return username;
@@ -64,6 +64,7 @@ public class Utente extends BaseEntity {
 
     /**
      * Imposta o aggiorna l'username dell'utente
+     *
      * @param username
      */
 
@@ -74,7 +75,8 @@ public class Utente extends BaseEntity {
     /**
      * Restituisci la password dell'utente
      * la password è criptata , non in chiaro.
-     * @return      La password è criptata dell'utente
+     *
+     * @return La password è criptata dell'utente
      */
 
     public String getPassword() {
@@ -84,6 +86,7 @@ public class Utente extends BaseEntity {
     /**
      * Imposta o aggiorna la password dell'utente
      * La password viene automaticamente criptata prima di essere slavata.
+     *
      * @param passwordChiara
      */
     public void setPassword(String passwordChiara) {
@@ -93,7 +96,7 @@ public class Utente extends BaseEntity {
     /**
      * Restituisce l'indirizzo email associato all'utente
      *
-     * @return      l'email dell'utente.
+     * @return l'email dell'utente.
      */
     public String getEmail() {
         return email;
@@ -102,7 +105,7 @@ public class Utente extends BaseEntity {
     /**
      * Imposta o aggiorna l'indirizzo email dell'utente
      *
-     * @param email     Il nuovo indirizzo email da assegnare all'utente.
+     * @param email Il nuovo indirizzo email da assegnare all'utente.
      */
     public void setEmail(String email) {
         this.email = email;
@@ -111,7 +114,7 @@ public class Utente extends BaseEntity {
     /**
      * Restituisce il ruolo associato all'utente
      *
-     * @return  Il ruolo dell'utente
+     * @return Il ruolo dell'utente
      */
     public Ruolo getRuolo() {
         return ruolo;
@@ -120,7 +123,7 @@ public class Utente extends BaseEntity {
     /**
      * Imposta o aggiorna il ruolo dell'utente
      *
-     * @param ruolo     Il nuovo ruolo da assegnare dell'utente.
+     * @param ruolo Il nuovo ruolo da assegnare dell'utente.
      */
 
     public void setRuolo(Ruolo ruolo) {
@@ -132,7 +135,7 @@ public class Utente extends BaseEntity {
      * IL metodo genera automaticamnete un salt siciro e applica il costo specificato.
      *
      * @param passwordChiara La password in chiaro da cripatre.
-     * @return  La password criptata, pronta per essere salvata in un medo sicuro.
+     * @return La password criptata, pronta per essere salvata in un medo sicuro.
      */
 
     private String criptaPassword(String passwordChiara) {
@@ -142,8 +145,8 @@ public class Utente extends BaseEntity {
     /**
      * Verifica se una password inserita corrisponde alla password cripatata dell'utente.
      *
-     * @param passwordInserita  La password in chiaro inserita dall'utente.
-     * @return  true se la password corrisponde, false altrimenti.
+     * @param passwordInserita La password in chiaro inserita dall'utente.
+     * @return true se la password corrisponde, false altrimenti.
      */
 
     public boolean verificaPassword(String passwordInserita) {

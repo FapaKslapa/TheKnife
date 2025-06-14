@@ -30,14 +30,46 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Classe principale dell'applicazione TheKnife che gestisce l'interfaccia utente
+ * e la comunicazione tra il backend Java e il frontend JavaScript.
+ * <p>
+ * Questa applicazione consente la gestione di ristoranti, recensioni e utenti
+ * attraverso un'interfaccia web integrata in JavaFX.
+ * </p>
+ *
+ * @author Stefano Marocco
+ * @version 1.0
+ */
 public class Main extends Application {
+    /**
+     * Servizio per la gestione dell'autenticazione e degli utenti
+     */
     private AuthService authService;
+
+    /**
+     * Servizio per la gestione dei ristoranti
+     */
     private RistoranteService ristoranteService;
+
+    /**
+     * Servizio per la gestione delle recensioni
+     */
     private RecensioneService recensioneService;
+
+    /**
+     * Istanza di Gson configurata per la serializzazione/deserializzazione di oggetti
+     */
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
+    /**
+     * Inizializza e avvia l'applicazione JavaFX.
+     * Configura il WebView, i servizi, il bridge JavaScript-Java e carica la pagina HTML iniziale.
+     *
+     * @param primaryStage Lo stage principale dell'applicazione
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -62,7 +94,7 @@ public class Main extends Application {
             // Registra i metodi per i ristoranti
             registerRistoranteMethods(bridge);
             System.out.println("Metodi ristorante registrati");
-            
+
             // Registra i metodi per le recensioni
             registerRecensioneMethods(bridge);
             System.out.println("Metodi recensione registrati");
@@ -113,7 +145,6 @@ public class Main extends Application {
                 }
             });
             URL url = getClass().getResource("/web/homeutente.html");
-            // Registra il metodo per i log della console JavaScript
             // Registra il metodo per i log della console JavaScript
             bridge.registerMethod("consoleLog", args -> {
                 try {
@@ -186,6 +217,14 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Registra i metodi di autenticazione nel bridge JavaScript.
+     * <p>
+     * Include metodi per registrazione, login e recupero informazioni utente.
+     * </p>
+     *
+     * @param bridge Il bridge JavaScript-Java in cui registrare i metodi
+     */
     private void registerAuthMethods(JavaScriptBridge bridge) {
         // Registrazione utente
         bridge.registerMethod("registraUtente", args -> {
@@ -270,6 +309,15 @@ public class Main extends Application {
         });
     }
 
+    /**
+     * Registra i metodi per la gestione dei ristoranti nel bridge JavaScript.
+     * <p>
+     * Include metodi per creare, modificare, eliminare e cercare ristoranti
+     * con vari criteri di filtro.
+     * </p>
+     *
+     * @param bridge Il bridge JavaScript-Java in cui registrare i metodi
+     */
     private void registerRistoranteMethods(JavaScriptBridge bridge) {
         // Crea nuovo ristorante
         bridge.registerMethod("creaRistorante", args -> {
@@ -350,19 +398,19 @@ public class Main extends Application {
             return result;
         });
 
-        // Recupera ristoranti di un proprietario - CORREZIONE
+        // Recupera ristoranti di un proprietario
         bridge.registerMethod("getRistorantiByProprietario", args -> {
             try {
                 System.out.println("Chiamata a getRistorantiByProprietario ricevuta");
                 Map<String, Object> params = gson.fromJson(args, Map.class);
                 String idProprietario = (String) params.get("idProprietario");
-                
+
                 System.out.println("Recupero ristoranti per proprietario ID: " + idProprietario);
 
                 List<Ristorante> ristoranti = ristoranteService.getRistorantiByProprietario(idProprietario);
-                
+
                 System.out.println("Trovati " + ristoranti.size() + " ristoranti");
-                
+
                 Map<String, Object> result = new HashMap<>();
                 result.put("success", true);
                 result.put("ristoranti", ristoranti);
@@ -431,6 +479,15 @@ public class Main extends Application {
         });
     }
 
+    /**
+     * Registra i metodi per la gestione delle recensioni nel bridge JavaScript.
+     * <p>
+     * Include metodi per creare, modificare, eliminare e cercare recensioni
+     * con vari criteri di filtro.
+     * </p>
+     *
+     * @param bridge Il bridge JavaScript-Java in cui registrare i metodi
+     */
     private void registerRecensioneMethods(JavaScriptBridge bridge) {
         // Crea una nuova recensione
         bridge.registerMethod("creaRecensione", args -> {
@@ -514,6 +571,12 @@ public class Main extends Application {
         });
     }
 
+    /**
+     * Punto di ingresso principale dell'applicazione.
+     * Avvia l'applicazione JavaFX.
+     *
+     * @param args Argomenti da riga di comando (non utilizzati)
+     */
     public static void main(String[] args) {
         launch(args);
     }

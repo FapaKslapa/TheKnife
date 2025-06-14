@@ -6,9 +6,21 @@ import com.example.models.Utente;
 
 import java.util.Optional;
 
+/**
+ * Servizio che gestisce l'autenticazione e la registrazione degli utenti.
+ * Fornisce funzionalità per registrare nuovi utenti, eseguire il login
+ * e recuperare informazioni sugli utenti.
+ *
+ * @author Stefano Marocco
+ * @version 1.0
+ */
 public class AuthService {
     private final JsonRepository<Utente> utenteRepository;
 
+    /**
+     * Costruttore che inizializza il servizio ottenendo l'istanza del repository degli utenti.
+     * Registra il repository per gli utenti se non è già stato fatto in precedenza.
+     */
     public AuthService() {
         DataManager dataManager = DataManager.getInstance();
         // Registra il repository se non è già fatto
@@ -16,6 +28,16 @@ public class AuthService {
         this.utenteRepository = dataManager.getRepository(Utente.class);
     }
 
+    /**
+     * Registra un nuovo utente nel sistema.
+     * Verifica che username ed email non siano già in uso prima di procedere.
+     *
+     * @param username Nome utente del nuovo account
+     * @param password Password del nuovo account
+     * @param email    Indirizzo email del nuovo account
+     * @param ruolo    Ruolo dell'utente nel sistema
+     * @return true se la registrazione ha avuto successo, false altrimenti
+     */
     public boolean registraUtente(String username, String password, String email, Utente.Ruolo ruolo) {
         // Verifica che username o email non siano già in uso
         if (utenteRepository.findAll().stream()
@@ -30,6 +52,14 @@ public class AuthService {
         return true;
     }
 
+    /**
+     * Autentica un utente nel sistema.
+     * L'utente può accedere utilizzando username o email insieme alla password.
+     *
+     * @param usernameOrEmail Username o email dell'utente
+     * @param password        Password dell'utente
+     * @return Optional contenente l'utente autenticato, o Optional vuoto se l'autenticazione fallisce
+     */
     public Optional<Utente> login(String usernameOrEmail, String password) {
         return utenteRepository.findAll().stream()
                 .filter(u -> (u.getUsername().equals(usernameOrEmail) ||
@@ -38,6 +68,12 @@ public class AuthService {
                 .findFirst();
     }
 
+    /**
+     * Recupera un utente dal sistema tramite il suo ID.
+     *
+     * @param id ID dell'utente da recuperare
+     * @return Optional contenente l'utente trovato, o Optional vuoto se non esiste
+     */
     public Optional<Utente> getUtenteById(String id) {
         return utenteRepository.findById(id);
     }

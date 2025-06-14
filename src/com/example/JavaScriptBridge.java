@@ -14,14 +14,43 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+/**
+ * Classe che fornisce un ponte di comunicazione bidirezionale tra Java e JavaScript in un'applicazione JavaFX.
+ * Consente di registrare metodi Java che possono essere chiamati da JavaScript e di inviare risultati asincroni
+ * tramite callback.
+ *
+ * @author Stefano Marocco
+ * @version 1.0
+ */
 public class JavaScriptBridge {
+    /**
+     * WebEngine utilizzato per l'interazione con il contenuto web
+     */
     private final WebEngine webEngine;
+
+    /**
+     * Istanza di Gson configurata per la serializzazione/deserializzazione degli oggetti Java
+     */
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
+
+    /**
+     * Mappa dei metodi registrati con i relativi handler
+     */
     private final Map<String, Function<String, Map<String, Object>>> methods = new HashMap<>();
+
+    /**
+     * Cache per memorizzare dati temporanei
+     */
     private final Map<String, Object> cache = new HashMap<>();
 
+    /**
+     * Costruisce un nuovo JavaScriptBridge associato al WebEngine specificato.
+     * Configura un listener per inizializzare il bridge quando la pagina web è caricata.
+     *
+     * @param webEngine il WebEngine su cui operare
+     */
     public JavaScriptBridge(WebEngine webEngine) {
         this.webEngine = webEngine;
 
@@ -32,7 +61,11 @@ public class JavaScriptBridge {
         });
     }
 
-    // Metodo reso pubblico per consentire la reinizializzazione
+    /**
+     * Configura il bridge JavaScript, inizializzando le strutture necessarie nel contesto JavaScript
+     * e registrando i metodi Java disponibili.
+     * Questo metodo è pubblico per consentire la reinizializzazione manuale del bridge.
+     */
     public void setupJavaScriptBridge() {
         try {
             System.out.println("Configurazione del bridge JavaScript...");
@@ -83,6 +116,12 @@ public class JavaScriptBridge {
         }
     }
 
+    /**
+     * Registra un metodo Java nel contesto JavaScript.
+     * Crea una funzione JavaScript che può richiamare il metodo Java corrispondente.
+     *
+     * @param methodName il nome del metodo da registrare
+     */
     private void registerMethodToJS(String methodName) {
         webEngine.executeScript(
                 "window.javaConnector." + methodName + " = function(args) {\n" +
@@ -118,7 +157,14 @@ public class JavaScriptBridge {
         );
     }
 
-    // Metodo chiamato direttamente da JavaScript
+    /**
+     * Metodo chiamato direttamente da JavaScript per eseguire un metodo Java registrato.
+     * Esegue l'operazione in modo asincrono e invia il risultato tramite callback.
+     *
+     * @param methodName il nome del metodo da chiamare
+     * @param callbackId l'identificativo del callback JavaScript da richiamare con il risultato
+     * @param jsonArgs   gli argomenti per il metodo in formato JSON
+     */
     public void callMethod(String methodName, String callbackId, String jsonArgs) {
         try {
             // Usa un executor service per operazioni pesanti
@@ -143,6 +189,13 @@ public class JavaScriptBridge {
         }
     }
 
+    /**
+     * Invia il risultato di un'operazione Java al callback JavaScript corrispondente.
+     * Utilizza il thread JavaFX per manipolare il DOM in modo sicuro.
+     *
+     * @param callbackId l'identificativo del callback JavaScript
+     * @param jsonResult il risultato dell'operazione in formato JSON
+     */
     private void sendCallbackToJS(String callbackId, String jsonResult) {
         Platform.runLater(() -> {
             try {
@@ -183,6 +236,13 @@ public class JavaScriptBridge {
         });
     }
 
+    /**
+     * Registra un nuovo metodo che può essere chiamato da JavaScript.
+     * Se il WebEngine è già caricato, aggiorna immediatamente il bridge.
+     *
+     * @param methodName il nome del metodo da registrare
+     * @param handler    la funzione che implementa il metodo
+     */
     public void registerMethod(String methodName, Function<String, Map<String, Object>> handler) {
         methods.put(methodName, handler);
 
