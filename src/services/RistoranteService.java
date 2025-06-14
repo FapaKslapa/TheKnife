@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-    /**
-    * Servizio per la gestione dei ristpranti.
-    * Si occupa delle operazioni  Creatre,Read,Update e Delate(CRUD), ricerca e filtri avantazi deui ristoranti.
-    */
+/**
+ * Servizio per la gestione dei ristpranti.
+ * Si occupa delle operazioni  Creatre,Read,Update e Delate(CRUD), ricerca e filtri avantazi deui ristoranti.
+ */
 
 public class RistoranteService {
     private final JsonRepository<Ristorante> ristoranteRepository;

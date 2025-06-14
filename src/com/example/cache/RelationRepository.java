@@ -1,6 +1,5 @@
 package com.example.cache;
 
-
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,17 +8,49 @@ import java.lang.*;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ * Repository per la gestione delle relazioni tra entità, utilizzando un file JSON come storage.
+ * Permette di memorizzare, recuperare e gestire relazioni many-to-many tra le entità
+ * del sistema, come per esempio preferiti, likes o associazioni tra utenti e risorse.
+ *
+ * @author Stefano Marocco
+ * @version 1.0
+ */
 public class RelationRepository {
+    /**
+     * Istanza di Gson utilizzata per la serializzazione e deserializzazione JSON.
+     */
     private final Gson gson;
+
+    /**
+     * Percorso del file JSON utilizzato per archiviare le relazioni.
+     */
     private final String filePath;
+
+    /**
+     * Mappa in memoria che associa l'ID di un'entità con una lista di ID di entità correlate.
+     */
     private Map<String, List<String>> relations;
 
+    /**
+     * Costruttore che inizializza il repository di relazioni.
+     * Configura Gson e carica le relazioni esistenti dal file JSON specificato.
+     *
+     * @param filePath percorso del file JSON dove verranno archiviate le relazioni
+     */
     public RelationRepository(String filePath) {
         this.filePath = filePath;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.relations = loadRelations();
     }
 
+    /**
+     * Carica le relazioni dal file JSON nella mappa in memoria.
+     * Se il file non esiste o si verificano errori durante la lettura,
+     * viene restituita una mappa vuota.
+     *
+     * @return mappa contenente le relazioni caricate dal file JSON, o mappa vuota in caso di errore
+     */
     private Map<String, List<String>> loadRelations() {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -37,6 +68,11 @@ public class RelationRepository {
         }
     }
 
+    /**
+     * Salva la mappa delle relazioni nel file JSON.
+     * Questo metodo viene chiamato automaticamente dopo ogni operazione
+     * che modifica lo stato della mappa delle relazioni.
+     */
     private void saveRelations() {
         try (Writer writer = new FileWriter(filePath)) {
             gson.toJson(relations, writer);
@@ -45,13 +81,25 @@ public class RelationRepository {
         }
     }
 
-    // Aggiungi relazione
+    /**
+     * Aggiunge una relazione tra due entità.
+     * Associa l'ID dell'entità correlata all'ID dell'entità principale.
+     *
+     * @param entityId        ID dell'entità principale
+     * @param relatedEntityId ID dell'entità correlata da associare
+     */
     public void addRelation(String entityId, String relatedEntityId) {
         relations.computeIfAbsent(entityId, k -> new ArrayList<>()).add(relatedEntityId);
         saveRelations();
     }
 
-    // Rimuovi relazione
+    /**
+     * Rimuove una relazione tra due entità.
+     * Elimina l'associazione tra l'ID dell'entità principale e l'ID dell'entità correlata.
+     *
+     * @param entityId        ID dell'entità principale
+     * @param relatedEntityId ID dell'entità correlata da dissociare
+     */
     public void removeRelation(String entityId, String relatedEntityId) {
         if (relations.containsKey(entityId)) {
             relations.get(entityId).remove(relatedEntityId);
@@ -59,7 +107,12 @@ public class RelationRepository {
         }
     }
 
-    // Trova tutte le relazioni
+    /**
+     * Recupera tutti gli ID delle entità correlate ad un'entità specifica.
+     *
+     * @param entityId ID dell'entità principale di cui trovare le relazioni
+     * @return lista degli ID delle entità correlate, o lista vuota se non ci sono relazioni
+     */
     public List<String> findRelatedIds(String entityId) {
         return relations.getOrDefault(entityId, new ArrayList<>());
     }
