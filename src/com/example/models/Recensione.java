@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 /**
  * Classe Recensione rappresenta una recensione lasciata da un utente ad un ristorante
- *
  */
 
 public class Recensione extends BaseEntity {
