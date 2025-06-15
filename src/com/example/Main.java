@@ -43,7 +43,7 @@ import java.util.Optional;
  */
 public class Main extends Application {
     /**
-     * Servizio per la gestione dell'autenticazione e degli utenti
+     *  Servizio per la gestione dell'autenticazione e degli utenti
      */
     private AuthService authService;
 
