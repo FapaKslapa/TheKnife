@@ -27,10 +27,10 @@ const waitForBridge = async (callback, maxAttempts = 20) => {
     await checkBridge();
 };
 
-// Implementazione geocoding con OpenStreetMap Nominatim
+// Funzione geocoding con OpenStreetMap Nominatim che restituisce anche l'indirizzo completo
 const geocodeAddress = async (address) => {
     try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&accept-language=it`);
         const data = await response.json();
 
         if (data && data.length > 0) {
@@ -40,7 +40,8 @@ const geocodeAddress = async (address) => {
                 coordinates: {
                     lat: parseFloat(result.lat),
                     lng: parseFloat(result.lon)
-                }
+                },
+                display_name: result.display_name
             };
         } else {
             return {success: false, error: "Indirizzo non trovato"};
@@ -51,7 +52,7 @@ const geocodeAddress = async (address) => {
 };
 
 // Funzione per caricare i ristoranti di un proprietario
-const caricaRistoranti = async (idProprietario) => {
+let caricaRistoranti = async (idProprietario) => {
     const loadingIndicator = document.getElementById('loading-indicator');
     const noRistoranti = document.getElementById('no-ristoranti');
 
@@ -77,6 +78,8 @@ const caricaRistoranti = async (idProprietario) => {
                 const card = creaRistoranteCard(ristorante);
                 ristorantiContainer.appendChild(card);
             });
+            // Aggiorna tutti gli indirizzi in parallelo
+            aggiornaIndirizziCardRistoratore(response.ristoranti);
         } else {
             noRistoranti.classList.remove('d-none');
         }
@@ -89,6 +92,54 @@ const caricaRistoranti = async (idProprietario) => {
                         </div>
                     `;
     }
+};
+
+// Funzione per ottenere solo la via da lat/lng (reverse geocoding OpenStreetMap Nominatim) con retry
+const reverseGeocode = async (lat, lng, tentativi = 3) => {
+    for (let i = 0; i < tentativi; i++) {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&accept-language=it`
+            );
+            if (!response.ok) throw new Error("HTTP error " + response.status);
+            const data = await response.json();
+            if (data && data.address) {
+                const addr = data.address;
+                if (addr.road) return addr.road + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.pedestrian) return addr.pedestrian + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.cycleway) return addr.cycleway + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (data.display_name) return data.display_name.split(',')[0];
+            }
+            if (data && data.display_name) return data.display_name.split(',')[0];
+        } catch (e) {
+            // Attendi un po' prima di riprovare
+            await new Promise(res => setTimeout(res, 400));
+        }
+    }
+    return null;
+};
+
+// Funzione per aggiornare tutti gli indirizzi delle card in parallelo
+const aggiornaIndirizziCardRistoratore = async (ristoranti) => {
+    const toFetch = [];
+    ristoranti.forEach(ristorante => {
+        const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
+        if ((!ristorante.indirizzo || ristorante.indirizzo.trim() === "") && ristorante.latitudine && ristorante.longitudine) {
+            toFetch.push({
+                id: indirizzoId,
+                lat: ristorante.latitudine,
+                lng: ristorante.longitudine
+            });
+        } else {
+            const div = document.getElementById(indirizzoId);
+            if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${ristorante.indirizzo || 'Indirizzo non disponibile'}</span>`;
+        }
+    });
+    await Promise.all(toFetch.map(async (item) => {
+        const indirizzo = await reverseGeocode(item.lat, item.lng);
+        const div = document.getElementById(item.id);
+        if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${indirizzo || 'Indirizzo non disponibile'}</span>`;
+    }));
 };
 
 // Funzione per creare una card di ristorante elegante
@@ -105,11 +156,19 @@ const creaRistoranteCard = (ristorante) => {
         ).join('');
     };
 
+    // Placeholder per indirizzo, verrà aggiornato dopo il reverse geocoding
+    const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
     colDiv.innerHTML = `
         <div class="restaurant-card h-100 shadow-lg">
             <div class="card-header glass-header d-flex align-items-start justify-content-between" style="border-bottom: none;">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-0" style="margin-bottom:0; padding:0; line-height:1.2;">${ristorante.nome}</h5>
+                    <div class="card-subtitle text-muted small" style="margin-top:2px; font-weight:500;">
+                        <span class="ristorante-indirizzo" id="${indirizzoId}">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            <span>Caricamento indirizzo...</span>
+                        </span>
+                    </div>
                 </div>
                 <div class="action-bar-glass ms-2">
                     <button class="btn-action btn-recensioni-ristorante" data-id="${ristorante.id}" title="Recensioni">
@@ -357,54 +416,88 @@ const geocodeAddressHandler = async (prefix = '') => {
 
     if (!indirizzo) {
         document.getElementById(alertAreaId).innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
-                        </div>
-                    `;
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
+            </div>
+        `;
         return;
     }
 
     // Mostra indicatore di caricamento
-    document.getElementById(btnId).innerHTML = `
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Ricerca in corso...
-                `;
-
-    // Usa la funzione geocodeAddress
-    const result = await geocodeAddress(indirizzo);
-    document.getElementById(btnId).innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
-
-    if (!result.success) {
-        document.getElementById(resultAreaId).style.display = 'block';
-        document.getElementById(resultAreaId).innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${result.error}
-                        </div>
-                    `;
-        return;
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Ricerca in corso...
+        `;
+        btn.disabled = true;
     }
 
-    const coordinates = result.coordinates;
+    try {
+        const result = await geocodeAddress(indirizzo);
 
-    // Mostra il risultato
-    document.getElementById(resultAreaId).style.display = 'block';
-    document.getElementById(resultAreaId).innerHTML = `
-                    <div class="alert alert-info">
-                        <span id="${foundAddressId}">Trovato: "${indirizzo}" (lat: ${coordinates.lat}, lng: ${coordinates.lng})</span>
-                        <button type="button" class="btn btn-sm btn-outline-info float-end" id="${confirmBtnId}">Conferma</button>
-                    </div>
-                `;
+        if (btn) {
+            btn.innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
+            btn.disabled = false;
+        }
 
-    // Quando l'utente conferma l'indirizzo
-    document.getElementById(confirmBtnId).addEventListener('click', () => {
-        document.getElementById(latId).value = coordinates.lat;
-        document.getElementById(lngId).value = coordinates.lng;
+        if (!result.success) {
+            document.getElementById(resultAreaId).style.display = 'block';
+            document.getElementById(resultAreaId).innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${result.error}
+                </div>
+            `;
+            return;
+        }
+
+        const coordinates = result.coordinates;
+        const displayName = result.display_name;
+
+        // Card glassy elegante per la conferma indirizzo
+        document.getElementById(resultAreaId).style.display = 'block';
         document.getElementById(resultAreaId).innerHTML = `
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle me-2"></i>Indirizzo confermato: ${indirizzo}
+            <div class="card shadow-sm border-0" style="background:rgba(34,28,46,0.92);border-radius:14px;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="background:rgba(130,86,208,0.13);width:48px;height:48px;">
+                        <i class="bi bi-geo-alt text-primary" style="font-size:2rem;"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div id="${foundAddressId}" style="font-size:1.12rem;font-weight:600;color:var(--primary-color);word-break:break-word;">
+                            ${displayName}
                         </div>
-                    `;
-    });
+                        <div class="text-muted small mt-1">Conferma che questo è l'indirizzo corretto</div>
+                    </div>
+                    <button type="button" class="btn btn-primary-action" id="${confirmBtnId}" style="white-space:nowrap;">
+                        <i class="bi bi-check-circle me-1"></i>Conferma
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Quando l'utente conferma l'indirizzo
+        document.getElementById(confirmBtnId).addEventListener('click', () => {
+            document.getElementById(latId).value = coordinates.lat;
+            document.getElementById(lngId).value = coordinates.lng;
+            document.getElementById(resultAreaId).innerHTML = `
+                <div class="alert alert-success d-flex align-items-center" style="font-size:1.08rem;">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Indirizzo confermato: <span class="ms-1" style="font-weight:600;color:var(--primary-color);">${displayName}</span>
+                </div>
+            `;
+        });
+    } catch (error) {
+        if (btn) {
+            btn.innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
+            btn.disabled = false;
+        }
+        document.getElementById(resultAreaId).style.display = 'block';
+        document.getElementById(resultAreaId).innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
+            </div>
+        `;
+    }
 };
 
 // Funzione per validare i dati del form (comune per nuovo e modifica)

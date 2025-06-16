@@ -26,14 +26,15 @@ const waitForBridge = async (callback, maxAttempts = 10) => {
 // Implementazione geocoding con OpenStreetMap Nominatim
 const geocodeAddress = async (address, callback) => {
     try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&accept-language=it`);
         const data = await response.json();
 
         if (data && data.length > 0) {
             const result = data[0];
             callback(null, {
                 lat: parseFloat(result.lat),
-                lng: parseFloat(result.lon)
+                lng: parseFloat(result.lon),
+                display_name: result.display_name
             });
         } else {
             callback("Indirizzo non trovato", null);
@@ -56,15 +57,22 @@ const verificaIndirizzo = () => {
     }
 
     // Mostra indicatore di caricamento
-    document.getElementById('btn-cerca-indirizzo').innerHTML = `
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    `;
+    const btn = document.getElementById('btn-cerca-indirizzo');
+    if (btn) {
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        `;
+        btn.disabled = true;
+    }
 
     geocodeAddress(indirizzo, (error, coordinates) => {
         // Ripristina il pulsante
-        document.getElementById('btn-cerca-indirizzo').innerHTML = `
-            <i class="bi bi-geo-alt me-1"></i>Verifica
-        `;
+        if (btn) {
+            btn.innerHTML = `
+                <i class="bi bi-geo-alt me-1"></i>Verifica
+            `;
+            btn.disabled = false;
+        }
 
         if (error) {
             document.getElementById('alertArea').innerHTML = `
@@ -72,12 +80,13 @@ const verificaIndirizzo = () => {
                     <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${error}
                 </div>
             `;
+            document.getElementById('risultato-indirizzo').classList.add('d-none');
             return;
         }
 
-        // Mostra il risultato
+        // Mostra il risultato (indirizzo completo)
         document.getElementById('risultato-indirizzo').classList.remove('d-none');
-        document.getElementById('indirizzo-trovato').textContent = `Indirizzo verificato (${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)})`;
+        document.getElementById('indirizzo-trovato').textContent = `Indirizzo verificato: ${coordinates.display_name}`;
         
         // Salva le coordinate nei campi nascosti
         document.getElementById('filtro-latitudine').value = coordinates.lat;
@@ -113,6 +122,8 @@ const caricaRistoranti = async () => {
                 const card = creaRistoranteCard(ristorante);
                 ristorantiContainer.appendChild(card);
             });
+            // Aggiorna tutti gli indirizzi in parallelo
+            aggiornaIndirizziCardUtente(response.ristoranti);
         } else {
             // Mostra il messaggio di nessun ristorante
             document.getElementById('no-ristoranti').classList.remove('d-none');
@@ -179,6 +190,8 @@ const filtriRicerca = async (event) => {
                 const card = creaRistoranteCard(ristorante);
                 ristorantiContainer.appendChild(card);
             });
+            // Aggiorna tutti gli indirizzi in parallelo
+            aggiornaIndirizziCardUtente(response.ristoranti);
         } else {
             // Mostra il messaggio di nessun ristorante
             document.getElementById('no-ristoranti').classList.remove('d-none');
@@ -194,38 +207,89 @@ const filtriRicerca = async (event) => {
     }
 };
 
-// Funzione per creare una card di ristorante
+// Funzione per ottenere solo la via da lat/lng (reverse geocoding OpenStreetMap Nominatim) con retry
+const reverseGeocode = async (lat, lng, tentativi = 3) => {
+    for (let i = 0; i < tentativi; i++) {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&accept-language=it`
+            );
+            if (!response.ok) throw new Error("HTTP error " + response.status);
+            const data = await response.json();
+            if (data && data.address) {
+                const addr = data.address;
+                if (addr.road) return addr.road + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.pedestrian) return addr.pedestrian + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.cycleway) return addr.cycleway + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (data.display_name) return data.display_name.split(',')[0];
+            }
+            if (data && data.display_name) return data.display_name.split(',')[0];
+        } catch (e) {
+            await new Promise(res => setTimeout(res, 400));
+        }
+    }
+    return null;
+};
+
+// Funzione per aggiornare tutti gli indirizzi delle card in parallelo
+const aggiornaIndirizziCardUtente = async (ristoranti) => {
+    const toFetch = [];
+    ristoranti.forEach(ristorante => {
+        const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
+        if ((!ristorante.indirizzo || ristorante.indirizzo.trim() === "") && ristorante.latitudine && ristorante.longitudine) {
+            toFetch.push({
+                id: indirizzoId,
+                lat: ristorante.latitudine,
+                lng: ristorante.longitudine
+            });
+        } else {
+            const div = document.getElementById(indirizzoId);
+            if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${ristorante.indirizzo || 'Indirizzo non disponibile'}</span>`;
+        }
+    });
+    await Promise.all(toFetch.map(async (item) => {
+        const indirizzo = await reverseGeocode(item.lat, item.lng);
+        const div = document.getElementById(item.id);
+        if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${indirizzo || 'Indirizzo non disponibile'}</span>`;
+    }));
+};
+
+// Funzione per creare una card di ristorante (grafica identica a ristoratore)
 const creaRistoranteCard = (ristorante) => {
-    // Crea un elemento div per la colonna
     const colDiv = document.createElement('div');
-    colDiv.className = 'col-md-6 col-lg-4';
+    colDiv.className = 'col-md-6 col-lg-4 mb-4';
     colDiv.id = `ristorante-${ristorante.id}`;
 
     // Funzione per visualizzare la fascia di prezzo
     const renderPrezzi = (fascia) => {
-        let html = '';
-        for (let i = 0; i < fascia; i++) {
-            html += '<i class="bi bi-currency-euro"></i>';
-        }
-        for (let i = fascia; i < 3; i++) {
-            html += '<i class="bi bi-currency-euro text-muted opacity-25"></i>';
-        }
-        return html;
+        return Array(3).fill().map((_, i) =>
+            i < fascia
+                ? '<i class="bi bi-currency-euro"></i>'
+                : '<i class="bi bi-currency-euro text-muted opacity-25"></i>'
+        ).join('');
     };
 
-    // Crea la card con i dettagli del ristorante
+    // Placeholder per indirizzo, verrà aggiornato dopo il reverse geocoding
+    const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
     colDiv.innerHTML = `
-        <div class="restaurant-card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center py-3">
-                <h5 class="card-title mb-0">${ristorante.nome}</h5>
-                <span class="badge bg-gradient rounded-pill">${ristorante.tipoCucina}</span>
+        <div class="restaurant-card h-100 shadow-lg">
+            <div class="card-header glass-header d-flex align-items-start justify-content-between" style="border-bottom: none;">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-0" style="margin-bottom:0; padding:0; line-height:1.2;">${ristorante.nome}</h5>
+                </div>
+                <div class="action-bar-glass ms-2">
+                    <span class="badge bg-gradient rounded-pill">${ristorante.tipoCucina}</span>
+                </div>
             </div>
-            <div class="card-body position-relative">
+            <div class="card-body position-relative px-4 pt-3 pb-2">
                 <div class="restaurant-info">
+                    <div class="ristorante-indirizzo mb-2" id="${indirizzoId}" style="font-size:1.08rem; font-weight:600; color:var(--primary-color); display:flex; align-items:center;">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        <span>Caricamento indirizzo...</span>
+                    </div>
                     <div class="price-tag mb-3">
                         ${renderPrezzi(ristorante.fasciaPrezzo)}
                     </div>
-                    
                     <div class="restaurant-details">
                         <div class="detail-item">
                             <div class="detail-icon">
@@ -235,7 +299,6 @@ const creaRistoranteCard = (ristorante) => {
                                 ${ristorante.numeroTelefono}
                             </div>
                         </div>
-                        
                         <div class="detail-item">
                             <div class="detail-icon ${ristorante.consegnaDomicilio ? 'delivery-available' : 'delivery-unavailable'}">
                                 <i class="bi bi-${ristorante.consegnaDomicilio ? 'bicycle' : 'x-circle'}"></i>
@@ -245,19 +308,18 @@ const creaRistoranteCard = (ristorante) => {
                             </div>
                         </div>
                     </div>
-                    
                     <div class="opening-hours mt-3">
                         <button class="btn-slim toggle-hours">
                             <i class="bi bi-clock me-1"></i>Orari di apertura <i class="bi bi-chevron-down ms-1"></i>
                         </button>
                         <div class="hours-details mt-2" style="display: none;">
-                            ${renderOrari(ristorante.orariApertura)}
+                            ${renderOrariScrollable(ristorante.orariApertura)}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-footer py-3">
-                <div class="action-bar">
+                <div class="action-bar-glass">
                     <button class="btn-action view-recensioni" data-id="${ristorante.id}" data-nome="${ristorante.nome}" title="Recensioni">
                         <i class="bi bi-star"></i>
                     </button>
@@ -272,7 +334,6 @@ const creaRistoranteCard = (ristorante) => {
         </div>
     `;
 
-    // Aggiungi event listener per i pulsanti nella card
     setTimeout(() => {
         const recensioniBtn = colDiv.querySelector('.view-recensioni');
         const toggleHoursBtn = colDiv.querySelector('.toggle-hours');
@@ -291,18 +352,16 @@ const creaRistoranteCard = (ristorante) => {
         if (toggleHoursBtn) {
             toggleHoursBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Corretto per aprire solo questa specifica card
                 const hoursDetails = colDiv.querySelector('.hours-details');
                 const isVisible = hoursDetails.style.display !== 'none';
-
                 hoursDetails.style.display = isVisible ? 'none' : 'block';
-
-                // Cambia l'icona della freccia
                 const arrow = toggleHoursBtn.querySelector('.bi-chevron-down, .bi-chevron-up');
                 if (arrow) {
                     arrow.classList.toggle('bi-chevron-down');
                     arrow.classList.toggle('bi-chevron-up');
                 }
+                // Abilita slider orari quando visibile
+                if (!isVisible) setTimeout(abilitaSliderOrari, 0);
             });
         }
 
@@ -329,33 +388,123 @@ const creaRistoranteCard = (ristorante) => {
     return colDiv;
 };
 
-// Funzione per renderizzare gli orari
-const renderOrari = (orari) => {
+// Funzione per renderizzare gli orari in modalità scrollabile con card per ogni giorno (come ristoratore)
+const renderOrariScrollable = (orari) => {
     if (!orari) return '<p class="text-muted">Orari non disponibili</p>';
 
     const giorni = [
-        { key: 'lunedi', label: 'Lunedì' },
-        { key: 'martedi', label: 'Martedì' },
-        { key: 'mercoledi', label: 'Mercoledì' },
-        { key: 'giovedi', label: 'Giovedì' },
-        { key: 'venerdi', label: 'Venerdì' },
-        { key: 'sabato', label: 'Sabato' },
-        { key: 'domenica', label: 'Domenica' }
+        {key: 'lunedi', label: 'Lun'},
+        {key: 'martedi', label: 'Mar'},
+        {key: 'mercoledi', label: 'Mer'},
+        {key: 'giovedi', label: 'Gio'},
+        {key: 'venerdi', label: 'Ven'},
+        {key: 'sabato', label: 'Sab'},
+        {key: 'domenica', label: 'Dom'}
     ];
 
-    let html = '<div class="row">';
-    giorni.forEach(giorno => {
+    // Trova il giorno corrente (0 = domenica, 1 = lunedì, ...)
+    const oggi = new Date();
+    let idxOggi = oggi.getDay(); // 0 domenica, 1 lunedì, ...
+    idxOggi = idxOggi === 0 ? 6 : idxOggi - 1; // 0 -> lunedì, 6 -> domenica
+
+    let html = `<div class="orari-scroll-wrapper" style="user-select:none;"><div class="orari-scroll-inner" style="user-select:none;">`;
+    giorni.forEach((giorno, idx) => {
         const orarioGiorno = orari[giorno.key] || 'Chiuso';
+        const isToday = idx === idxOggi;
+
+        let orariListHtml = '';
+        if (orarioGiorno === 'Chiuso') {
+            orariListHtml = `<div class="orario-item text-danger">Chiuso</div>`;
+        } else {
+            const fasce = orarioGiorno.split(',').map(f => f.trim()).filter(Boolean);
+            orariListHtml = fasce.map(fascia => `<div class="orario-item">${fascia}</div>`).join('');
+        }
+
         html += `
-            <div class="col-md-6">
-                <span class="fw-medium">${giorno.label}:</span> ${orarioGiorno}
+            <div class="giorno-card${isToday ? ' oggi' : ''}">
+                <div class="giorno-label">${giorno.label}</div>
+                <div class="orari-list">
+                    ${orariListHtml}
+                </div>
             </div>
         `;
     });
-    html += '</div>';
-
+    html += `</div></div>`;
     return html;
 };
+
+// Sostituisci la funzione renderOrari per fallback (usata solo in modale)
+const renderOrari = (orari) => {
+    return renderOrariScrollable(orari);
+};
+
+// Funzione per abilitare fade e drag scroll sugli slider orari (copia da ristoratore)
+function abilitaSliderOrari() {
+    document.querySelectorAll('.orari-scroll-wrapper').forEach(wrapper => {
+        const inner = wrapper.querySelector('.orari-scroll-inner');
+        if (!inner) return;
+
+        function aggiornaFade() {
+            const hasOverflow = inner.scrollWidth > wrapper.clientWidth + 2;
+            wrapper.classList.toggle('has-overflow', hasOverflow);
+        }
+        aggiornaFade();
+        window.addEventListener('resize', aggiornaFade);
+
+        // Drag scroll mouse
+        let isDown = false;
+        let startX, scrollLeft;
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            wrapper.classList.add('dragging');
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+            document.body.style.userSelect = 'none';
+        });
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+            wrapper.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        });
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            wrapper.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        });
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.2;
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+
+        // Drag scroll touch
+        let isTouching = false;
+        let touchStartX = 0;
+        let touchScrollLeft = 0;
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            isTouching = true;
+            wrapper.classList.add('dragging');
+            touchStartX = e.touches[0].pageX;
+            touchScrollLeft = wrapper.scrollLeft;
+        }, {passive: true});
+        wrapper.addEventListener('touchend', () => {
+            isTouching = false;
+            wrapper.classList.remove('dragging');
+        });
+        wrapper.addEventListener('touchmove', (e) => {
+            if (!isTouching || e.touches.length !== 1) return;
+            const x = e.touches[0].pageX;
+            const walk = (x - touchStartX) * 1.2;
+            wrapper.scrollLeft = touchScrollLeft - walk;
+        }, {passive: false});
+
+        wrapper.addEventListener('scroll', aggiornaFade);
+        new ResizeObserver(aggiornaFade).observe(inner);
+    });
+}
 
 // Funzione per aprire il modal delle recensioni
 const apriModalRecensioni = async (ristoranteId, ristoranteNome) => {
@@ -655,4 +804,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
     });
+    
+    // Dopo ogni render delle card, abilita lo slider orari
+    const oldCaricaRistoranti = caricaRistoranti;
+    caricaRistoranti = async function(...args) {
+        await oldCaricaRistoranti.apply(this, args);
+        setTimeout(abilitaSliderOrari, 0);
+    };
 });

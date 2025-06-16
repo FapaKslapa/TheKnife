@@ -1466,3 +1466,13 @@ body.modal-open {
         width: 18px;
     }
 }
+
+.ristorante-indirizzo {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
