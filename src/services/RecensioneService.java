@@ -10,9 +10,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
+/**
+ * Servizio per la gestione delle recensioni.
+ * Si occupa di alcune operazioni come salvataggio e creazione, modifica ed eliminazione.
+ */
 public class RecensioneService {
     private final JsonRepository<Recensione> recensioneRepository;
 
+    /**
+     * Costruttore che inizializza il repository delle recensioni e lo registra nel DataManager se non è già stato registrato.
+     */
     public RecensioneService() {
         DataManager dataManager = DataManager.getInstance();
         // Registra il repository per le recensioni
@@ -21,7 +28,10 @@ public class RecensioneService {
     }
 
     /**
-     * Salva una nuova recensione o aggiorna una esistente
+     * Salva una nuova recensione o aggiorna una esistente.
+     *
+     * @param recensione oggetto Recensione da salvare
+     * @return la recensione salvata (con eventuale ID aggiornato)
      */
     public Recensione salvaRecensione(Recensione recensione) {
         if (recensione.getDate() == null) {
@@ -31,7 +41,14 @@ public class RecensioneService {
     }
 
     /**
-     * Crea e salva una nuova recensione
+     * Crea e salva una nuova recensione.
+     *
+     * @param idRistorante identificativo del ristorante
+     * @param idUtente     identificativo dell'utente
+     * @param voto         valutazione da 1 a 5
+     * @param titolo       titolo della recensione
+     * @param testo        contenuto testuale della recensione
+     * @return la recensione creata e salvata
      */
     public Recensione creaRecensione(String idRistorante, String idUtente, int voto, String titolo, String testo) {
         Recensione recensione = new Recensione(idRistorante, idUtente, LocalDateTime.now(), voto, titolo, testo);
@@ -39,14 +56,22 @@ public class RecensioneService {
     }
 
     /**
-     * Elimina una recensione dato il suo ID
+     * Elimina una recensione dato il suo ID.
+     *
+     * @param recensioneId ID della recensione da eliminare
      */
     public void eliminaRecensione(String recensioneId) {
         recensioneRepository.deleteById(recensioneId);
     }
 
     /**
-     * Modifica una recensione esistente
+     * Modifica i campi principali (titolo, testo e voto) di una recensione esistente.
+     *
+     * @param recensioneId ID della recensione da modificare
+     * @param titolo       nuovo titolo della recensione
+     * @param testo        nuovo testo della recensione
+     * @param voto         nuova valutazione
+     * @return Optional contenente la recensione aggiornata, o vuoto se non trovata
      */
     public Optional<Recensione> modificaRecensione(String recensioneId, String titolo, String testo, int voto) {
         Optional<Recensione> recensioneOpt = recensioneRepository.findById(recensioneId);
@@ -65,14 +90,19 @@ public class RecensioneService {
     }
 
     /**
-     * Recupera tutte le recensioni nel sistema
+     * Recupera l'elenco completo di tutte le recensioni memorizzate.
+     *
+     * @return lista di oggetti Recensione
      */
     public List<Recensione> getAllRecensioni() {
         return recensioneRepository.findAll();
     }
 
     /**
-     * Recupera tutte le recensioni scritte da un determinato utente
+     * Recupera tutte le recensioni scritte da un determinato utente.
+     *
+     * @param idUtente identificativo dell'utente
+     * @return lista di recensioni associate all'utente
      */
     public List<Recensione> getRecensioniByUtente(String idUtente) {
         return recensioneRepository.findAll().stream()
@@ -81,7 +111,10 @@ public class RecensioneService {
     }
 
     /**
-     * Recupera tutte le recensioni per un determinato ristorante
+     * Recupera tutte le recensioni per un determinato ristorante.
+     *
+     * @param idRistorante identificativo del ristorante
+     * @return lista di recensioni associate al ristorante
      */
     public List<Recensione> getRecensioniByRistorante(String idRistorante) {
         return recensioneRepository.findAll().stream()
@@ -90,7 +123,11 @@ public class RecensioneService {
     }
 
     /**
-     * Recupera recensioni filtrate per ristorante e voto esatto
+     * Recupera recensioni filtrate per ristorante e voto esatto.
+     *
+     * @param idRistorante identificativo del ristorante
+     * @param voto         voto esatto da filtrare
+     * @return lista di recensioni che corrispondono al filtro
      */
     public List<Recensione> getRecensioniByRistoranteAndVoto(String idRistorante, int voto) {
         return recensioneRepository.findAll().stream()
@@ -99,7 +136,11 @@ public class RecensioneService {
     }
 
     /**
-     * Recupera recensioni filtrate per ristorante e voto minimo
+     * Recupera recensioni filtrate per ristorante e voto minimo.
+     *
+     * @param idRistorante identificativo del ristorante
+     * @param votoMinimo   voto minimo accettato
+     * @return lista di recensioni filtrate per voto minimo
      */
     public List<Recensione> getRecensioniByRistoranteAndVotoMinimo(String idRistorante, int votoMinimo) {
         return recensioneRepository.findAll().stream()
@@ -108,7 +149,11 @@ public class RecensioneService {
     }
 
     /**
-     * Recupera recensioni filtrate per ristorante e voto massimo
+     * Recupera recensioni filtrate per ristorante e voto massimo.
+     *
+     * @param idRistorante identificativo del ristorante
+     * @param votoMassimo  voto massimo accettato
+     * @return lista di recensioni filtrate per voto massimo
      */
     public List<Recensione> getRecensioniByRistoranteAndVotoMassimo(String idRistorante, int votoMassimo) {
         return recensioneRepository.findAll().stream()
@@ -118,6 +163,9 @@ public class RecensioneService {
 
     /**
      * Verifica se una recensione è positiva (voto >= 3)
+     *
+     * @param voto voto numerico
+     * @return true se il voto è positivo, false altrimenti
      */
     public boolean isRecensionePositiva(int voto) {
         return voto >= 3;
@@ -125,6 +173,9 @@ public class RecensioneService {
 
     /**
      * Converte un voto numerico in descrizione testuale
+     *
+     * @param voto voto numerico da 1 a 5
+     * @return descrizione testuale ("Pessimo", "Buono", ecc.)
      */
     public String getDescrizioneVoto(int voto) {
         switch (voto) {
@@ -145,6 +196,9 @@ public class RecensioneService {
 
     /**
      * Calcola il tempo trascorso da una data in formato leggibile
+     *
+     * @param data data da confrontare con l'istante attuale
+     * @return stringa che indica il tempo trascorso
      */
     public String getTempoTrascorso(LocalDateTime data) {
         if (data == null) {
