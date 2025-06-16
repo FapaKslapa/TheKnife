@@ -6,18 +6,17 @@ const waitForBridge = async (callback, maxAttempts = 20) => {
         attempts++;
         if (window.javaConnector && typeof window.javaConnector.getRistorantiByProprietario === 'function') {
             console.log("Bridge trovato, procedo con la chiamata");
-            callback();
+            await callback();
         } else if (attempts < maxAttempts) {
             console.log(`Tentativo ${attempts}: Bridge non pronto, riprovo tra 800ms...`);
             setTimeout(checkBridge, 800);
         } else {
             console.error("Bridge non disponibile dopo diversi tentativi");
             document.getElementById('alertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Errore di connessione con l'applicazione. Ricarica la pagina.
-                </div>
-            `;
-            // Mostra dettagli di debug
+                            <div class="alert alert-danger" role="alert">
+                                Errore di connessione con l'applicazione. Ricarica la pagina.
+                            </div>
+                        `;
             console.error("Dettagli bridge:", window.javaConnector ? "Bridge esiste" : "Bridge non esiste");
             if (window.javaConnector) {
                 console.error("Metodi disponibili:", Object.keys(window.javaConnector));
@@ -29,120 +28,106 @@ const waitForBridge = async (callback, maxAttempts = 20) => {
 };
 
 // Implementazione geocoding con OpenStreetMap Nominatim
-const geocodeAddress = async (address, callback) => {
+const geocodeAddress = async (address) => {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
         const data = await response.json();
 
         if (data && data.length > 0) {
             const result = data[0];
-            callback(null, {
-                lat: parseFloat(result.lat),
-                lng: parseFloat(result.lon)
-            });
+            return {
+                success: true,
+                coordinates: {
+                    lat: parseFloat(result.lat),
+                    lng: parseFloat(result.lon)
+                }
+            };
         } else {
-            callback("Indirizzo non trovato", null);
+            return {success: false, error: "Indirizzo non trovato"};
         }
     } catch (error) {
-        callback(error.toString(), null);
+        return {success: false, error: error.toString()};
     }
 };
 
 // Funzione per caricare i ristoranti di un proprietario
 const caricaRistoranti = async (idProprietario) => {
-    // Mostra l'indicatore di caricamento
-    document.getElementById('loading-indicator').classList.remove('d-none');
-    document.getElementById('no-ristoranti').classList.add('d-none');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const noRistoranti = document.getElementById('no-ristoranti');
+
+    loadingIndicator.classList.remove('d-none');
+    noRistoranti.classList.add('d-none');
 
     try {
         console.log("Tentativo di caricamento ristoranti per proprietario ID:", idProprietario);
-        
-        // Verifica se il bridge è disponibile prima di chiamarlo
+
         if (!window.javaConnector || typeof window.javaConnector.getRistorantiByProprietario !== 'function') {
             throw new Error("Bridge non disponibile o metodo non trovato");
         }
-        
-        // Chiamata con parametri corretti
-        const response = await window.javaConnector.getRistorantiByProprietario({
-            idProprietario: idProprietario
-        });
-        
+
+        const response = await window.javaConnector.getRistorantiByProprietario({idProprietario});
         console.log("Risposta ricevuta:", response);
 
-        // Nascondi l'indicatore di caricamento
-        document.getElementById('loading-indicator').classList.add('d-none');
-
-        // Ottieni il container dove inserire i ristoranti
+        loadingIndicator.classList.add('d-none');
         const ristorantiContainer = document.getElementById('ristoranti-container');
 
         if (response.success && response.ristoranti && response.ristoranti.length > 0) {
-            // Svuota il container prima di aggiungere i ristoranti
             ristorantiContainer.innerHTML = '';
-
-            // Aggiungi ogni ristorante al container
             response.ristoranti.forEach(ristorante => {
                 const card = creaRistoranteCard(ristorante);
                 ristorantiContainer.appendChild(card);
             });
         } else {
-            // Mostra il messaggio di nessun ristorante
-            document.getElementById('no-ristoranti').classList.remove('d-none');
+            noRistoranti.classList.remove('d-none');
         }
     } catch (error) {
-        // Nascondi l'indicatore di caricamento e mostra l'errore
-        document.getElementById('loading-indicator').classList.add('d-none');
+        loadingIndicator.classList.add('d-none');
         console.error("Errore durante il caricamento:", error);
         document.getElementById('alertArea').innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                Errore durante il caricamento dei ristoranti: ${error}
-            </div>
-        `;
+                        <div class="alert alert-danger" role="alert">
+                            Errore durante il caricamento dei ristoranti: ${error}
+                        </div>
+                    `;
     }
 };
 
-// Funzione per creare una card di ristorante
+// Funzione per creare una card di ristorante elegante
 const creaRistoranteCard = (ristorante) => {
-    // Crea un elemento div per la colonna
     const colDiv = document.createElement('div');
     colDiv.className = 'col-md-6 col-lg-4 mb-4';
     colDiv.id = `ristorante-${ristorante.id}`;
 
-    // Funzione per visualizzare la fascia di prezzo
     const renderPrezzi = (fascia) => {
-        let html = '';
-        for (let i = 0; i < fascia; i++) {
-            html += '<i class="bi bi-currency-euro"></i>';
-        }
-        for (let i = fascia; i < 3; i++) {
-            html += '<i class="bi bi-currency-euro text-muted opacity-25"></i>';
-        }
-        return html;
+        return Array(3).fill().map((_, i) =>
+            i < fascia
+                ? '<i class="bi bi-currency-euro"></i>'
+                : '<i class="bi bi-currency-euro text-muted opacity-25"></i>'
+        ).join('');
     };
 
-    // Crea la card con i dettagli del ristorante
     colDiv.innerHTML = `
-        <div class="restaurant-card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center py-3">
-                <h5 class="card-title mb-0">${ristorante.nome}</h5>
-                <div class="dropdown">
-                    <button class="btn-action" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-three-dots-vertical"></i>
+        <div class="restaurant-card h-100 shadow-lg">
+            <div class="card-header glass-header d-flex align-items-start justify-content-between" style="border-bottom: none;">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-0" style="margin-bottom:0; padding:0; line-height:1.2;">${ristorante.nome}</h5>
+                </div>
+                <div class="action-bar-glass ms-2">
+                    <button class="btn-action btn-recensioni-ristorante" data-id="${ristorante.id}" title="Recensioni">
+                        <i class="bi bi-star"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item edit-ristorante" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-pencil me-2"></i>Modifica</a></li>
-                        <li><a class="dropdown-item view-menu" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-list-ul me-2"></i>Gestisci menu</a></li>
-                        <li><a class="dropdown-item view-orders" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-bag me-2"></i>Ordini</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger delete-ristorante" href="javascript:void(0)" data-id="${ristorante.id}"><i class="bi bi-trash me-2"></i>Elimina</a></li>
-                    </ul>
+                    <button class="btn-action btn-modifica-ristorante" data-id="${ristorante.id}" title="Modifica">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn-action btn-elimina-ristorante" data-id="${ristorante.id}" title="Elimina ristorante">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
             </div>
-            <div class="card-body position-relative">
+            <div class="card-body position-relative px-4 pt-3 pb-2">
                 <div class="restaurant-info">
                     <div class="price-tag mb-3">
                         ${renderPrezzi(ristorante.fasciaPrezzo)}
                     </div>
-                    
                     <div class="restaurant-details">
                         <div class="detail-item">
                             <div class="detail-icon">
@@ -152,7 +137,6 @@ const creaRistoranteCard = (ristorante) => {
                                 ${ristorante.tipoCucina}
                             </div>
                         </div>
-                        
                         <div class="detail-item">
                             <div class="detail-icon">
                                 <i class="bi bi-telephone-fill"></i>
@@ -161,7 +145,6 @@ const creaRistoranteCard = (ristorante) => {
                                 ${ristorante.numeroTelefono}
                             </div>
                         </div>
-                        
                         <div class="detail-item">
                             <div class="detail-icon ${ristorante.consegnaDomicilio ? 'delivery-available' : 'delivery-unavailable'}">
                                 <i class="bi bi-${ristorante.consegnaDomicilio ? 'bicycle' : 'x-circle'}"></i>
@@ -171,116 +154,125 @@ const creaRistoranteCard = (ristorante) => {
                             </div>
                         </div>
                     </div>
-                    
                     <div class="opening-hours mt-3">
                         <button class="btn-slim toggle-hours">
                             <i class="bi bi-clock me-1"></i>Orari di apertura <i class="bi bi-chevron-down ms-1"></i>
                         </button>
                         <div class="hours-details mt-2" style="display: none;">
-                            ${renderOrari(ristorante.orariApertura)}
+                            ${renderOrariScrollable(ristorante.orariApertura)}
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-footer py-3">
-                <div class="action-bar">
-                    <button class="btn-action view-recensioni" data-id="${ristorante.id}" title="Visualizza recensioni">
-                        <i class="bi bi-star"></i>
-                    </button>
-                    <button class="btn-action edit-ristorante" data-id="${ristorante.id}" title="Modifica ristorante">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn-action view-menu" data-id="${ristorante.id}" title="Gestisci menu">
-                        <i class="bi bi-list-ul"></i>
-                    </button>
                 </div>
             </div>
         </div>
     `;
 
-    // Aggiungi event listener per i pulsanti nella card
     setTimeout(() => {
-        const editBtns = colDiv.querySelectorAll('.edit-ristorante');
-        const deleteBtns = colDiv.querySelectorAll('.delete-ristorante');
-        const menuBtns = colDiv.querySelectorAll('.view-menu');
-        const ordersBtns = colDiv.querySelectorAll('.view-orders');
-        const recensioniBtns = colDiv.querySelectorAll('.view-recensioni');
-        const toggleHoursBtn = colDiv.querySelector('.toggle-hours');
-
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                apriModalModifica(ristoranteId);
-            });
+        // Pulsante recensioni
+        colDiv.querySelector('.btn-recensioni-ristorante').addEventListener('click', (e) => {
+            e.preventDefault();
+            apriModalRecensioni(ristorante.id);
         });
-
-        deleteBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                confermaEliminaRistorante(ristoranteId);
-            });
+        // Pulsante modifica
+        colDiv.querySelector('.btn-modifica-ristorante').addEventListener('click', (e) => {
+            e.preventDefault();
+            apriModalModifica(ristorante.id);
         });
-
-        menuBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                // Redirigi alla pagina di gestione menu
-                console.log(`Gestisci menu: ${ristoranteId}`);
-            });
+        // Pulsante elimina
+        colDiv.querySelector('.btn-elimina-ristorante').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('nome-ristorante-eliminazione').textContent = ristorante.nome;
+            document.getElementById('id-ristorante-eliminazione').value = ristorante.id;
+            const modal = new bootstrap.Modal(document.getElementById('confermaEliminazioneModal'));
+            modal.show();
         });
-
-        ordersBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                // Redirigi alla pagina di gestione ordini
-                console.log(`Visualizza ordini: ${ristoranteId}`);
-            });
+        // Toggle orari apertura
+        colDiv.querySelector('.toggle-hours').addEventListener('click', (e) => {
+            e.preventDefault();
+            const hoursDetails = colDiv.querySelector('.hours-details');
+            const isVisible = hoursDetails.style.display !== 'none';
+            if (isVisible) {
+                hoursDetails.style.opacity = '0';
+                hoursDetails.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    hoursDetails.style.display = 'none';
+                }, 200);
+            } else {
+                hoursDetails.style.display = 'block';
+                void hoursDetails.offsetWidth;
+                hoursDetails.style.opacity = '1';
+                hoursDetails.style.transform = 'translateY(0)';
+            }
+            const arrow = colDiv.querySelector('.toggle-hours i.bi-chevron-down, .toggle-hours i.bi-chevron-up');
+            if (arrow) {
+                arrow.classList.toggle('bi-chevron-down');
+                arrow.classList.toggle('bi-chevron-up');
+            }
         });
-
-        recensioniBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                apriModalRecensioni(ristoranteId);
-            });
-        });
-
-        if (toggleHoursBtn) {
-            toggleHoursBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const hoursDetails = colDiv.querySelector('.hours-details');
-                const isVisible = hoursDetails.style.display !== 'none';
-
-                // Animazione più fluida
-                if (isVisible) {
-                    hoursDetails.style.opacity = '0';
-                    hoursDetails.style.transform = 'translateY(-5px)';
-                    setTimeout(() => {
-                        hoursDetails.style.display = 'none';
-                    }, 200);
-                } else {
-                    hoursDetails.style.display = 'block';
-                    // Forza il browser a calcolare lo stile prima di applicare l'animazione
-                    void hoursDetails.offsetWidth;
-                    hoursDetails.style.opacity = '1';
-                    hoursDetails.style.transform = 'translateY(0)';
-                }
-
-                // Cambia l'icona della freccia
-                const arrow = toggleHoursBtn.querySelector('.bi-chevron-down, .bi-chevron-up');
-                if (arrow) {
-                    arrow.classList.toggle('bi-chevron-down');
-                    arrow.classList.toggle('bi-chevron-up');
-                }
-            });
-        }
     }, 0);
 
     return colDiv;
+};
+
+// Gestione conferma eliminazione ristorante con modal
+document.addEventListener('DOMContentLoaded', () => {
+    const confermaBtn = document.getElementById('conferma-elimina-btn');
+    if (confermaBtn) {
+        confermaBtn.addEventListener('click', async () => {
+            const ristoranteId = document.getElementById('id-ristorante-eliminazione').value;
+            await eliminaristorante(ristoranteId);
+            // Chiudi il modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('confermaEliminazioneModal'));
+            modal.hide();
+        });
+    }
+});
+
+// Funzione per renderizzare gli orari in modalità scrollabile con card per ogni giorno
+const renderOrariScrollable = (orari) => {
+    if (!orari) return '<p class="text-muted">Orari non disponibili</p>';
+
+    const giorni = [
+        {key: 'lunedi', label: 'Lun'},
+        {key: 'martedi', label: 'Mar'},
+        {key: 'mercoledi', label: 'Mer'},
+        {key: 'giovedi', label: 'Gio'},
+        {key: 'venerdi', label: 'Ven'},
+        {key: 'sabato', label: 'Sab'},
+        {key: 'domenica', label: 'Dom'}
+    ];
+
+    // Trova il giorno corrente (0 = domenica, 1 = lunedì, ...)
+    const oggi = new Date();
+    let idxOggi = oggi.getDay(); // 0 domenica, 1 lunedì, ...
+    idxOggi = idxOggi === 0 ? 6 : idxOggi - 1; // 0 -> lunedì, 6 -> domenica
+
+    // Aggiungi user-select: none direttamente qui per fallback
+    let html = `<div class="orari-scroll-wrapper" style="user-select:none;"><div class="orari-scroll-inner" style="user-select:none;">`;
+    giorni.forEach((giorno, idx) => {
+        const orarioGiorno = orari[giorno.key] || 'Chiuso';
+        const isToday = idx === idxOggi;
+
+        // Split orari multipli
+        let orariListHtml = '';
+        if (orarioGiorno === 'Chiuso') {
+            orariListHtml = `<div class="orario-item text-danger">Chiuso</div>`;
+        } else {
+            const fasce = orarioGiorno.split(',').map(f => f.trim()).filter(Boolean);
+            orariListHtml = fasce.map(fascia => `<div class="orario-item">${fascia}</div>`).join('');
+        }
+
+        html += `
+            <div class="giorno-card${isToday ? ' oggi' : ''}">
+                <div class="giorno-label">${giorno.label}</div>
+                <div class="orari-list">
+                    ${orariListHtml}
+                </div>
+            </div>
+        `;
+    });
+    html += `</div></div>`;
+    return html;
 };
 
 // Funzione per renderizzare gli orari
@@ -288,23 +280,23 @@ const renderOrari = (orari) => {
     if (!orari) return '<p class="text-muted">Orari non disponibili</p>';
 
     const giorni = [
-        { key: 'lunedi', label: 'Lunedì' },
-        { key: 'martedi', label: 'Martedì' },
-        { key: 'mercoledi', label: 'Mercoledì' },
-        { key: 'giovedi', label: 'Giovedì' },
-        { key: 'venerdi', label: 'Venerdì' },
-        { key: 'sabato', label: 'Sabato' },
-        { key: 'domenica', label: 'Domenica' }
+        {key: 'lunedi', label: 'Lunedì'},
+        {key: 'martedi', label: 'Martedì'},
+        {key: 'mercoledi', label: 'Mercoledì'},
+        {key: 'giovedi', label: 'Giovedì'},
+        {key: 'venerdi', label: 'Venerdì'},
+        {key: 'sabato', label: 'Sabato'},
+        {key: 'domenica', label: 'Domenica'}
     ];
 
     let html = '<div class="row">';
     giorni.forEach(giorno => {
         const orarioGiorno = orari[giorno.key] || 'Chiuso';
         html += `
-            <div class="col-md-6">
-                <span class="fw-medium">${giorno.label}:</span> ${orarioGiorno}
-            </div>
-        `;
+                        <div class="col-md-6">
+                            <span class="fw-medium">${giorno.label}:</span> ${orarioGiorno}
+                        </div>
+                    `;
     });
     html += '</div>';
 
@@ -321,45 +313,39 @@ const confermaEliminaRistorante = (ristoranteId) => {
 // Funzione per eliminare effettivamente un ristorante
 const eliminaristorante = async (ristoranteId) => {
     try {
-        const response = await window.javaConnector.eliminaRistorante({
-            id: ristoranteId
-        });
+        const response = await window.javaConnector.eliminaRistorante({id: ristoranteId});
 
         if (response.success) {
-            // Rimuovi la card del ristorante dalla UI
-            document.getElementById(`ristorante-${ristoranteId}`).remove();
+            document.getElementById(`ristorante-${ristoranteId}`)?.remove();
 
-            // Mostra messaggio di successo
             document.getElementById('alertArea').innerHTML = `
-                <div class="alert alert-success" role="alert">
-                    Ristorante eliminato con successo!
-                </div>
-            `;
+                            <div class="alert alert-success" role="alert">
+                                Ristorante eliminato con successo!
+                            </div>
+                        `;
 
-            // Controlla se ci sono ancora ristoranti
             const ristorantiContainer = document.getElementById('ristoranti-container');
             if (ristorantiContainer.querySelectorAll('.col-md-6').length === 0) {
                 document.getElementById('no-ristoranti').classList.remove('d-none');
             }
         } else {
-            // Mostra messaggio di errore
             document.getElementById('alertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    Errore durante l'eliminazione: ${response.error}
-                </div>
-            `;
+                            <div class="alert alert-danger" role="alert">
+                                Errore durante l'eliminazione: ${response.error}
+                            </div>
+                        `;
         }
     } catch (error) {
         document.getElementById('alertArea').innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                Errore di sistema: ${error}
-            </div>
-        `;
+                        <div class="alert alert-danger" role="alert">
+                            Errore di sistema: ${error}
+                        </div>
+                    `;
     }
 };
 
 // Funzione comune per gestire la ricerca degli indirizzi (sia per nuovo che per modifica)
-const geocodeAddressHandler = (prefix = '') => {
+const geocodeAddressHandler = async (prefix = '') => {
     const indirizzo = document.getElementById(`${prefix}indirizzo`).value;
     const btnId = `${prefix}cercaIndirizzo`;
     const resultAreaId = `${prefix}risultatoRicerca`;
@@ -371,52 +357,53 @@ const geocodeAddressHandler = (prefix = '') => {
 
     if (!indirizzo) {
         document.getElementById(alertAreaId).innerHTML = `
-            <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
-            </div>
-        `;
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
+                        </div>
+                    `;
         return;
     }
 
-    // Mostra un indicatore di caricamento
+    // Mostra indicatore di caricamento
     document.getElementById(btnId).innerHTML = `
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Ricerca in corso...
-    `;
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Ricerca in corso...
+                `;
 
     // Usa la funzione geocodeAddress
-    geocodeAddress(indirizzo, (error, coordinates) => {
-        document.getElementById(btnId).innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
+    const result = await geocodeAddress(indirizzo);
+    document.getElementById(btnId).innerHTML = `<i class="bi bi-search me-2"></i>Verifica indirizzo`;
 
-        if (error) {
-            document.getElementById(resultAreaId).style.display = 'block';
-            document.getElementById(resultAreaId).innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${error}
-                </div>
-            `;
-            return;
-        }
-
-        // Mostra il risultato
+    if (!result.success) {
         document.getElementById(resultAreaId).style.display = 'block';
         document.getElementById(resultAreaId).innerHTML = `
-            <div class="alert alert-info">
-                <span id="${foundAddressId}">Trovato: "${indirizzo}" (lat: ${coordinates.lat}, lng: ${coordinates.lng})</span>
-                <button type="button" class="btn btn-sm btn-outline-info float-end" id="${confirmBtnId}">Conferma</button>
-            </div>
-        `;
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${result.error}
+                        </div>
+                    `;
+        return;
+    }
 
-        // Quando l'utente conferma l'indirizzo
-        document.getElementById(confirmBtnId).addEventListener('click', () => {
-            document.getElementById(latId).value = coordinates.lat;
-            document.getElementById(lngId).value = coordinates.lng;
-            document.getElementById(resultAreaId).innerHTML = `
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle me-2"></i>Indirizzo confermato: ${indirizzo}
-                </div>
-            `;
-        });
+    const coordinates = result.coordinates;
+
+    // Mostra il risultato
+    document.getElementById(resultAreaId).style.display = 'block';
+    document.getElementById(resultAreaId).innerHTML = `
+                    <div class="alert alert-info">
+                        <span id="${foundAddressId}">Trovato: "${indirizzo}" (lat: ${coordinates.lat}, lng: ${coordinates.lng})</span>
+                        <button type="button" class="btn btn-sm btn-outline-info float-end" id="${confirmBtnId}">Conferma</button>
+                    </div>
+                `;
+
+    // Quando l'utente conferma l'indirizzo
+    document.getElementById(confirmBtnId).addEventListener('click', () => {
+        document.getElementById(latId).value = coordinates.lat;
+        document.getElementById(lngId).value = coordinates.lng;
+        document.getElementById(resultAreaId).innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>Indirizzo confermato: ${indirizzo}
+                        </div>
+                    `;
     });
 };
 
@@ -431,10 +418,10 @@ const validateRistoranteForm = (prefix = '') => {
 
     if (!nome || !tipoCucina || isNaN(latitudine) || isNaN(longitudine) || !numeroTelefono) {
         document.getElementById(alertAreaId).innerHTML = `
-            <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle me-2"></i>Compila tutti i campi obbligatori.
-            </div>
-        `;
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Compila tutti i campi obbligatori.
+                        </div>
+                    `;
         return false;
     }
     return true;
@@ -446,10 +433,10 @@ const getRistoranteFormData = (prefix = '') => {
     const orariApertura = {};
 
     giorni.forEach(giorno => {
-        const fieldId = `${prefix}orari${giorno.charAt(0).toUpperCase() + giorno.slice(1)}`;
+        // Corretto: usa lo stesso formato dell'ID nel template HTML
+        const fieldId = `${prefix}orari${giorno}`;
         const orarioInput = document.getElementById(fieldId);
 
-        // Verifica che l'elemento esista prima di accedere al suo valore
         if (orarioInput) {
             orariApertura[giorno] = orarioInput.value || 'Chiuso';
         } else {
@@ -462,7 +449,7 @@ const getRistoranteFormData = (prefix = '') => {
         nome: document.getElementById(`${prefix}nome`).value,
         tipoCucina: document.getElementById(`${prefix}tipoCucina`).value,
         fasciaPrezzo: parseInt(document.getElementById(`${prefix}fasciaPrezzo`).value),
-        orariApertura: orariApertura,
+        orariApertura,
         latitudine: parseFloat(document.getElementById(`${prefix}latitudine`).value),
         longitudine: parseFloat(document.getElementById(`${prefix}longitudine`).value),
         numeroTelefono: document.getElementById(`${prefix}numeroTelefono`).value,
@@ -487,11 +474,11 @@ const salvaRistoranteHandler = async (e) => {
     const ristoranteData = getRistoranteFormData();
 
     document.getElementById('modalAlertArea').innerHTML = `
-        <div class="alert alert-info">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Creazione ristorante in corso...
-        </div>
-    `;
+                    <div class="alert alert-info">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Creazione ristorante in corso...
+                    </div>
+                `;
 
     await waitForBridge(async () => {
         try {
@@ -502,31 +489,31 @@ const salvaRistoranteHandler = async (e) => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('nuovoRistoranteModal'));
                 modal.hide();
 
-                // Mostra messaggio di successo
                 document.getElementById('alertArea').innerHTML = `
-                    <div class="alert alert-success" role="alert">
-                        <i class="bi bi-check-circle me-2"></i>Ristorante creato con successo!
-                    </div>
-                `;
+                                <div class="alert alert-success" role="alert">
+                                    <i class="bi bi-check-circle me-2"></i>Ristorante creato con successo!
+                                </div>
+                            `;
 
-                // Ricarica immediatamente la lista dei ristoranti dal server
-                // caricaRistoranti(sessionStorage.getItem('userId'));
+                // Ricarica i ristoranti
+                await caricaRistoranti(sessionStorage.getItem('userId'));
             } else {
                 document.getElementById('modalAlertArea').innerHTML = `
-                    <div class="alert alert-danger" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
-                    </div>
-                `;
+                                <div class="alert alert-danger" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
+                                </div>
+                            `;
             }
         } catch (error) {
             document.getElementById('modalAlertArea').innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
-                </div>
-            `;
+                            <div class="alert alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
+                            </div>
+                        `;
         }
     });
 };
+
 // Funzione per aprire il modal di modifica e popolare i campi
 const apriModalModifica = async (ristoranteId) => {
     // Inserisci l'ID del ristorante in un campo nascosto
@@ -534,11 +521,11 @@ const apriModalModifica = async (ristoranteId) => {
 
     // Mostra un indicatore di caricamento
     document.getElementById('edit-modalAlertArea').innerHTML = `
-        <div class="alert alert-info">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Caricamento dati del ristorante...
-        </div>
-    `;
+                    <div class="alert alert-info">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Caricamento dati del ristorante...
+                    </div>
+                `;
 
     // Apri il modal
     const modal = new bootstrap.Modal(document.getElementById('modificaRistoranteModal'));
@@ -547,9 +534,7 @@ const apriModalModifica = async (ristoranteId) => {
     // Recupera i dati del ristorante dal backend
     await waitForBridge(async () => {
         try {
-            const response = await window.javaConnector.getRistoranteById({
-                id: ristoranteId
-            });
+            const response = await window.javaConnector.getRistoranteById({id: ristoranteId});
 
             if (response.success) {
                 const ristorante = response.ristorante;
@@ -563,36 +548,143 @@ const apriModalModifica = async (ristoranteId) => {
                 document.getElementById('edit-numeroTelefono').value = ristorante.numeroTelefono;
                 document.getElementById('edit-consegnaDomicilio').checked = ristorante.consegnaDomicilio;
 
-                // Popola i campi degli orari usando un ciclo
+                // Popola gli orari - Corretto l'ID dei campi orari
                 const giorni = ['lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato', 'domenica'];
-                for (let i = 0; i < giorni.length; i++) {
-                    const giorno = giorni[i];
-                    const orario = ristorante.orariApertura[giorno] || '';
-                    const fieldId = `edit-orari${giorno.charAt(0).toUpperCase() + giorno.slice(1)}`;
-                    document.getElementById(fieldId).value = orario;
-                }
+                giorni.forEach(giorno => {
+                    const orario = ristorante.orariApertura[giorno] || 'Chiuso';
+                    // Corretto: usa la stessa logica del template, senza capitalizzare
+                    const fieldId = `edit-orari${giorno}`;
+                    const field = document.getElementById(fieldId);
+                    
+                    if (field) {
+                        field.value = orario;
+                        // Popola gli slot UI per questo giorno
+                        popolaSlotOrari(giorno, orario);
+                    } else {
+                        console.warn(`Campo orario non trovato: ${fieldId}`);
+                    }
+                });
 
                 // Rimuovi l'indicatore di caricamento
                 document.getElementById('edit-modalAlertArea').innerHTML = '';
             } else {
                 document.getElementById('edit-modalAlertArea').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
-                    </div>
-                `;
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
+                                </div>
+                            `;
             }
         } catch (error) {
             document.getElementById('edit-modalAlertArea').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
-                </div>
-            `;
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
+                            </div>
+                        `;
         }
     });
 };
 
-// Funzione per salvare le modifiche del ristorante
+// Funzione per popolare gli slot orari nel form di modifica
+const popolaSlotOrari = (giorno, orarioStringa, prefix = '') => {
+    // Seleziona il container degli slot per questo giorno
+    const slotsContainer = document.getElementById(`edit-${giorno}-slots`);
+    if (!slotsContainer) {
+        console.warn(`Container slot non trovato per il giorno: ${giorno}`);
+        return;
+    }
+    
+    // Svuota il container
+    slotsContainer.innerHTML = '';
+    
+    // Controlla se il ristorante è chiuso in questo giorno
+    if (orarioStringa === 'Chiuso') {
+        // Imposta il checkbox "Chiuso" come selezionato
+        const chiusoCheckbox = document.getElementById(`edit-chiuso-${giorno}`);
+        if (chiusoCheckbox) {
+            chiusoCheckbox.checked = true;
+        }
+        
+        // Aggiungi comunque uno slot di default (disabilitato)
+        const defaultSlot = document.createElement('div');
+        defaultSlot.className = 'time-slot disabled';
+        defaultSlot.innerHTML = `
+            <div class="slot-inputs">
+                <div class="time-input">
+                    <label>Apertura</label>
+                    <input type="time" class="form-control time-start" value="12:00" disabled>
+                </div>
+                <div class="time-separator">-</div>
+                <div class="time-input">
+                    <label>Chiusura</label>
+                    <input type="time" class="form-control time-end" value="15:00" disabled>
+                </div>
+            </div>
+            <button type="button" class="btn-remove-slot" disabled>
+                <i class="bi bi-trash"></i>
+            </button>
+        `;
+        slotsContainer.appendChild(defaultSlot);
+        return;
+    }
+    
+    // Se il ristorante è aperto, analizza le fasce orarie
+    const fasce = orarioStringa.split(',').map(fascia => fascia.trim());
+    
+    if (fasce.length === 0 || (fasce.length === 1 && fasce[0] === '')) {
+        // Nessuna fascia oraria specificata, aggiungi uno slot di default
+        const defaultSlot = document.createElement('div');
+        defaultSlot.className = 'time-slot';
+        defaultSlot.innerHTML = `
+            <div class="slot-inputs">
+                <div class="time-input">
+                    <label>Apertura</label>
+                    <input type="time" class="form-control time-start" value="12:00">
+                </div>
+                <div class="time-separator">-</div>
+                <div class="time-input">
+                    <label>Chiusura</label>
+                    <input type="time" class="form-control time-end" value="15:00">
+                </div>
+            </div>
+            <button type="button" class="btn-remove-slot">
+                <i class="bi bi-trash"></i>
+            </button>
+        `;
+        slotsContainer.appendChild(defaultSlot);
+    } else {
+        // Crea uno slot per ogni fascia oraria
+        fasce.forEach(fascia => {
+            const [inizio, fine] = fascia.split('-').map(orario => orario.trim());
+            
+            const slot = document.createElement('div');
+            slot.className = 'time-slot';
+            slot.innerHTML = `
+                <div class="slot-inputs">
+                    <div class="time-input">
+                        <label>Apertura</label>
+                        <input type="time" class="form-control time-start" value="${inizio || '12:00'}">
+                    </div>
+                    <div class="time-separator">-</div>
+                    <div class="time-input">
+                        <label>Chiusura</label>
+                        <input type="time" class="form-control time-end" value="${fine || '15:00'}">
+                    </div>
+                </div>
+                <button type="button" class="btn-remove-slot">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            slotsContainer.appendChild(slot);
+        });
+    }
+    
+    // Aggiungi listener per gli input di orario
+    slotsContainer.querySelectorAll('input[type="time"]').forEach(input => {
+        input.addEventListener('change', () => updateHiddenTimeFields('edit-'));
+    });
+};
 
+// Funzione per salvare le modifiche del ristorante
 const salvaModificheRistoranteHandler = async (e) => {
     if (e) e.preventDefault();
 
@@ -601,11 +693,11 @@ const salvaModificheRistoranteHandler = async (e) => {
     const ristoranteData = getRistoranteFormData('edit-');
 
     document.getElementById('edit-modalAlertArea').innerHTML = `
-        <div class="alert alert-info">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Salvataggio modifiche in corso...
-        </div>
-    `;
+                    <div class="alert alert-info">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Salvataggio modifiche in corso...
+                    </div>
+                `;
 
     await waitForBridge(async () => {
         try {
@@ -616,39 +708,35 @@ const salvaModificheRistoranteHandler = async (e) => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('modificaRistoranteModal'));
                 modal.hide();
 
-                // Mostra messaggio di successo
                 document.getElementById('alertArea').innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="bi bi-check-circle me-2"></i>Ristorante aggiornato con successo!
-                    </div>
-                `;
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle me-2"></i>Ristorante aggiornato con successo!
+                                </div>
+                            `;
 
-                // Ricarica immediatamente la lista dei ristoranti dal server
-                caricaRistoranti(sessionStorage.getItem('userId'));
+                // Ricarica i ristoranti
+                await caricaRistoranti(sessionStorage.getItem('userId'));
             } else {
                 document.getElementById('edit-modalAlertArea').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
-                    </div>
-                `;
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${response.error}
+                                </div>
+                            `;
             }
         } catch (error) {
             document.getElementById('edit-modalAlertArea').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
-                </div>
-            `;
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
+                            </div>
+                        `;
         }
     });
 };
 
 // Funzione per aprire il modal delle recensioni
 const apriModalRecensioni = async (ristoranteId) => {
-    // Recupera prima le info del ristorante per mostrare il nome
     try {
-        const infoResponse = await window.javaConnector.getRistoranteById({
-            id: ristoranteId
-        });
+        const infoResponse = await window.javaConnector.getRistoranteById({id: ristoranteId});
 
         if (infoResponse.success) {
             const ristorante = infoResponse.ristorante;
@@ -656,12 +744,12 @@ const apriModalRecensioni = async (ristoranteId) => {
 
             // Mostra indicatore di caricamento
             document.getElementById('recensioni-container').innerHTML = `
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Caricamento recensioni...</span>
-                    </div>
-                </div>
-            `;
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Caricamento recensioni...</span>
+                                </div>
+                            </div>
+                        `;
 
             // Apri il modal
             const recensioniModal = new bootstrap.Modal(document.getElementById('recensioniModal'));
@@ -678,15 +766,12 @@ const apriModalRecensioni = async (ristoranteId) => {
 // Funzione per caricare le recensioni di un ristorante
 const caricaRecensioni = async (ristoranteId) => {
     try {
-        const response = await window.javaConnector.getRecensioniByRistorante({
-            idRistorante: ristoranteId
-        });
+        const response = await window.javaConnector.getRecensioniByRistorante({idRistorante: ristoranteId});
 
         const recensioniContainer = document.getElementById('recensioni-container');
         const noRecensioni = document.getElementById('no-recensioni');
 
         if (response.success && response.recensioni && response.recensioni.length > 0) {
-            // Ci sono recensioni da visualizzare
             recensioniContainer.innerHTML = '';
             noRecensioni.classList.add('d-none');
 
@@ -695,16 +780,15 @@ const caricaRecensioni = async (ristoranteId) => {
                 recensioniContainer.appendChild(recensioneElement);
             });
         } else {
-            // Nessuna recensione
             recensioniContainer.innerHTML = '';
             noRecensioni.classList.remove('d-none');
         }
     } catch (error) {
         document.getElementById('recensioni-container').innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i>Errore nel caricamento delle recensioni: ${error}
-            </div>
-        `;
+                        <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Errore nel caricamento delle recensioni: ${error}
+                        </div>
+                    `;
     }
 };
 
@@ -716,24 +800,20 @@ const creaRecensioneElement = (recensione) => {
 
     // Funzione per renderizzare le stelle del voto
     const renderStelle = (voto) => {
-        let html = '';
-        for (let i = 0; i < voto; i++) {
-            html += '<i class="bi bi-star-fill"></i>';
-        }
-        for (let i = voto; i < 5; i++) {
-            html += '<i class="bi bi-star"></i>';
-        }
-        return html;
+        return Array(5).fill().map((_, i) =>
+            i < voto
+                ? '<i class="bi bi-star-fill"></i>'
+                : '<i class="bi bi-star"></i>'
+        ).join('');
     };
 
     // Gestione della data
     let dataFormattata = 'Data non disponibile';
     try {
-        // Verifica se stiamo usando il nuovo schema (key_r, key_user, date) o il vecchio
         const dataString = recensione.date || recensione.dataCreazione;
         if (dataString) {
             const data = new Date(dataString);
-            if (!isNaN(data.getTime())) { // Verifica che la data sia valida
+            if (!isNaN(data.getTime())) {
                 dataFormattata = data.toLocaleDateString('it-IT', {
                     day: '2-digit',
                     month: '2-digit',
@@ -749,22 +829,22 @@ const creaRecensioneElement = (recensione) => {
     const nomeUtente = recensione.nomeUtente || 'Utente';
 
     div.innerHTML = `
-        <div class="review-header">
-            <div class="review-title-wrap">
-                <h5 class="review-title">${recensione.title || recensione.titolo}</h5>
-                <div class="review-stars">
-                    ${renderStelle(recensione.rate || recensione.voto)}
-                </div>
-            </div>
-            <div class="review-meta">
-                <span class="review-author">${nomeUtente}</span>
-                <span class="review-date">${dataFormattata}</span>
-            </div>
-        </div>
-        <div class="review-body">
-            <p>${recensione.text || recensione.testo}</p>
-        </div>
-    `;
+                    <div class="review-header">
+                        <div class="review-title-wrap">
+                            <h5 class="review-title">${recensione.title || recensione.titolo}</h5>
+                            <div class="review-stars">
+                                ${renderStelle(recensione.rate || recensione.voto)}
+                            </div>
+                        </div>
+                        <div class="review-meta">
+                            <span class="review-author">${nomeUtente}</span>
+                            <span class="review-date">${dataFormattata}</span>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>${recensione.text || recensione.testo}</p>
+                    </div>
+                `;
 
     return div;
 };
@@ -775,14 +855,18 @@ const updateHiddenTimeFields = (prefix = '') => {
 
     giorni.forEach(giorno => {
         const slotsContainerId = `${prefix}${giorno}-slots`;
-        const hiddenFieldId = `${prefix}orari${giorno.charAt(0).toUpperCase() + giorno.slice(1)}`;
+        // Importante: usa lo stesso formato del campo nascosto nel template HTML
+        const hiddenFieldId = `${prefix}orari${giorno}`;
         const chiusoCheckboxId = `${prefix}chiuso-${giorno}`;
 
         const slotsContainer = document.getElementById(slotsContainerId);
         const hiddenField = document.getElementById(hiddenFieldId);
         const chiusoCheckbox = document.getElementById(chiusoCheckboxId);
 
-        if (!slotsContainer || !hiddenField) return;
+        if (!slotsContainer || !hiddenField) {
+            console.warn(`Impossibile aggiornare orari per ${giorno}: container=${slotsContainer}, hidden=${hiddenField}`);
+            return;
+        }
 
         // Se il giorno è marcato come chiuso
         if (chiusoCheckbox && chiusoCheckbox.checked) {
@@ -791,349 +875,410 @@ const updateHiddenTimeFields = (prefix = '') => {
         }
 
         // Ottieni tutte le fasce orarie
-        const timeSlots = slotsContainer.querySelectorAll('.time-slot');
+        const timeSlots = slotsContainer.querySelectorAll('.time-slot:not(.disabled)');
         if (timeSlots.length === 0) {
             hiddenField.value = 'Chiuso';
             return;
         }
 
         // Formato: 12:00-15:00, 19:00-23:00
-        let orarioGiorno = '';
-        timeSlots.forEach((slot, index) => {
-            const startTime = slot.querySelector('.time-start').value;
-            const endTime = slot.querySelector('.time-end').value;
+        const fasce = Array.from(timeSlots).map(slot => {
+            const startTime = slot.querySelector('.time-start')?.value;
+            const endTime = slot.querySelector('.time-end')?.value;
+            return startTime && endTime ? `${startTime}-${endTime}` : null;
+        }).filter(Boolean);
 
-            if (startTime && endTime) {
-                if (index > 0) orarioGiorno += ', ';
-                orarioGiorno += `${startTime}-${endTime}`;
+        hiddenField.value = fasce.length > 0 ? fasce.join(', ') : 'Chiuso';
+        console.log(`Aggiornato ${hiddenFieldId} con valore: ${hiddenField.value}`);
+    });
+};
+
+// Funzione per inizializzare i template dei giorni della settimana
+const initializeDayTemplates = () => {
+    const giorni = [
+        {key: 'lunedi', label: 'Lunedì'},
+        {key: 'martedi', label: 'Martedì'},
+        {key: 'mercoledi', label: 'Mercoledì'},
+        {key: 'giovedi', label: 'Giovedì'},
+        {key: 'venerdi', label: 'Venerdì'},
+        {key: 'sabato', label: 'Sabato'},
+        {key: 'domenica', label: 'Domenica'}
+    ];
+
+    // Per il form di nuovo ristorante
+    const dayTemplate = document.getElementById('day-template');
+    const daysContainer = document.getElementById('orari-giorni-container');
+
+    if (dayTemplate && daysContainer) {
+        giorni.forEach(giorno => {
+            const dayClone = dayTemplate.content.cloneNode(true);
+            const daySlots = dayClone.querySelector('.day-time-slots');
+
+            // Sostituisci i placeholder
+            daySlots.id = daySlots.id.replace('[DAY]', giorno.key);
+            dayClone.querySelector('.day-title').textContent = giorno.label;
+
+            // Sostituisci [DAY] in tutti gli altri elementi
+            const elements = dayClone.querySelectorAll('[id*="[DAY]"], [data-day="[DAY]"]');
+            elements.forEach(el => {
+                if (el.id) el.id = el.id.replace('[DAY]', giorno.key);
+                if (el.getAttribute('data-day')) el.setAttribute('data-day', giorno.key);
+                if (el.getAttribute('for')) el.setAttribute('for', el.getAttribute('for').replace('[DAY]', giorno.key));
+            });
+
+            daysContainer.appendChild(dayClone);
+
+            // Mostra solo il primo giorno, nascondi gli altri
+            if (giorno.key !== 'lunedi') {
+                document.getElementById(`slots-${giorno.key}`).classList.add('d-none');
             }
         });
+    }
 
-        // Se non ci sono fasce valide
-        if (!orarioGiorno) {
-            orarioGiorno = 'Chiuso';
-        }
+    // Per il form di modifica ristorante
+    const editDayTemplate = document.getElementById('edit-day-template');
+    const editDaysContainer = document.getElementById('edit-orari-giorni-container');
 
-        hiddenField.value = orarioGiorno;
-    });
+    if (editDayTemplate && editDaysContainer) {
+        giorni.forEach(giorno => {
+            const dayClone = editDayTemplate.content.cloneNode(true);
+            const daySlots = dayClone.querySelector('.day-time-slots');
+
+            // Sostituisci i placeholder
+            daySlots.id = daySlots.id.replace('[DAY]', giorno.key);
+            dayClone.querySelector('.day-title').textContent = giorno.label;
+
+            // Sostituisci [DAY] in tutti gli altri elementi
+            const elements = dayClone.querySelectorAll('[id*="[DAY]"], [data-day="[DAY]"]');
+            elements.forEach(el => {
+                if (el.id) el.id = el.id.replace('[DAY]', giorno.key);
+                if (el.getAttribute('data-day')) el.setAttribute('data-day', giorno.key);
+                if (el.getAttribute('for')) el.setAttribute('for', el.getAttribute('for').replace('[DAY]', giorno.key));
+            });
+
+            editDaysContainer.appendChild(dayClone);
+
+            // Mostra solo il primo giorno, nascondi gli altri
+            if (giorno.key !== 'lunedi') {
+                document.getElementById(`edit-slots-${giorno.key}`).classList.add('d-none');
+            }
+        });
+    }
 };
 
 // Funzione per gestire l'interazione con i controlli dell'orario
 const setupTimeControls = (prefix = '') => {
+    // PATCH: selettore base più robusto per distinguere i modali
+    let baseSelector;
+    if (prefix === 'edit-') {
+        baseSelector = '#modificaRistoranteModal ';
+    } else {
+        baseSelector = '#nuovoRistoranteModal ';
+    }
+
     // Gestione dei tab per i giorni della settimana
-    const dayItems = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-item`);
-    const daySlots = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-time-slots`);
+    const dayItems = document.querySelectorAll(`${baseSelector}.day-item`);
+    const daySlots = document.querySelectorAll(`${baseSelector}.day-time-slots`);
 
-    dayItems.forEach(item => {
-        item.addEventListener('click', () => {
-            // Rimuovi la classe active da tutti i tab
+    // Event delegation per i tab dei giorni
+    const dayTabs = document.querySelector(`${baseSelector}.day-selector`);
+    if (dayTabs) {
+        dayTabs.addEventListener('click', (e) => {
+            const dayItem = e.target.closest('.day-item');
+            if (!dayItem) return;
+
+            // Attiva il tab selezionato
             dayItems.forEach(i => i.classList.remove('active'));
-            // Aggiungi la classe active al tab cliccato
-            item.classList.add('active');
+            dayItem.classList.add('active');
 
-            // Nascondi tutti i contenitori di orari
-            daySlots.forEach(slot => slot.classList.add('d-none'));
+            // Mostra solo il contenitore relativo al giorno selezionato
+            const giorno = dayItem.getAttribute('data-day');
 
-            // Mostra il contenitore corrispondente al giorno selezionato
-            const giorno = item.getAttribute('data-day');
-            const targetSlot = document.getElementById(`${prefix}slots-${giorno}`);
-            if (targetSlot) {
-                targetSlot.classList.remove('d-none');
+            // Debug per vedere quale giorno è stato selezionato
+            // console.log(`Cambio al giorno: ${giorno}, prefisso: ${prefix}`);
+
+            // Costruisci l'ID corretto per gli slot
+            const slotId = `${prefix}slots-${giorno}`;
+
+            // Itera su tutti i contenitori dei giorni e mostra solo quello selezionato
+            daySlots.forEach(slot => {
+                const shouldShow = slot.id === slotId;
+                slot.classList.toggle('d-none', !shouldShow);
+            });
+        });
+    }
+
+    // Event delegation per i pulsanti di aggiunta fasce orarie
+    document.querySelectorAll(`${baseSelector}.time-slots-container`).forEach(container => {
+        container.addEventListener('click', (e) => {
+            const addButton = e.target.closest('.btn-add-slot');
+            if (addButton) {
+                const giorno = addButton.getAttribute('data-day');
+                console.log(`Tentativo di aggiungere slot per giorno: ${giorno}, prefisso: ${prefix}`);
+
+                // Costruisci l'ID corretto per il container degli slot
+                const slotsContainerId = `${prefix}${giorno}-slots`;
+                const slotsContainer = document.getElementById(slotsContainerId);
+
+                if (slotsContainer) {
+                    console.log(`Container slot trovato: ${slotsContainerId}`);
+
+                    // Crea una nuova fascia oraria
+                    const newSlot = document.createElement('div');
+                    newSlot.className = 'time-slot';
+                    newSlot.innerHTML = `
+                        <div class="slot-inputs">
+                            <div class="time-input">
+                                <label>Apertura</label>
+                                <input type="time" class="form-control time-start" value="12:00">
+                            </div>
+                            <div class="time-separator">-</div>
+                            <div class="time-input">
+                                <label>Chiusura</label>
+                                <input type="time" class="form-control time-end" value="15:00">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
+                    `;
+
+                    slotsContainer.appendChild(newSlot);
+
+                    // Aggiungi event listeners per gli input di orario
+                    newSlot.querySelectorAll('input[type="time"]').forEach(input => {
+                        input.addEventListener('change', () => updateHiddenTimeFields(prefix));
+                    });
+
+                    updateHiddenTimeFields(prefix);
+                } else {
+                    console.error(`Container slot non trovato: ${slotsContainerId}`);
+                }
+            }
+
+            const removeButton = e.target.closest('.btn-remove-slot');
+            if (removeButton) {
+                const slot = removeButton.closest('.time-slot');
+                if (slot) {
+                    slot.remove();
+                    updateHiddenTimeFields(prefix);
+                }
             }
         });
-    });
 
-    // Gestione dei pulsanti per aggiungere fasce orarie
-    const addSlotButtons = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.btn-add-slot`);
-    addSlotButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const giorno = button.getAttribute('data-day');
-            const slotsContainer = document.getElementById(`${prefix}${giorno}-slots`);
-
-            if (slotsContainer) {
-                // Crea una nuova fascia oraria
-                const newSlot = document.createElement('div');
-                newSlot.className = 'time-slot';
-                newSlot.innerHTML = `
-                    <div class="slot-inputs">
-                        <div class="time-input">
-                            <label>Apertura</label>
-                            <input type="time" class="form-control time-start" value="12:00">
-                        </div>
-                        <div class="time-separator">-</div>
-                        <div class="time-input">
-                            <label>Chiusura</label>
-                            <input type="time" class="form-control time-end" value="15:00">
-                        </div>
-                    </div>
-                    <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
-                `;
-
-                slotsContainer.appendChild(newSlot);
-
-                // Aggiungi event listener per il pulsante di rimozione
-                const removeButton = newSlot.querySelector('.btn-remove-slot');
-                removeButton.addEventListener('click', () => {
-                    newSlot.remove();
-                    updateHiddenTimeFields(prefix);
-                });
-
-                // Aggiungi event listeners per gli input di orario
-                const timeInputs = newSlot.querySelectorAll('input[type="time"]');
-                timeInputs.forEach(input => {
-                    input.addEventListener('change', () => {
-                        updateHiddenTimeFields(prefix);
-                    });
-                });
-
-                // Aggiorna i campi nascosti
+        // Event delegation per i cambiamenti negli input time
+        container.addEventListener('change', (e) => {
+            if (e.target.type === 'time') {
                 updateHiddenTimeFields(prefix);
             }
         });
     });
 
     // Gestione delle caselle di controllo "Chiuso"
-    const closedToggles = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-closed-toggle`);
-    closedToggles.forEach(toggle => {
+    document.querySelectorAll(`${baseSelector}.day-closed-toggle`).forEach(toggle => {
         toggle.addEventListener('change', () => {
             const giornoId = toggle.id.replace(`${prefix}chiuso-`, '');
             const slotsContainer = document.getElementById(`${prefix}${giornoId}-slots`);
 
             if (slotsContainer) {
-                // Se chiuso, disabilita tutti gli input
                 const isDisabled = toggle.checked;
                 const timeSlots = slotsContainer.querySelectorAll('.time-slot');
 
                 timeSlots.forEach(slot => {
-                    const inputs = slot.querySelectorAll('input');
-                    inputs.forEach(input => {
+                    slot.querySelectorAll('input').forEach(input => {
                         input.disabled = isDisabled;
                     });
-
-                    if (isDisabled) {
-                        slot.classList.add('disabled');
-                    } else {
-                        slot.classList.remove('disabled');
-                    }
+                    slot.classList.toggle('disabled', isDisabled);
                 });
 
-                // Aggiorna i campi nascosti
                 updateHiddenTimeFields(prefix);
             }
         });
     });
-
-    // Aggiungi event listeners per i pulsanti di rimozione esistenti
-    const removeButtons = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.btn-remove-slot`);
-    removeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const slot = button.closest('.time-slot');
-            if (slot) {
-                slot.remove();
-                updateHiddenTimeFields(prefix);
-            }
-        });
-    });
-
-    // Aggiungi event listeners per gli input di orario esistenti
-    const timeInputs = document.querySelectorAll(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''} input[type="time"]`);
-    timeInputs.forEach(input => {
-        input.addEventListener('change', () => {
-            updateHiddenTimeFields(prefix);
-        });
-    });
-
-    // Pulsante per copiare orari dal giorno precedente
-    const copyTimeBtn = document.getElementById(`${prefix}btn-copia-orari`);
-    if (copyTimeBtn) {
-        copyTimeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Trova il giorno corrente
-            const activeDay = document.querySelector(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-item.active`);
-            if (!activeDay) return;
-
-            const giornoAttuale = activeDay.getAttribute('data-day');
-            const giorni = ['lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato', 'domenica'];
-            const indexGiornoAttuale = giorni.indexOf(giornoAttuale);
-
-            // Se è lunedì, non c'è un giorno precedente
-            if (indexGiornoAttuale <= 0) {
-                alert('Non c\'è un giorno precedente da cui copiare gli orari.');
-                return;
-            }
-
-            const giornoPrecedente = giorni[indexGiornoAttuale - 1];
-
-            // Copia il valore dal campo nascosto del giorno precedente
-            const fieldPrecedenteId = `${prefix}orari${giornoPrecedente.charAt(0).toUpperCase() + giornoPrecedente.slice(1)}`;
-            const fieldAttualeId = `${prefix}orari${giornoAttuale.charAt(0).toUpperCase() + giornoAttuale.slice(1)}`;
-
-            const fieldPrecedente = document.getElementById(fieldPrecedenteId);
-            const fieldAttuale = document.getElementById(fieldAttualeId);
-
-            if (fieldPrecedente && fieldAttuale) {
-                fieldAttuale.value = fieldPrecedente.value;
-
-                // Aggiorna anche la visualizzazione
-                // (questa è una semplificazione - dovresti aggiornare gli slot effettivi)
-                alert(`Orari copiati da ${giornoPrecedente} a ${giornoAttuale}`);
-            }
-        });
-    }
-
-    // Pulsante per aggiungere orari pranzo e cena
-    const addLunchDinnerBtn = document.getElementById(`${prefix}btn-aggiungi-pranzo-cena`);
-    if (addLunchDinnerBtn) {
-        addLunchDinnerBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Trova il giorno corrente
-            const activeDay = document.querySelector(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-item.active`);
-            if (!activeDay) return;
-
-            const giorno = activeDay.getAttribute('data-day');
-            const slotsContainer = document.getElementById(`${prefix}${giorno}-slots`);
-
-            if (slotsContainer) {
-                // Rimuovi tutti gli slot esistenti
-                slotsContainer.innerHTML = '';
-
-                // Aggiungi slot pranzo
-                const lunchSlot = document.createElement('div');
-                lunchSlot.className = 'time-slot';
-                lunchSlot.innerHTML = `
-                    <div class="slot-inputs">
-                        <div class="time-input">
-                            <label>Apertura</label>
-                            <input type="time" class="form-control time-start" value="12:00">
-                        </div>
-                        <div class="time-separator">-</div>
-                        <div class="time-input">
-                            <label>Chiusura</label>
-                            <input type="time" class="form-control time-end" value="15:00">
-                        </div>
-                    </div>
-                    <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
-                `;
-
-                // Aggiungi slot cena
-                const dinnerSlot = document.createElement('div');
-                dinnerSlot.className = 'time-slot';
-                dinnerSlot.innerHTML = `
-                    <div class="slot-inputs">
-                        <div class="time-input">
-                            <label>Apertura</label>
-                            <input type="time" class="form-control time-start" value="19:00">
-                        </div>
-                        <div class="time-separator">-</div>
-                        <div class="time-input">
-                            <label>Chiusura</label>
-                            <input type="time" class="form-control time-end" value="23:00">
-                        </div>
-                    </div>
-                    <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
-                `;
-
-                slotsContainer.appendChild(lunchSlot);
-                slotsContainer.appendChild(dinnerSlot);
-
-                // Aggiungi event listeners per i pulsanti di rimozione
-                const removeButtons = slotsContainer.querySelectorAll('.btn-remove-slot');
-                removeButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const slot = button.closest('.time-slot');
-                        if (slot) {
-                            slot.remove();
-                            updateHiddenTimeFields(prefix);
-                        }
-                    });
-                });
-
-                // Aggiungi event listeners per gli input di orario
-                const timeInputs = slotsContainer.querySelectorAll('input[type="time"]');
-                timeInputs.forEach(input => {
-                    input.addEventListener('change', () => {
-                        updateHiddenTimeFields(prefix);
-                    });
-                });
-
-                // Aggiorna i campi nascosti
-                updateHiddenTimeFields(prefix);
-            }
-        });
-    }
-
-    // Pulsante per resettare orari
-    const resetTimeBtn = document.getElementById(`${prefix}btn-reset-orari`);
-    if (resetTimeBtn) {
-        resetTimeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Trova il giorno corrente
-            const activeDay = document.querySelector(`${prefix ? '#' + prefix.slice(0, -1) + ' ' : ''}.day-item.active`);
-            if (!activeDay) return;
-
-            const giorno = activeDay.getAttribute('data-day');
-            const slotsContainer = document.getElementById(`${prefix}${giorno}-slots`);
-
-            if (slotsContainer) {
-                // Rimuovi tutti gli slot esistenti
-                slotsContainer.innerHTML = '';
-
-                // Aggiungi uno slot predefinito
-                const defaultSlot = document.createElement('div');
-                defaultSlot.className = 'time-slot';
-                defaultSlot.innerHTML = `
-                    <div class="slot-inputs">
-                        <div class="time-input">
-                            <label>Apertura</label>
-                            <input type="time" class="form-control time-start" value="12:00">
-                        </div>
-                        <div class="time-separator">-</div>
-                        <div class="time-input">
-                            <label>Chiusura</label>
-                            <input type="time" class="form-control time-end" value="15:00">
-                        </div>
-                    </div>
-                    <button type="button" class="btn-remove-slot"><i class="bi bi-trash"></i></button>
-                `;
-
-                slotsContainer.appendChild(defaultSlot);
-
-                // Aggiungi event listener per il pulsante di rimozione
-                const removeButton = defaultSlot.querySelector('.btn-remove-slot');
-                removeButton.addEventListener('click', () => {
-                    defaultSlot.remove();
-                    updateHiddenTimeFields(prefix);
-                });
-
-                // Aggiungi event listeners per gli input di orario
-                const timeInputs = defaultSlot.querySelectorAll('input[type="time"]');
-                timeInputs.forEach(input => {
-                    input.addEventListener('change', () => {
-                        updateHiddenTimeFields(prefix);
-                    });
-                });
-
-                // Aggiorna i campi nascosti
-                updateHiddenTimeFields(prefix);
-            }
-        });
-    }
 };
+
+// Funzione per pulire il form di nuovo ristorante
+const resetNuovoRistoranteForm = () => {
+    document.getElementById('nuovoRistoranteForm').reset();
+    document.getElementById('latitudine').value = '';
+    document.getElementById('longitudine').value = '';
+    document.getElementById('risultatoRicerca').style.display = 'none';
+    document.getElementById('modalAlertArea').innerHTML = '';
+
+    // Reset orari
+    const slotsContainers = document.querySelectorAll('[id$="-slots"]');
+    slotsContainers.forEach(container => {
+        if (container.id.startsWith('lunedi') || container.id.startsWith('edit-lunedi')) {
+            // Mantieni solo un time slot nel giorno di lunedì
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+
+            // Reset dell'unico time slot rimanente
+            const slot = container.querySelector('.time-slot');
+            if (slot) {
+                slot.querySelector('.time-start').value = '12:00';
+                slot.querySelector('.time-end').value = '15:00';
+            }
+        } else {
+            // Svuota completamente gli altri giorni
+            container.innerHTML = '';
+        }
+    });
+
+    // Aggiorna i campi nascosti degli orari
+    updateHiddenTimeFields();
+
+    // Reset della visualizzazione dei giorni
+    document.querySelectorAll('.day-item').forEach((item, index) => {
+        item.classList.toggle('active', index === 0);
+    });
+
+    document.querySelectorAll('.day-time-slots').forEach((slots, index) => {
+        slots.classList.toggle('d-none', index !== 0);
+    });
+
+    // Deseleziona tutti i checkbox "Chiuso"
+    document.querySelectorAll('.day-closed-toggle').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+};
+
+// Funzione per pulire il form di modifica ristorante
+const resetModificaRistoranteForm = () => {
+    document.getElementById('modificaRistoranteForm').reset();
+    document.getElementById('ristoranteId').value = '';
+    document.getElementById('edit-latitudine').value = '';
+    document.getElementById('edit-longitudine').value = '';
+    document.getElementById('edit-risultatoRicerca').style.display = 'none';
+    document.getElementById('edit-modalAlertArea').innerHTML = '';
+
+    // Reset orari (stessa logica del form nuovo)
+    const editSlotsContainers = document.querySelectorAll('[id^="edit-"][id$="-slots"]');
+    editSlotsContainers.forEach(container => {
+        if (container.id.startsWith('edit-lunedi')) {
+            // Mantieni solo un time slot nel giorno di lunedì
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+
+            // Reset dell'unico time slot rimanente
+            const slot = container.querySelector('.time-slot');
+            if (slot) {
+                slot.querySelector('.time-start').value = '12:00';
+                slot.querySelector('.time-end').value = '15:00';
+            }
+        } else {
+            // Svuota completamente gli altri giorni
+            container.innerHTML = '';
+        }
+    });
+
+    // Aggiorna i campi nascosti degli orari
+    updateHiddenTimeFields('edit-');
+
+    // Reset della visualizzazione dei giorni
+    document.querySelectorAll('#modificaRistoranteModal .day-item').forEach((item, index) => {
+        item.classList.toggle('active', index === 0);
+    });
+
+    document.querySelectorAll('#modificaRistoranteModal .day-time-slots').forEach((slots, index) => {
+        slots.classList.toggle('d-none', index !== 0);
+    });
+
+    // Deseleziona tutti i checkbox "Chiuso"
+    document.querySelectorAll('#modificaRistoranteModal .day-closed-toggle').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+};
+
+// Funzione per abilitare fade e drag scroll sugli slider orari
+function abilitaSliderOrari() {
+    document.querySelectorAll('.orari-scroll-wrapper').forEach(wrapper => {
+        const inner = wrapper.querySelector('.orari-scroll-inner');
+        if (!inner) return;
+
+        // Rimuovi eventuali frecce precedenti
+        wrapper.querySelectorAll('.orari-slider-arrow').forEach(el => el.remove());
+
+        // Aggiorna fade laterale in base all'overflow
+        function aggiornaFade() {
+            const hasOverflow = inner.scrollWidth > wrapper.clientWidth + 2;
+            wrapper.classList.toggle('has-overflow', hasOverflow);
+        }
+
+        aggiornaFade();
+        window.addEventListener('resize', aggiornaFade);
+
+        // Drag scroll con mouse
+        let isDown = false;
+        let startX, scrollLeft;
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            wrapper.classList.add('dragging');
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+            document.body.style.userSelect = 'none';
+        });
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+            wrapper.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        });
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            wrapper.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        });
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.2;
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+
+        // Drag scroll touch
+        let isTouching = false;
+        let touchStartX = 0;
+        let touchScrollLeft = 0;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            isTouching = true;
+            wrapper.classList.add('dragging');
+            touchStartX = e.touches[0].pageX;
+            touchScrollLeft = wrapper.scrollLeft;
+        }, {passive: true});
+        wrapper.addEventListener('touchend', () => {
+            isTouching = false;
+            wrapper.classList.remove('dragging');
+        });
+        wrapper.addEventListener('touchmove', (e) => {
+            if (!isTouching || e.touches.length !== 1) return;
+            const x = e.touches[0].pageX;
+            const walk = (x - touchStartX) * 1.2;
+            wrapper.scrollLeft = touchScrollLeft - walk;
+        }, {passive: false});
+
+        // Aggiorna fade su scroll
+        wrapper.addEventListener('scroll', aggiornaFade);
+
+        // Aggiorna fade anche se cambia contenuto
+        new ResizeObserver(aggiornaFade).observe(inner);
+    });
+}
 
 // Inizializzazione all'avvio della pagina
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("Inizializzazione della pagina...");
-    
+
     // Verifica se l'utente è loggato
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const userId = sessionStorage.getItem('userId');
     const username = sessionStorage.getItem('username');
     const ruolo = sessionStorage.getItem('ruolo');
 
-    console.log("Stato login:", { isLoggedIn, userId, username, ruolo });
+    console.log("Stato login:", {isLoggedIn, userId, username, ruolo});
 
     // Mostra username nella navbar
     const usernameElement = document.getElementById('username-display');
@@ -1146,36 +1291,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // CORREZIONI PER PREVENIRE IL REFRESH DELLA PAGINA
-
-    // 1. Blocca tutti i form per impedirne l'invio automatico
+    // Previeni il refresh della pagina dai form
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            return false;
-        });
+        form.addEventListener('submit', e => e.preventDefault());
     });
 
-    // 2. Imposta l'attributo type="button" a tutti i bottoni all'interno dei form
+    // Imposta type="button" ai bottoni nei form
     document.querySelectorAll('form button:not([type])').forEach(button => {
         button.setAttribute('type', 'button');
     });
 
-    // 3. Modifica tutti i link con href="#"
+    // Modifica i link con href="#"
     document.querySelectorAll('a[href="#"]').forEach(link => {
         link.setAttribute('href', 'javascript:void(0)');
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-        });
+        link.addEventListener('click', e => e.preventDefault());
     });
+
+    // Inizializza i template dei giorni della settimana
+    initializeDayTemplates();
 
     // Inizializza i controlli per la gestione degli orari
     setupTimeControls();
     setupTimeControls('edit-');
-    
+
     // Aggiorna i campi nascosti per gli orari
     updateHiddenTimeFields();
     updateHiddenTimeFields('edit-');
+
+    // Aggiungi event listener per resettare i form quando i modal vengono chiusi
+    document.getElementById('nuovoRistoranteModal').addEventListener('hidden.bs.modal', resetNuovoRistoranteForm);
+    document.getElementById('modificaRistoranteModal').addEventListener('hidden.bs.modal', resetModificaRistoranteForm);
 
     // Attendi che il bridge sia disponibile prima di chiamare la funzione
     console.log("In attesa del bridge...");
@@ -1184,48 +1329,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         await caricaRistoranti(userId);
     });
 
-    // Gestisci il logout
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
+    // Dopo ogni render delle card, abilita lo slider orari
+    const oldCaricaRistoranti = caricaRistoranti;
+    caricaRistoranti = async function(...args) {
+        await oldCaricaRistoranti.apply(this, args);
+        setTimeout(abilitaSliderOrari, 0);
+    };
+
+    // Primo caricamento
+    await waitForBridge(async () => {
+        // ...existing code...
+        await caricaRistoranti(userId);
+    });
+
+    // Event delegation per gestire gli eventi sui bottoni principali
+    document.addEventListener('click', async (e) => {
+        // Gestione logout
+        if (e.target.closest('#logout-link')) {
             e.preventDefault();
             sessionStorage.clear();
             window.location.href = "index.html";
-        });
-    }
+        }
 
-    // Event listeners per la creazione
-    const cercaIndirizzoBtn = document.getElementById('cercaIndirizzo');
-    if (cercaIndirizzoBtn) {
-        cercaIndirizzoBtn.addEventListener('click', () => geocodeAddressHandler());
-    }
+        // Ricerca indirizzi
+        if (e.target.closest('#cercaIndirizzo')) {
+            await geocodeAddressHandler();
+        }
 
-    const salvaRistoranteBtn = document.getElementById('salvaRistorante');
-    if (salvaRistoranteBtn) {
-        salvaRistoranteBtn.addEventListener('click', salvaRistoranteHandler);
-    }
+        if (e.target.closest('#edit-cercaIndirizzo')) {
+            await geocodeAddressHandler('edit-');
+        }
 
-    // Event listeners per la modifica
-    const cercaIndirizzoEditBtn = document.getElementById('edit-cercaIndirizzo');
-    if (cercaIndirizzoEditBtn) {
-        cercaIndirizzoEditBtn.addEventListener('click', () => geocodeAddressHandler('edit-'));
-    }
+        // Salvataggio ristoranti
+        if (e.target.closest('#salvaRistorante')) {
+            await salvaRistoranteHandler(e);
+        }
 
-    const salvaModificheBtn = document.getElementById('salvaModificheRistorante');
-    if (salvaModificheBtn) {
-        salvaModificheBtn.addEventListener('click', salvaModificheRistoranteHandler);
-    }
+        if (e.target.closest('#salvaModificheRistorante')) {
+            await salvaModificheRistoranteHandler(e);
+        }
+    });
 
-    // Modifica l'event listener per il pulsante recensioni nelle card
-    setTimeout(() => {
-        document.querySelectorAll('.view-recensioni').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ristoranteId = btn.getAttribute('data-id');
-                apriModalRecensioni(ristoranteId);
-            });
-        });
-    }, 1000); // Attendi un po' per assicurarti che le card siano state create
-    
     console.log("Inizializzazione completata!");
 });
