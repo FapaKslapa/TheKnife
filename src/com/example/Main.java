@@ -5,30 +5,25 @@ import com.example.models.Recensione;
 import com.example.models.Ristorante;
 import com.example.models.Utente;
 import com.example.utils.LocalDateTimeAdapter;
-import com.google.gson.GsonBuilder;
-import javafx.application.Platform;
-import javafx.concurrent.Worker;
-import services.AuthService;
-import services.RecensioneService;
-import services.RistoranteService;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import services.AuthService;
+import services.RecensioneService;
+import services.RistoranteService;
 
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Classe principale dell'applicazione TheKnife che gestisce l'interfaccia utente
@@ -43,7 +38,7 @@ import java.util.Optional;
  */
 public class Main extends Application {
     /**
-     *  Servizio per la gestione dell'autenticazione e degli utenti
+     * Servizio per la gestione dell'autenticazione e degli utenti
      */
     private AuthService authService;
 
@@ -94,6 +89,10 @@ public class Main extends Application {
             // Registra i metodi per i ristoranti
             registerRistoranteMethods(bridge);
             System.out.println("Metodi ristorante registrati");
+
+            // Registra i metodi per i preferiti utente-ristorante
+            registerUserLikeMethods(bridge);
+            System.out.println("Metodi userLike registrati");
 
             // Registra i metodi per le recensioni
             registerRecensioneMethods(bridge);
@@ -476,6 +475,48 @@ public class Main extends Application {
 
             // Restituisci i risultati
             return Map.of("success", true, "ristoranti", risultati);
+        });
+    }
+
+    /**
+     * Registra i metodi per la gestione dei preferiti utente-ristorante nel bridge JavaScript.
+     *
+     * @param bridge Il bridge JavaScript-Java in cui registrare i metodi
+     */
+    private void registerUserLikeMethods(JavaScriptBridge bridge) {
+        // Aggiungi un ristorante ai preferiti dell'utente
+        bridge.registerMethod("aggiungiRistoranteAiPreferiti", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String userId = (String) params.get("userId");
+            String ristoranteId = (String) params.get("ristoranteId");
+            ristoranteService.aggiungiRistoranteAiPreferiti(userId, ristoranteId);
+            return Map.of("success", true);
+        });
+
+        // Rimuovi un ristorante dai preferiti dell'utente
+        bridge.registerMethod("rimuoviRistoranteDaiPreferiti", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String userId = (String) params.get("userId");
+            String ristoranteId = (String) params.get("ristoranteId");
+            ristoranteService.rimuoviRistoranteDaiPreferiti(userId, ristoranteId);
+            return Map.of("success", true);
+        });
+
+        // Ottieni tutti i ristoranti preferiti di un utente
+        bridge.registerMethod("getRistorantiPreferitiByUtente", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String userId = (String) params.get("userId");
+            List<String> ristorantiIds = ristoranteService.getRistorantiPreferitiByUtente(userId);
+            return Map.of("success", true, "ristorantiIds", ristorantiIds);
+        });
+
+        // Verifica se un ristorante è tra i preferiti dell'utente
+        bridge.registerMethod("isRistorantePreferito", args -> {
+            Map<String, Object> params = gson.fromJson(args, Map.class);
+            String userId = (String) params.get("userId");
+            String ristoranteId = (String) params.get("ristoranteId");
+            boolean liked = ristoranteService.isRistorantePreferito(userId, ristoranteId);
+            return Map.of("success", true, "liked", liked);
         });
     }
 

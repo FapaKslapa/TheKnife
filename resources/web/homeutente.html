@@ -42,7 +42,8 @@
                     <a class="nav-link" href="#" id="btn-preferiti"><i class="bi bi-heart me-1"></i>Preferiti</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="btn-mie-recensioni"><i class="bi bi-star me-1"></i>Le mie recensioni</a>
+                    <a class="nav-link" href="#" id="btn-mie-recensioni"><i class="bi bi-star me-1"></i>Le mie
+                        recensioni</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto" id="auth-buttons">
@@ -58,8 +59,11 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Profilo</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" id="logout-link"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="logout-link"><i
+                                class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -68,12 +72,18 @@
 </nav>
 
 <div class="container mt-4">
+    <!-- Titolo dinamico per la sezione -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 id="titolo-sezione-ristoranti"><i class="bi bi-shop me-2"></i>Tutti i ristoranti</h3>
+    </div>
+
     <!-- Filtri di ricerca -->
     <div class="card bg-dark-subtle border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtri di ricerca</h5>
-                <button class="btn-slim" type="button" data-bs-toggle="collapse" data-bs-target="#filtriCollapse" aria-expanded="true" aria-controls="filtriCollapse">
+                <button class="btn-slim" type="button" data-bs-toggle="collapse" data-bs-target="#filtriCollapse"
+                        aria-expanded="true" aria-controls="filtriCollapse">
                     <i class="bi bi-chevron-up"></i>
                 </button>
             </div>
@@ -86,7 +96,8 @@
                                 <label class="filter-label">Tipo di cucina</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-tag"></i></span>
-                                    <input type="text" class="form-control border-start-0" id="filtro-tipo-cucina" placeholder="Italiana, Giapponese...">
+                                    <input type="text" class="form-control border-start-0" id="filtro-tipo-cucina"
+                                           placeholder="Italiana, Giapponese...">
                                 </div>
                             </div>
                         </div>
@@ -95,7 +106,8 @@
                             <div class="filter-group">
                                 <label class="filter-label">Fascia di prezzo</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-cash-coin"></i></span>
+                                    <span class="input-group-text bg-transparent border-end-0"><i
+                                            class="bi bi-cash-coin"></i></span>
                                     <select class="form-select border-start-0" id="filtro-fascia-prezzo">
                                         <option value="">Qualsiasi</option>
                                         <option value="1">€ - Economico</option>
@@ -132,7 +144,8 @@
 
                         <div class="col-12 mt-2">
                             <hr class="my-1">
-                            <a href="#" class="btn-slim mt-2" data-bs-toggle="collapse" data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch">
+                            <a href="#" class="btn-slim mt-2" data-bs-toggle="collapse" data-bs-target="#advancedSearch"
+                               aria-expanded="false" aria-controls="advancedSearch">
                                 <i class="bi bi-sliders me-1"></i>Ricerca avanzata
                                 <i class="bi bi-chevron-down ms-1"></i>
                             </a>
@@ -144,9 +157,13 @@
                                     <div class="filter-group">
                                         <label class="filter-label">Posizione</label>
                                         <div class="input-group">
-                                            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-geo-alt"></i></span>
-                                            <input type="text" class="form-control border-start-0 border-end-0" id="filtro-indirizzo" placeholder="Indirizzo per ricerca nelle vicinanze">
-                                            <button class="btn btn-outline-primary border-start-0" type="button" id="btn-cerca-indirizzo">
+                                            <span class="input-group-text bg-transparent border-end-0"><i
+                                                    class="bi bi-geo-alt"></i></span>
+                                            <input type="text" class="form-control border-start-0 border-end-0"
+                                                   id="filtro-indirizzo"
+                                                   placeholder="Indirizzo per ricerca nelle vicinanze">
+                                            <button class="btn btn-outline-primary border-start-0" type="button"
+                                                    id="btn-cerca-indirizzo">
                                                 <i class="bi bi-search"></i>
                                             </button>
                                         </div>
@@ -162,7 +179,8 @@
                                     <div class="filter-group">
                                         <label class="filter-label">Distanza massima</label>
                                         <div class="input-group">
-                                            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-signpost-split"></i></span>
+                                            <span class="input-group-text bg-transparent border-end-0"><i
+                                                    class="bi bi-signpost-split"></i></span>
                                             <select class="form-select border-start-0" id="filtro-distanza" disabled>
                                                 <option value="1">1 km</option>
                                                 <option value="2">2 km</option>
@@ -184,15 +202,12 @@
     <div id="alertArea"></div>
 
     <div class="row g-4" id="ristoranti-container">
-        <!-- Le card vengono ora generate con la stessa struttura e classi del ristoratore -->
-        <!-- I ristoranti verranno caricati dinamicamente qui -->
-        <div class="col-12 text-center py-5" id="loading-indicator">
+        <div class="col-12 text-center py-5 d-none" id="loading-indicator">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Caricamento...</span>
             </div>
             <p class="mt-2">Caricamento ristoranti...</p>
         </div>
-
         <div class="col-12 text-center py-5 d-none" id="no-ristoranti">
             <div class="empty-state">
                 <i class="bi bi-shop display-1"></i>
@@ -209,9 +224,11 @@
         <div class="modal-content bg-dark">
             <div class="modal-header border-bottom border-secondary">
                 <h5 class="modal-title">
-                    <i class="bi bi-star me-2"></i>Recensioni per <span id="recensioni-ristorante-nome">Ristorante</span>
+                    <i class="bi bi-star me-2"></i>Recensioni per <span
+                        id="recensioni-ristorante-nome">Ristorante</span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
                 <div id="recensioni-container">
@@ -221,7 +238,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="no-recensioni" class="d-none">
                     <div class="empty-state py-4">
                         <i class="bi bi-chat-square-text display-4 mb-3"></i>
@@ -236,7 +253,7 @@
                         <i class="bi bi-info-circle me-2"></i>Accedi per lasciare una recensione
                     </div>
                 </div>
-                
+
                 <div id="logged-in-recensione-controls" class="w-100 d-none">
                     <div class="card bg-dark-subtle border-0 shadow-sm mb-0">
                         <div class="card-body">
@@ -246,13 +263,15 @@
                                 <div class="row g-3">
                                     <div class="col-md-8">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control bg-dark border-secondary text-white" id="recensione-titolo" placeholder=" " required>
+                                            <input type="text" class="form-control bg-dark border-secondary text-white"
+                                                   id="recensione-titolo" placeholder=" " required>
                                             <label for="recensione-titolo">Titolo</label>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-floating">
-                                            <select class="form-select bg-dark border-secondary text-white" id="recensione-voto" required>
+                                            <select class="form-select bg-dark border-secondary text-white"
+                                                    id="recensione-voto" required>
                                                 <option value="5">5 - Eccellente</option>
                                                 <option value="4">4 - Molto buono</option>
                                                 <option value="3" selected>3 - Buono</option>
@@ -264,7 +283,9 @@
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <textarea class="form-control bg-dark border-secondary text-white" id="recensione-testo" style="height: 100px" placeholder=" " required></textarea>
+                                            <textarea class="form-control bg-dark border-secondary text-white"
+                                                      id="recensione-testo" style="height: 100px" placeholder=" "
+                                                      required></textarea>
                                             <label for="recensione-testo">La tua recensione</label>
                                         </div>
                                     </div>
@@ -284,5 +305,23 @@
 </div>
 
 <script src="./src/homeutente.js"></script>
+<script>
+    // Cambia il titolo della sezione in base alla tab attiva
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnPreferiti = document.getElementById('btn-preferiti');
+        const titoloSezione = document.getElementById('titolo-sezione-ristoranti');
+        const btnEsplora = document.querySelector('.navbar .nav-link[href="#"]');
+        if (btnPreferiti && titoloSezione) {
+            btnPreferiti.addEventListener('click', () => {
+                titoloSezione.innerHTML = '<i class="bi bi-heart me-2"></i>I tuoi preferiti';
+            });
+        }
+        if (btnEsplora && titoloSezione) {
+            btnEsplora.addEventListener('click', () => {
+                titoloSezione.innerHTML = '<i class="bi bi-shop me-2"></i>Tutti i ristoranti';
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -1155,47 +1155,286 @@ body.modal-open {
     }
 }
 
-.action-bar-glass {
+.ristorante-indirizzo {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--primary-color);
     display: flex;
-    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
+
+/* --- INDIRIZZO CARD GLASSY --- */
+.indirizzo-card-glassy {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.1rem;
+    background: rgba(130,86,208,0.13);
+    border: 1.5px solid rgba(130,86,208,0.18);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px 0 rgba(130,86,208,0.10);
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.2rem;
+    position: relative;
+    animation: fadeIn 0.3s;
+    backdrop-filter: blur(8px) saturate(1.1);
+    color: #fff;
+    min-height: 70px;
+}
+.indirizzo-card-glassy.success {
+    background: rgba(40,199,111,0.13);
+    border-color: var(--success-color);
+}
+.indirizzo-card-glassy .indirizzo-card-icon {
+    font-size: 2.1rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.indirizzo-card-glassy.success .indirizzo-card-icon {
+    color: var(--success-color);
+}
+.indirizzo-card-glassy .indirizzo-card-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.indirizzo-card-glassy .indirizzo-card-title {
+    font-weight: 700;
+    font-size: 1.07rem;
+    color: var(--primary-color);
+    margin-bottom: 0.18rem;
+    letter-spacing: 0.2px;
+}
+.indirizzo-card-glassy.success .indirizzo-card-title {
+    color: var(--success-color);
+}
+.indirizzo-card-glassy .indirizzo-card-address {
+    font-size: 1.01rem;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 0.18rem;
+    word-break: break-word;
+}
+.indirizzo-card-glassy .indirizzo-card-coords {
+    font-size: 0.93rem;
+    color: var(--info-color);
+    opacity: 0.85;
+    margin-bottom: 0.1rem;
+}
+.indirizzo-card-glassy .indirizzo-card-actions {
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(34, 28, 46, 0.22);
+    margin-left: 0.5rem;
+}
+.indirizzo-card-glassy .btn-primary-action.btn-sm {
+    padding: 0.35rem 1.1rem;
+    font-size: 0.98rem;
+    border-radius: 8px;
+    margin-top: 0.2rem;
+}
+
+/* Alert glassy per errori indirizzo */
+.glassy-alert {
+    background: rgba(234,84,85,0.13) !important;
+    color: var(--danger-color) !important;
+    border: 1.5px solid rgba(234,84,85,0.18) !important;
+    border-radius: 10px !important;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(234,84,85,0.08);
+    padding: 0.8rem 1.1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.2rem;
+    font-size: 1.01rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    backdrop-filter: blur(4px) saturate(1.1);
+}
+
+/* --- MODAL RECENSIONI --- */
+#recensioniModal .modal-content {
+    background: rgba(34, 28, 46, 0.97) !important;
+    border-radius: 18px;
+    border: 1.5px solid rgba(130,86,208,0.18);
+    box-shadow: 0 12px 40px 0 rgba(130,86,208,0.18), 0 2px 12px rgba(0,0,0,0.18);
+    backdrop-filter: blur(16px) saturate(1.2);
+    color: #fff;
+    padding: 0;
+}
+#recensioniModal .modal-header,
+#recensioniModal .modal-footer {
+    background: rgba(30, 30, 40, 0.32) !important;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 1.5px solid rgba(130,86,208,0.13);
+    backdrop-filter: blur(8px) saturate(1.3);
+    padding: 1.2rem 1.5rem 1rem 1.5rem;
+}
+#recensioniModal .modal-footer {
+    border-radius: 0 0 18px 18px;
+    border-top: 1.5px solid rgba(130,86,208,0.13);
+    border-bottom: none;
+    padding: 1.1rem 1.5rem;
+}
+#recensioniModal .modal-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(130,86,208,0.13);
+    font-size: 1.25rem;
+}
+#recensioniModal .modal-body {
+    padding: 2rem 2.2rem 1.2rem 2.2rem;
+    background: transparent;
+}
+
+/* Card recensione compatta */
+.review-card-compact {
+    background: rgba(130,86,208,0.10);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(130,86,208,0.10);
+    padding: 1.1rem 1.3rem 1rem 1.3rem;
+    margin-bottom: 1.1rem;
+    color: #fff;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    backdrop-filter: blur(4px) saturate(1.1);
+    transition: box-shadow 0.18s, background 0.18s;
+}
+.review-card-compact .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+.review-card-compact .review-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+}
+.review-card-compact .review-title {
+    font-weight: 700;
+    font-size: 1.09rem;
+    margin: 0;
+    color: var(--primary-color);
+    letter-spacing: 0.2px;
+}
+.review-card-compact .review-stars {
+    color: var(--accent-color);
+    font-size: 1.13rem;
+    letter-spacing: 0.1rem;
+}
+.review-card-compact .review-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.93rem;
+    color: rgba(255,255,255,0.7);
+    gap: 0.1rem;
+}
+.review-card-compact .review-author {
+    font-weight: 600;
+    color: var(--info-color);
+}
+.review-card-compact .review-date {
+    font-size: 0.91rem;
+    color: rgba(255,255,255,0.5);
+}
+.review-card-compact .review-body {
+    margin-top: 0.3rem;
+    font-size: 1.01rem;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+}
+.review-card-compact .review-actions {
+    margin-top: 0.7rem;
+    display: flex;
+    gap: 0.5rem;
+}
+.review-card-compact .btn-slim,
+.review-card-compact .btn-slim-danger {
+    padding: 0.25rem 0.9rem;
+    font-size: 0.97rem;
+    border-radius: 7px;
+    font-weight: 500;
+    background: rgba(130,86,208,0.13);
+    color: var(--primary-color);
+    border: none;
+    transition: background 0.18s, color 0.18s;
+}
+.review-card-compact .btn-slim-danger {
+    background: rgba(234,84,85,0.13);
+    color: var(--danger-color);
+}
+.review-card-compact .btn-slim:hover,
+.review-card-compact .btn-slim:focus {
+    background: var(--primary-color);
+    color: #fff;
+}
+.review-card-compact .btn-slim-danger:hover,
+.review-card-compact .btn-slim-danger:focus {
+    background: var(--danger-color);
+    color: #fff;
+}
+
+/* Form recensione nel modal */
+#recensioniModal #logged-in-recensione-controls .card {
+    background: rgba(130,86,208,0.10);
+    border-radius: 14px;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    box-shadow: 0 2px 8px rgba(130,86,208,0.10);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.5rem 0.2rem 0.5rem;
+}
+#recensioniModal #logged-in-recensione-controls .form-floating > .form-control,
+#recensioniModal #logged-in-recensione-controls .form-floating > .form-select {
+    background: rgba(34,28,46,0.85);
+    color: #fff;
+    border: 1.5px solid rgba(130,86,208,0.18);
+}
+#recensioniModal #logged-in-recensione-controls .form-floating > label {
+    color: rgba(255,255,255,0.7);
+}
+#recensioniModal #logged-in-recensione-controls .btn-primary-action {
+    padding: 0.45rem 1.5rem;
+    font-size: 1.01rem;
+    border-radius: 8px;
+    margin-top: 0.2rem;
+}
+
+/* Empty state recensioni */
+#recensioniModal .empty-state {
+    background: rgba(130,86,208,0.07);
     border-radius: 12px;
-    padding: 0.18rem 0.32rem;
-    box-shadow: 0 2px 8px rgba(130, 86, 208, 0.10);
-    backdrop-filter: blur(6px) saturate(1.2);
+    padding: 1.2rem 1rem;
+    color: #fff;
+    text-align: center;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
 }
 
-/* --- TIME SLOT ORARI MODAL --- */
-.time-slot {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    margin-bottom: 0.7rem;
-    position: relative;
+/* --- FILTRI DI RICERCA --- */
+.card.bg-dark-subtle {
+    background: rgba(34, 28, 46, 0.82) !important;
+    border-radius: 18px;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    box-shadow: 0 4px 24px 0 rgba(130,86,208,0.10);
+    backdrop-filter: blur(12px) saturate(1.2);
 }
-
-/* Inputs e pulsante allineati orizzontalmente */
-.slot-inputs {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    flex: 1 1 auto;
+.filter-group, .filter-option-group {
+    margin-bottom: 0.5rem;
 }
-
-/* Pulsante elimina fascia oraria: allineato a destra e centrato verticalmente */
-.btn-remove-slot {
-    align-self: center;
-    margin-left: 1rem;
-    /* Correzione allineamento verticale */
-    position: relative;
-    top: 12px;
+.filter-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.2rem;
+    font-size: 1.01rem;
+    letter-spacing: 0.2px;
 }
-
-/* --- INPUT GLASSY PER I MODAL (esclusi orari) --- */
-.modal-content .form-control,
-.modal-content .form-select {
+.input-group .form-control,
+.input-group .form-select {
     background: rgba(130,86,208,0.10);
     border: 1.5px solid rgba(130,86,208,0.18);
     color: #fff;
@@ -1205,274 +1444,388 @@ body.modal-open {
     font-size: 1.05rem;
     font-family: inherit;
 }
-
-.modal-content .form-control:focus,
-.modal-content .form-select:focus {
+.input-group .form-control:focus,
+.input-group .form-select:focus {
     background: rgba(130,86,208,0.18);
     border-color: var(--primary-color);
     color: #fff;
     outline: none;
     box-shadow: 0 0 0 0.18rem rgba(130,86,208,0.13);
 }
-
-.modal-content .form-control::placeholder {
-    color: rgba(255,255,255,0.55);
-    opacity: 1;
-}
-
-.modal-content .form-label,
-.modal-content .form-floating > label,
-.modal-content .form-select + label {
-    color: rgba(255,255,255,0.8);
-    font-weight: 500;
-    letter-spacing: 0.1px;
-}
-
-/* Input disabilitati glassy */
-.modal-content .form-control:disabled,
-.modal-content .form-select:disabled {
+.input-group-text {
     background: rgba(130,86,208,0.07);
-    color: rgba(255,255,255,0.6);
-    opacity: 1;
-}
-
-/* Input group glassy */
-.modal-content .input-group {
-    background: rgba(130,86,208,0.07);
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(130,86,208,0.06);
-    padding: 0.1rem 0.2rem;
-}
-
-/* Bottone dentro input-group coerente */
-.modal-content .input-group .btn,
-.modal-content .input-group .btn-outline-primary {
-    border-radius: 8px !important;
-    margin-left: 0.3rem;
-    font-weight: 500;
-    font-size: 1.01rem;
-    background: rgba(130,86,208,0.10);
     color: var(--primary-color);
     border: 1.5px solid rgba(130,86,208,0.18);
-    transition: background 0.18s, color 0.18s, border 0.18s;
+    border-radius: 8px 0 0 8px;
+    font-weight: 600;
 }
-.modal-content .input-group .btn:hover,
-.modal-content .input-group .btn:focus,
-.modal-content .input-group .btn-outline-primary:hover,
-.modal-content .input-group .btn-outline-primary:focus {
-    background: var(--primary-color);
+.btn-search {
+    background: linear-gradient(90deg, rgba(130,86,208,0.92) 60%, rgba(255,159,67,0.80) 100%);
     color: #fff;
-    border-color: var(--primary-color);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1.08rem;
+    padding: 0.65rem 1.5rem;
+    box-shadow: 0 4px 24px 0 rgba(130,86,208,0.13);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.2px;
+    backdrop-filter: blur(2px);
+    width: 100%;
+}
+.btn-search:hover, .btn-search:focus {
+    background: linear-gradient(90deg, var(--primary-hover) 60%, var(--accent-color) 100%);
+    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(130,86,208,0.22);
+    transform: translateY(-2px) scale(1.03);
     outline: none;
 }
-
-/* --- SLIDER ORARI CON FRECCE --- */
-/* RIMOSSI: .orari-slider-arrow, .orari-slider-arrow.arrow-left, .orari-slider-arrow.arrow-right, .orari-slider-arrow:hover, .orari-slider-arrow[disabled] */
-/* RIMOSSO: z-index e display delle frecce */
-/* RIMOSSO: media query per .orari-slider-arrow */
-
-/* Slider orari solo con scroll orizzontale elegante */
-.orari-scroll-wrapper {
-    position: relative;
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-    padding-bottom: 8px;
-    margin: 0 -8px;
-    background: rgba(30, 30, 40, 0.22);
-    border-radius: 20px;
-    backdrop-filter: blur(3px) saturate(1.1);
-    box-shadow: 0 6px 32px 0 rgba(130, 86, 208, 0.13);
-    min-height: 132px;
-    transition: box-shadow 0.22s, background 0.22s;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) rgba(130,86,208,0.10);
-    -ms-overflow-style: none;
-    cursor: grab;
-    touch-action: pan-x;
-    user-select: auto;
+.btn-slim {
+    background: rgba(130,86,208,0.13);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1.01rem;
+    padding: 0.38rem 1.1rem;
+    transition: background 0.18s, color 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
 }
-.orari-scroll-wrapper:active {
-    cursor: grabbing;
-    user-select: none;
+.btn-slim:hover, .btn-slim:focus {
+    background: var(--primary-color);
+    color: #fff;
+    outline: none;
 }
-.orari-scroll-wrapper::-webkit-scrollbar {
-    height: 8px;
+.collapse.show {
+    transition: height 0.3s cubic-bezier(.4,0,.2,1);
+}
+#filtriCollapse {
+    margin-top: 0.5rem;
+}
+#advancedSearch {
+    margin-top: 0.5rem;
+}
+#risultato-indirizzo {
     background: rgba(130,86,208,0.07);
     border-radius: 8px;
-}
-.orari-scroll-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(130,86,208,0.18);
-    border-radius: 8px;
-}
-
-/* Fade laterale per overflow slider: visibile solo se overflow */
-.orari-scroll-wrapper.has-overflow::before,
-.orari-scroll-wrapper.has-overflow::after {
-    opacity: 1;
-}
-.orari-scroll-wrapper::before,
-.orari-scroll-wrapper::after {
-    content: "";
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 32px;
-    z-index: 2;
-    pointer-events: none;
-    transition: opacity 0.18s;
-    opacity: 0;
-}
-.orari-scroll-wrapper::before {
-    left: 0;
-    background: linear-gradient(90deg, rgba(30,30,40,0.38) 70%, transparent 100%);
-}
-.orari-scroll-wrapper::after {
-    right: 0;
-    background: linear-gradient(-90deg, rgba(30,30,40,0.38) 70%, transparent 100%);
-}
-
-/* Inner slider con scorrimento fluido */
-.orari-scroll-inner {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 22px;
-    width: max-content;
-    padding: 18px 32px 18px 32px;
-    scroll-behavior: smooth;
-    transition: padding 0.18s;
-    min-width: 100%;
-}
-
-/* Card giorno orari: leggermente più grandi per effetto slider */
-.giorno-card {
-    min-width: 120px;
-    max-width: 150px;
-    background: rgba(130, 86, 208, 0.13);
-    border-radius: 16px;
-    padding: 1.1rem 1rem 1rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    border: 1.5px solid transparent;
-    box-shadow: 0 2px 16px rgba(130, 86, 208, 0.07), 0 1.5px 8px rgba(0, 0, 0, 0.10);
-    transition: border 0.22s, background 0.22s, transform 0.18s;
-    flex-shrink: 0;
-    position: relative;
-    cursor: pointer;
-    overflow: visible;
-}
-
-/* Rimuovi hover dalle card dei giorni */
-.giorno-card:hover {
-    /* background e border non cambiano più */
-    background: rgba(130, 86, 208, 0.13);
-    border-color: transparent;
-    transform: none;
-    box-shadow: 0 2px 16px rgba(130, 86, 208, 0.07), 0 1.5px 8px rgba(0, 0, 0, 0.10);
-}
-
-/* Card oggi */
-.giorno-card.oggi {
-    border: 2px solid var(--primary-color);
-    background: rgba(130, 86, 208, 0.22);
-    box-shadow: 0 4px 24px 0 rgba(130, 86, 208, 0.18), 0 2px 12px rgba(0, 0, 0, 0.13);
-}
-
-/* Badge oggi */
-.giorno-card.oggi::after {
-    content: "Oggi";
-    position: absolute;
-    top: -18px;
-    right: 10px;
-    background: linear-gradient(90deg, var(--primary-color) 60%, var(--accent-color) 100%);
-    color: #fff;
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 2px 10px 2px 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(130, 86, 208, 0.13);
-    letter-spacing: 0.5px;
-    opacity: 0.93;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* Label giorno */
-.giorno-label {
-    font-weight: 700;
-    font-size: 1.09rem;
+    padding: 0.5rem 0.8rem;
     color: var(--primary-color);
-    margin-bottom: 0.18rem;
-    letter-spacing: 0.7px;
-    text-shadow: 0 1px 2px rgba(130, 86, 208, 0.08);
-    text-transform: uppercase;
-    transition: color 0.18s;
-    text-align: center;
-}
-
-/* Migliora la divisione degli orari nella card giorno */
-.giorno-card .orari-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin-top: 0.2rem;
-    margin-bottom: 0.1rem;
-}
-
-.giorno-card .orario-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.07);
-    border-radius: 7px;
-    padding: 0.18rem 0.5rem;
-    font-size: 1.01rem;
-    color: #fff;
-    font-family: 'Lexend', 'Segoe UI', Arial, sans-serif;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-    opacity: 0.93;
-    border: 1px solid rgba(130,86,208,0.08);
-    min-height: 28px;
-}
-
-.giorno-card .orario-item.text-danger {
-    background: rgba(234,84,85,0.13);
-    color: var(--danger-color);
     font-weight: 600;
-    opacity: 0.85;
-    border: 1px solid rgba(234,84,85,0.18);
+    margin-top: 0.2rem;
+    font-size: 0.98rem;
 }
-
-/* Nascondi vecchio stile orario-value */
-.giorno-card .orario-value {
+#risultato-indirizzo.d-none {
     display: none !important;
 }
 
-/* Responsive migliorato per le card orari e slider */
-@media (max-width: 600px) {
-    .orari-scroll-inner {
-        gap: 10px;
-        padding: 12px 8px 12px 8px;
-        min-width: 100%;
-    }
-    .giorno-card {
-        min-width: 80px;
-        max-width: 100px;
-        padding: 0.7rem 0.5rem 0.6rem 0.5rem;
-    }
-    .orari-scroll-wrapper::before,
-    .orari-scroll-wrapper::after {
-        width: 18px;
-    }
+/* --- CARD RISTORANTE: action bar in alto a destra --- */
+.restaurant-card .action-bar-glass {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.5rem;
+    z-index: 2;
+    background: rgba(34, 28, 46, 0.22);
+    border-radius: 12px;
+    padding: 0.18rem 0.32rem;
+    box-shadow: 0 2px 8px rgba(130, 86, 208, 0.10);
+    backdrop-filter: blur(6px) saturate(1.2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.ristorante-indirizzo {
-    font-size: 1.08rem;
-    font-weight: 600;
+/* --- RECENSIONI --- */
+#recensioniModal {
+    z-index: 1050 !important;
+}
+
+#recensioniModal .modal-content {
+    background: rgba(34, 28, 46, 0.97) !important;
+    border-radius: 18px;
+    border: 1.5px solid rgba(130,86,208,0.18);
+    box-shadow: 0 12px 40px 0 rgba(130,86,208,0.18), 0 2px 12px rgba(0,0,0,0.18);
+    backdrop-filter: blur(16px) saturate(1.2);
+    color: #fff;
+    padding: 0;
+}
+#recensioniModal .modal-header,
+#recensioniModal .modal-footer {
+    background: rgba(30, 30, 40, 0.32) !important;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 1.5px solid rgba(130,86,208,0.13);
+    backdrop-filter: blur(8px) saturate(1.3);
+    padding: 1.2rem 1.5rem 1rem 1.5rem;
+}
+#recensioniModal .modal-footer {
+    border-radius: 0 0 18px 18px;
+    border-top: 1.5px solid rgba(130,86,208,0.13);
+    border-bottom: none;
+    padding: 1.1rem 1.5rem;
+}
+#recensioniModal .modal-title {
     color: var(--primary-color);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(130,86,208,0.13);
+    font-size: 1.25rem;
+}
+#recensioniModal .modal-body {
+    padding: 2rem 2.2rem 1.2rem 2.2rem;
+    background: transparent;
+}
+
+/* Card recensione compatta */
+.review-card-compact {
+    background: rgba(130,86,208,0.10);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(130,86,208,0.10);
+    padding: 1.1rem 1.3rem 1rem 1.3rem;
+    margin-bottom: 1.1rem;
+    color: #fff;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    backdrop-filter: blur(4px) saturate(1.1);
+    transition: box-shadow 0.18s, background 0.18s;
+}
+.review-card-compact .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+.review-card-compact .review-title-wrap {
     display: flex;
     align-items: center;
+    gap: 1.1rem;
+}
+.review-card-compact .review-title {
+    font-weight: 700;
+    font-size: 1.09rem;
+    margin: 0;
+    color: var(--primary-color);
+    letter-spacing: 0.2px;
+}
+.review-card-compact .review-stars {
+    color: var(--accent-color);
+    font-size: 1.13rem;
+    letter-spacing: 0.1rem;
+}
+.review-card-compact .review-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.93rem;
+    color: rgba(255,255,255,0.7);
+    gap: 0.1rem;
+}
+.review-card-compact .review-author {
+    font-weight: 600;
+    color: var(--info-color);
+}
+.review-card-compact .review-date {
+    font-size: 0.91rem;
+    color: rgba(255,255,255,0.5);
+}
+.review-card-compact .review-body {
+    margin-top: 0.3rem;
+    font-size: 1.01rem;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+}
+.review-card-compact .review-actions {
+    margin-top: 0.7rem;
+    display: flex;
+    gap: 0.5rem;
+}
+.review-card-compact .btn-slim,
+.review-card-compact .btn-slim-danger {
+    padding: 0.25rem 0.9rem;
+    font-size: 0.97rem;
+    border-radius: 7px;
+    font-weight: 500;
+    background: rgba(130,86,208,0.13);
+    color: var(--primary-color);
+    border: none;
+    transition: background 0.18s, color 0.18s;
+}
+.review-card-compact .btn-slim-danger {
+    background: rgba(234,84,85,0.13);
+    color: var(--danger-color);
+}
+.review-card-compact .btn-slim:hover,
+.review-card-compact .btn-slim:focus {
+    background: var(--primary-color);
+    color: #fff;
+}
+.review-card-compact .btn-slim-danger:hover,
+.review-card-compact .btn-slim-danger:focus {
+    background: var(--danger-color);
+    color: #fff;
+}
+
+/* Form recensione nel modal */
+#recensioniModal #logged-in-recensione-controls .card {
+    background: rgba(130,86,208,0.10);
+    border-radius: 14px;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    box-shadow: 0 2px 8px rgba(130,86,208,0.10);
     margin-bottom: 0.5rem;
-    word-break: break-word;
+    padding: 0.5rem 0.5rem 0.2rem 0.5rem;
+}
+#recensioniModal #logged-in-recensione-controls .form-floating > .form-control,
+#recensioniModal #logged-in-recensione-controls .form-floating > .form-select {
+    background: rgba(34,28,46,0.85);
+    color: #fff;
+    border: 1.5px solid rgba(130,86,208,0.18);
+}
+#recensioniModal #logged-in-recensione-controls .form-floating > label {
+    color: rgba(255,255,255,0.7);
+}
+#recensioniModal #logged-in-recensione-controls .btn-primary-action {
+    padding: 0.45rem 1.5rem;
+    font-size: 1.01rem;
+    border-radius: 8px;
+    margin-top: 0.2rem;
+}
+
+/* Empty state recensioni */
+#recensioniModal .empty-state {
+    background: rgba(130,86,208,0.07);
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    color: #fff;
+    text-align: center;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+/* --- FILTRI DI RICERCA --- */
+.card.bg-dark-subtle {
+    background: rgba(34, 28, 46, 0.82) !important;
+    border-radius: 18px;
+    border: 1.5px solid rgba(130,86,208,0.13);
+    box-shadow: 0 4px 24px 0 rgba(130,86,208,0.10);
+    backdrop-filter: blur(12px) saturate(1.2);
+}
+.filter-group, .filter-option-group {
+    margin-bottom: 0.5rem;
+}
+.filter-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.2rem;
+    font-size: 1.01rem;
+    letter-spacing: 0.2px;
+}
+.input-group .form-control,
+.input-group .form-select {
+    background: rgba(130,86,208,0.10);
+    border: 1.5px solid rgba(130,86,208,0.18);
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(130,86,208,0.07);
+    transition: border 0.18s, background 0.18s, color 0.18s;
+    font-size: 1.05rem;
+    font-family: inherit;
+}
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    background: rgba(130,86,208,0.18);
+    border-color: var(--primary-color);
+    color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 0.18rem rgba(130,86,208,0.13);
+}
+.input-group-text {
+    background: rgba(130,86,208,0.07);
+    color: var(--primary-color);
+    border: 1.5px solid rgba(130,86,208,0.18);
+    border-radius: 8px 0 0 8px;
+    font-weight: 600;
+}
+.btn-search {
+    background: linear-gradient(90deg, rgba(130,86,208,0.92) 60%, rgba(255,159,67,0.80) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1.08rem;
+    padding: 0.65rem 1.5rem;
+    box-shadow: 0 4px 24px 0 rgba(130,86,208,0.13);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.2px;
+    backdrop-filter: blur(2px);
+    width: 100%;
+}
+.btn-search:hover, .btn-search:focus {
+    background: linear-gradient(90deg, var(--primary-hover) 60%, var(--accent-color) 100%);
+    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(130,86,208,0.22);
+    transform: translateY(-2px) scale(1.03);
+    outline: none;
+}
+.btn-slim {
+    background: rgba(130,86,208,0.13);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1.01rem;
+    padding: 0.38rem 1.1rem;
+    transition: background 0.18s, color 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.btn-slim:hover, .btn-slim:focus {
+    background: var(--primary-color);
+    color: #fff;
+    outline: none;
+}
+.collapse.show {
+    transition: height 0.3s cubic-bezier(.4,0,.2,1);
+}
+#filtriCollapse {
+    margin-top: 0.5rem;
+}
+#advancedSearch {
+    margin-top: 0.5rem;
+}
+#risultato-indirizzo {
+    background: rgba(130,86,208,0.07);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 0.2rem;
+    font-size: 0.98rem;
+}
+#risultato-indirizzo.d-none {
+    display: none !important;
+}
+
+/* --- CARD RISTORANTE: action bar in alto a destra --- */
+.restaurant-card .action-bar-glass {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.5rem;
+    z-index: 2;
+    background: rgba(34, 28, 46, 0.22);
+    border-radius: 12px;
+    padding: 0.18rem 0.32rem;
+    box-shadow: 0 2px 8px rgba(130, 86, 208, 0.10);
+    backdrop-filter: blur(6px) saturate(1.2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 }

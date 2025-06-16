@@ -416,7 +416,7 @@ const geocodeAddressHandler = async (prefix = '') => {
 
     if (!indirizzo) {
         document.getElementById(alertAreaId).innerHTML = `
-            <div class="alert alert-danger">
+            <div class="alert alert-danger glassy-alert">
                 <i class="bi bi-exclamation-triangle me-2"></i>Inserisci un indirizzo da cercare
             </div>
         `;
@@ -434,6 +434,7 @@ const geocodeAddressHandler = async (prefix = '') => {
     }
 
     try {
+        // Usa la funzione geocodeAddress
         const result = await geocodeAddress(indirizzo);
 
         if (btn) {
@@ -444,8 +445,8 @@ const geocodeAddressHandler = async (prefix = '') => {
         if (!result.success) {
             document.getElementById(resultAreaId).style.display = 'block';
             document.getElementById(resultAreaId).innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${result.error}
+                <div class="alert alert-danger glassy-alert">
+                    <i class="bi bi-x-circle me-2"></i>Errore: ${result.error}
                 </div>
             `;
             return;
@@ -454,21 +455,24 @@ const geocodeAddressHandler = async (prefix = '') => {
         const coordinates = result.coordinates;
         const displayName = result.display_name;
 
-        // Card glassy elegante per la conferma indirizzo
+        // Mostra il risultato: indirizzo completo in una card elegante
         document.getElementById(resultAreaId).style.display = 'block';
         document.getElementById(resultAreaId).innerHTML = `
-            <div class="card shadow-sm border-0" style="background:rgba(34,28,46,0.92);border-radius:14px;">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="background:rgba(130,86,208,0.13);width:48px;height:48px;">
-                        <i class="bi bi-geo-alt text-primary" style="font-size:2rem;"></i>
+            <div class="indirizzo-card-glassy">
+                <div class="indirizzo-card-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="indirizzo-card-content">
+                    <div class="indirizzo-card-title">Indirizzo trovato</div>
+                    <div class="indirizzo-card-address" id="${foundAddressId}">
+                        ${displayName}
                     </div>
-                    <div class="flex-grow-1">
-                        <div id="${foundAddressId}" style="font-size:1.12rem;font-weight:600;color:var(--primary-color);word-break:break-word;">
-                            ${displayName}
-                        </div>
-                        <div class="text-muted small mt-1">Conferma che questo è l'indirizzo corretto</div>
+                    <div class="indirizzo-card-coords">
+                        <span><i class="bi bi-compass me-1"></i>${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)}</span>
                     </div>
-                    <button type="button" class="btn btn-primary-action" id="${confirmBtnId}" style="white-space:nowrap;">
+                </div>
+                <div class="indirizzo-card-actions">
+                    <button type="button" class="btn btn-primary-action btn-sm" id="${confirmBtnId}">
                         <i class="bi bi-check-circle me-1"></i>Conferma
                     </button>
                 </div>
@@ -480,9 +484,14 @@ const geocodeAddressHandler = async (prefix = '') => {
             document.getElementById(latId).value = coordinates.lat;
             document.getElementById(lngId).value = coordinates.lng;
             document.getElementById(resultAreaId).innerHTML = `
-                <div class="alert alert-success d-flex align-items-center" style="font-size:1.08rem;">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    Indirizzo confermato: <span class="ms-1" style="font-weight:600;color:var(--primary-color);">${displayName}</span>
+                <div class="indirizzo-card-glassy success">
+                    <div class="indirizzo-card-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="indirizzo-card-content">
+                        <div class="indirizzo-card-title text-success">Indirizzo confermato</div>
+                        <div class="indirizzo-card-address">${displayName}</div>
+                    </div>
                 </div>
             `;
         });
@@ -493,7 +502,7 @@ const geocodeAddressHandler = async (prefix = '') => {
         }
         document.getElementById(resultAreaId).style.display = 'block';
         document.getElementById(resultAreaId).innerHTML = `
-            <div class="alert alert-danger">
+            <div class="alert alert-danger glassy-alert">
                 <i class="bi bi-exclamation-triangle me-2"></i>Errore di sistema: ${error}
             </div>
         `;

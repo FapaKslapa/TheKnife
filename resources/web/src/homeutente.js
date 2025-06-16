@@ -26,15 +26,14 @@ const waitForBridge = async (callback, maxAttempts = 10) => {
 // Implementazione geocoding con OpenStreetMap Nominatim
 const geocodeAddress = async (address, callback) => {
     try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&accept-language=it`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
         const data = await response.json();
 
         if (data && data.length > 0) {
             const result = data[0];
             callback(null, {
                 lat: parseFloat(result.lat),
-                lng: parseFloat(result.lon),
-                display_name: result.display_name
+                lng: parseFloat(result.lon)
             });
         } else {
             callback("Indirizzo non trovato", null);
@@ -57,22 +56,15 @@ const verificaIndirizzo = () => {
     }
 
     // Mostra indicatore di caricamento
-    const btn = document.getElementById('btn-cerca-indirizzo');
-    if (btn) {
-        btn.innerHTML = `
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        `;
-        btn.disabled = true;
-    }
+    document.getElementById('btn-cerca-indirizzo').innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    `;
 
     geocodeAddress(indirizzo, (error, coordinates) => {
         // Ripristina il pulsante
-        if (btn) {
-            btn.innerHTML = `
-                <i class="bi bi-geo-alt me-1"></i>Verifica
-            `;
-            btn.disabled = false;
-        }
+        document.getElementById('btn-cerca-indirizzo').innerHTML = `
+            <i class="bi bi-geo-alt me-1"></i>Verifica
+        `;
 
         if (error) {
             document.getElementById('alertArea').innerHTML = `
@@ -80,25 +72,24 @@ const verificaIndirizzo = () => {
                     <i class="bi bi-exclamation-triangle me-2"></i>Errore: ${error}
                 </div>
             `;
-            document.getElementById('risultato-indirizzo').classList.add('d-none');
             return;
         }
 
-        // Mostra il risultato (indirizzo completo)
+        // Mostra il risultato
         document.getElementById('risultato-indirizzo').classList.remove('d-none');
-        document.getElementById('indirizzo-trovato').textContent = `Indirizzo verificato: ${coordinates.display_name}`;
-        
+        document.getElementById('indirizzo-trovato').textContent = `Indirizzo verificato (${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)})`;
+
         // Salva le coordinate nei campi nascosti
         document.getElementById('filtro-latitudine').value = coordinates.lat;
         document.getElementById('filtro-longitudine').value = coordinates.lng;
-        
+
         // Abilita il campo distanza
         document.getElementById('filtro-distanza').disabled = false;
     });
 };
 
 // Funzione per caricare tutti i ristoranti
-const caricaRistoranti = async () => {
+let caricaRistoranti = async () => {
     // Mostra l'indicatore di caricamento
     document.getElementById('loading-indicator').classList.remove('d-none');
     document.getElementById('no-ristoranti').classList.add('d-none');
@@ -142,11 +133,11 @@ const caricaRistoranti = async () => {
 // Funzione per filtrare i ristoranti
 const filtriRicerca = async (event) => {
     if (event) event.preventDefault();
-    
+
     // Mostra l'indicatore di caricamento
     document.getElementById('loading-indicator').classList.remove('d-none');
     document.getElementById('no-ristoranti').classList.add('d-none');
-    
+
     // Raccogli i valori dei filtri
     const tipoCucina = document.getElementById('filtro-tipo-cucina').value;
     const fasciaPrezzo = document.getElementById('filtro-fascia-prezzo').value;
@@ -155,36 +146,36 @@ const filtriRicerca = async (event) => {
     const latitudine = document.getElementById('filtro-latitudine').value;
     const longitudine = document.getElementById('filtro-longitudine').value;
     const distanzaMassima = document.getElementById('filtro-distanza').value;
-    
+
     try {
         // Costruisci l'oggetto filtri
         const filtri = {};
-        
+
         if (tipoCucina) filtri.tipoCucina = tipoCucina;
         if (fasciaPrezzo) filtri.fasciaPrezzo = parseInt(fasciaPrezzo);
         filtri.consegnaDomicilio = consegnaDomicilio;
         filtri.apertoOra = apertoOra;
-        
+
         // Aggiungi le coordinate solo se sono state specificate
         if (latitudine && longitudine) {
             filtri.latitudine = parseFloat(latitudine);
             filtri.longitudine = parseFloat(longitudine);
             filtri.distanzaMassima = parseInt(distanzaMassima);
         }
-        
+
         // Chiama il backend per filtrare i ristoranti
         const response = await window.javaConnector.filtriRicerca(filtri);
-        
+
         // Nascondi l'indicatore di caricamento
         document.getElementById('loading-indicator').classList.add('d-none');
-        
+
         // Ottieni il container dove inserire i ristoranti
         const ristorantiContainer = document.getElementById('ristoranti-container');
-        
+
         if (response.success && response.ristoranti && response.ristoranti.length > 0) {
             // Svuota il container prima di aggiungere i ristoranti
             ristorantiContainer.innerHTML = '';
-            
+
             // Aggiungi ogni ristorante al container
             response.ristoranti.forEach(ristorante => {
                 const card = creaRistoranteCard(ristorante);
@@ -207,51 +198,45 @@ const filtriRicerca = async (event) => {
     }
 };
 
-// Funzione per ottenere solo la via da lat/lng (reverse geocoding OpenStreetMap Nominatim) con retry
-const reverseGeocode = async (lat, lng, tentativi = 3) => {
-    for (let i = 0; i < tentativi; i++) {
-        try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&accept-language=it`
-            );
-            if (!response.ok) throw new Error("HTTP error " + response.status);
-            const data = await response.json();
-            if (data && data.address) {
-                const addr = data.address;
-                if (addr.road) return addr.road + (addr.house_number ? `, ${addr.house_number}` : '');
-                if (addr.pedestrian) return addr.pedestrian + (addr.house_number ? `, ${addr.house_number}` : '');
-                if (addr.cycleway) return addr.cycleway + (addr.house_number ? `, ${addr.house_number}` : '');
-                if (data.display_name) return data.display_name.split(',')[0];
-            }
-            if (data && data.display_name) return data.display_name.split(',')[0];
-        } catch (e) {
-            await new Promise(res => setTimeout(res, 400));
-        }
+// Funzione per verificare se un ristorante è tra i preferiti dell'utente
+const isRistorantePreferito = async (ristoranteId) => {
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) return false;
+    try {
+        const res = await window.javaConnector.isRistorantePreferito({ userId, ristoranteId });
+        return res.success && res.liked;
+    } catch {
+        return false;
     }
-    return null;
 };
 
-// Funzione per aggiornare tutti gli indirizzi delle card in parallelo
-const aggiornaIndirizziCardUtente = async (ristoranti) => {
-    const toFetch = [];
-    ristoranti.forEach(ristorante => {
-        const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
-        if ((!ristorante.indirizzo || ristorante.indirizzo.trim() === "") && ristorante.latitudine && ristorante.longitudine) {
-            toFetch.push({
-                id: indirizzoId,
-                lat: ristorante.latitudine,
-                lng: ristorante.longitudine
-            });
+// Funzione per aggiungere/rimuovere un ristorante dai preferiti
+const togglePreferito = async (ristoranteId, btn) => {
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) {
+        alert('Devi essere loggato per usare i preferiti');
+        return;
+    }
+    const isLiked = await isRistorantePreferito(ristoranteId);
+    try {
+        if (isLiked) {
+            await window.javaConnector.rimuoviRistoranteDaiPreferiti({ userId, ristoranteId });
         } else {
-            const div = document.getElementById(indirizzoId);
-            if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${ristorante.indirizzo || 'Indirizzo non disponibile'}</span>`;
+            await window.javaConnector.aggiungiRistoranteAiPreferiti({ userId, ristoranteId });
         }
-    });
-    await Promise.all(toFetch.map(async (item) => {
-        const indirizzo = await reverseGeocode(item.lat, item.lng);
-        const div = document.getElementById(item.id);
-        if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${indirizzo || 'Indirizzo non disponibile'}</span>`;
-    }));
+        aggiornaIconaPreferito(btn, !isLiked);
+    } catch (e) {
+        alert('Errore nella gestione dei preferiti');
+    }
+};
+
+// Aggiorna l'icona cuore in base allo stato
+const aggiornaIconaPreferito = (btn, attivo) => {
+    if (!btn) return;
+    btn.innerHTML = attivo
+        ? '<i class="bi bi-heart-fill text-danger"></i>'
+        : '<i class="bi bi-heart"></i>';
+    btn.setAttribute('aria-pressed', attivo ? 'true' : 'false');
 };
 
 // Funzione per creare una card di ristorante (grafica identica a ristoratore)
@@ -269,28 +254,57 @@ const creaRistoranteCard = (ristorante) => {
         ).join('');
     };
 
-    // Placeholder per indirizzo, verrà aggiornato dopo il reverse geocoding
+    // Usa id univoco per l'indirizzo (come ristoratore)
     const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
+    // Mostra subito l'indirizzo se già presente, altrimenti placeholder
+    const indirizzoHtml = `
+        <div class="card-subtitle text-muted small" style="margin-top:2px; font-weight:500;">
+            <span class="ristorante-indirizzo" id="${indirizzoId}">
+                <i class="bi bi-geo-alt me-1"></i>
+                <span>${ristorante.indirizzo && ristorante.indirizzo.trim() !== "" ? ristorante.indirizzo : "Caricamento indirizzo..."}</span>
+            </span>
+        </div>
+    `;
+
+    // Verifica login per mostrare il pulsante preferiti
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    let btnPreferitoHtml = '';
+    if (isLoggedIn) {
+        btnPreferitoHtml = `
+            <button class="btn-action btn-preferito ms-2" data-id="${ristorante.id}" title="Aggiungi ai preferiti" aria-pressed="false">
+                <i class="bi bi-heart"></i>
+            </button>
+        `;
+    }
+
     colDiv.innerHTML = `
         <div class="restaurant-card h-100 shadow-lg">
             <div class="card-header glass-header d-flex align-items-start justify-content-between" style="border-bottom: none;">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-0" style="margin-bottom:0; padding:0; line-height:1.2;">${ristorante.nome}</h5>
+                    ${indirizzoHtml}
                 </div>
-                <div class="action-bar-glass ms-2">
-                    <span class="badge bg-gradient rounded-pill">${ristorante.tipoCucina}</span>
+                <div class="action-bar-glass ms-2 d-flex align-items-center gap-2">
+                    <button class="btn-action view-recensioni" data-id="${ristorante.id}" data-nome="${ristorante.nome}" title="Recensioni">
+                        <i class="bi bi-star"></i>
+                    </button>
+                    ${btnPreferitoHtml}
                 </div>
             </div>
             <div class="card-body position-relative px-4 pt-3 pb-2">
                 <div class="restaurant-info">
-                    <div class="ristorante-indirizzo mb-2" id="${indirizzoId}" style="font-size:1.08rem; font-weight:600; color:var(--primary-color); display:flex; align-items:center;">
-                        <i class="bi bi-geo-alt me-1"></i>
-                        <span>Caricamento indirizzo...</span>
-                    </div>
                     <div class="price-tag mb-3">
                         ${renderPrezzi(ristorante.fasciaPrezzo)}
                     </div>
                     <div class="restaurant-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="bi bi-tag-fill"></i>
+                            </div>
+                            <div class="detail-text">
+                                ${ristorante.tipoCucina || 'Categoria non disponibile'}
+                            </div>
+                        </div>
                         <div class="detail-item">
                             <div class="detail-icon">
                                 <i class="bi bi-telephone-fill"></i>
@@ -318,27 +332,13 @@ const creaRistoranteCard = (ristorante) => {
                     </div>
                 </div>
             </div>
-            <div class="card-footer py-3">
-                <div class="action-bar-glass">
-                    <button class="btn-action view-recensioni" data-id="${ristorante.id}" data-nome="${ristorante.nome}" title="Recensioni">
-                        <i class="bi bi-star"></i>
-                    </button>
-                    <button class="btn-action favorite-toggle" title="Aggiungi ai preferiti">
-                        <i class="bi bi-heart"></i>
-                    </button>
-                    <button class="btn-action details-btn" data-id="${ristorante.id}" title="Dettagli">
-                        <i class="bi bi-info-circle"></i>
-                    </button>
-                </div>
-            </div>
         </div>
     `;
 
-    setTimeout(() => {
+    setTimeout(async () => {
         const recensioniBtn = colDiv.querySelector('.view-recensioni');
         const toggleHoursBtn = colDiv.querySelector('.toggle-hours');
-        const favoriteBtn = colDiv.querySelector('.favorite-toggle');
-        const detailsBtn = colDiv.querySelector('.details-btn');
+        const preferitoBtn = colDiv.querySelector('.btn-preferito');
 
         if (recensioniBtn) {
             recensioniBtn.addEventListener('click', (e) => {
@@ -360,27 +360,20 @@ const creaRistoranteCard = (ristorante) => {
                     arrow.classList.toggle('bi-chevron-down');
                     arrow.classList.toggle('bi-chevron-up');
                 }
-                // Abilita slider orari quando visibile
                 if (!isVisible) setTimeout(abilitaSliderOrari, 0);
             });
         }
 
-        if (favoriteBtn) {
-            favoriteBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const icon = favoriteBtn.querySelector('i');
-                icon.classList.toggle('bi-heart');
-                icon.classList.toggle('bi-heart-fill');
-                favoriteBtn.classList.toggle('favorite-active');
-            });
-        }
+        // Gestione cuore preferiti solo se loggato
+        if (preferitoBtn) {
+            const liked = await isRistorantePreferito(ristorante.id);
+            aggiornaIconaPreferito(preferitoBtn, liked);
 
-        if (detailsBtn) {
-            detailsBtn.addEventListener('click', (e) => {
+            preferitoBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
-                const ristoranteId = detailsBtn.getAttribute('data-id');
-                // Implementazione futura per visualizzare dettagli
-                console.log(`Visualizza dettagli per ristorante ID: ${ristoranteId}`);
+                preferitoBtn.disabled = true;
+                await togglePreferito(ristorante.id, preferitoBtn);
+                preferitoBtn.disabled = false;
             });
         }
     }, 0);
@@ -448,6 +441,7 @@ function abilitaSliderOrari() {
             const hasOverflow = inner.scrollWidth > wrapper.clientWidth + 2;
             wrapper.classList.toggle('has-overflow', hasOverflow);
         }
+
         aggiornaFade();
         window.addEventListener('resize', aggiornaFade);
 
@@ -511,7 +505,7 @@ const apriModalRecensioni = async (ristoranteId, ristoranteNome) => {
     // Aggiorna il titolo del modal
     document.getElementById('recensioni-ristorante-nome').textContent = ristoranteNome;
     document.getElementById('recensione-ristorante-id').value = ristoranteId;
-    
+
     // Mostra indicatore di caricamento
     document.getElementById('recensioni-container').innerHTML = `
         <div class="text-center py-3">
@@ -520,7 +514,7 @@ const apriModalRecensioni = async (ristoranteId, ristoranteNome) => {
             </div>
         </div>
     `;
-    
+
     // Verifica stato login per decidere se mostrare il form di recensione
     const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
     if (isLoggedIn) {
@@ -530,11 +524,11 @@ const apriModalRecensioni = async (ristoranteId, ristoranteNome) => {
         document.getElementById('logged-in-recensione-controls').classList.add('d-none');
         document.getElementById('logged-out-recensione-alert').classList.remove('d-none');
     }
-    
+
     // Apri il modal
     const recensioniModal = new bootstrap.Modal(document.getElementById('recensioniModal'));
     recensioniModal.show();
-    
+
     // Carica le recensioni
     await caricaRecensioni(ristoranteId);
 };
@@ -545,15 +539,15 @@ const caricaRecensioni = async (ristoranteId) => {
         const response = await window.javaConnector.getRecensioniByRistorante({
             idRistorante: ristoranteId
         });
-        
+
         const recensioniContainer = document.getElementById('recensioni-container');
         const noRecensioni = document.getElementById('no-recensioni');
-        
+
         if (response.success && response.recensioni && response.recensioni.length > 0) {
             // Ci sono recensioni da visualizzare
             recensioniContainer.innerHTML = '';
             noRecensioni.classList.add('d-none');
-            
+
             response.recensioni.forEach(recensione => {
                 const recensioneElement = creaRecensioneElement(recensione);
                 recensioniContainer.appendChild(recensioneElement);
@@ -577,7 +571,7 @@ const creaRecensioneElement = (recensione) => {
     const div = document.createElement('div');
     div.className = 'review-card-compact mb-3';
     div.id = `recensione-${recensione.id}`;
-    
+
     // Funzione per renderizzare le stelle del voto
     const renderStelle = (voto) => {
         let html = '';
@@ -589,7 +583,7 @@ const creaRecensioneElement = (recensione) => {
         }
         return html;
     };
-    
+
     // Gestione della data
     let dataFormattata = 'Data non disponibile';
     try {
@@ -608,7 +602,7 @@ const creaRecensioneElement = (recensione) => {
     } catch (e) {
         console.error("Errore nel parsing della data:", e);
     }
-    
+
     // Gestione dell'utente
     const userId = recensione.key_user || recensione.idUtente;
     const nomeUtente = recensione.nomeUtente || 'Utente';
@@ -616,7 +610,7 @@ const creaRecensioneElement = (recensione) => {
     // Determina se l'utente corrente è l'autore della recensione
     const currentUserId = sessionStorage.getItem('userId');
     const isAuthor = currentUserId === userId;
-    
+
     div.innerHTML = `
         <div class="review-header">
             <div class="review-title-wrap">
@@ -643,20 +637,20 @@ const creaRecensioneElement = (recensione) => {
             </button>
         </div>` : ''}
     `;
-    
+
     // Aggiungi event listener per modifica ed eliminazione
     if (isAuthor) {
         setTimeout(() => {
             const editBtn = div.querySelector('.edit-recensione');
             const deleteBtn = div.querySelector('.delete-recensione');
-            
+
             if (editBtn) {
                 editBtn.addEventListener('click', () => {
                     // Implementare la modifica della recensione
                     console.log('Modifica recensione', recensione.id);
                 });
             }
-            
+
             if (deleteBtn) {
                 deleteBtn.addEventListener('click', () => {
                     if (confirm('Sei sicuro di voler eliminare questa recensione?')) {
@@ -666,25 +660,25 @@ const creaRecensioneElement = (recensione) => {
             }
         }, 0);
     }
-    
+
     return div;
 };
 
 // Funzione per aggiungere una nuova recensione
 const inviaRecensione = async (event) => {
     event.preventDefault();
-    
+
     const ristoranteId = document.getElementById('recensione-ristorante-id').value;
     const titolo = document.getElementById('recensione-titolo').value;
     const voto = document.getElementById('recensione-voto').value;
     const testo = document.getElementById('recensione-testo').value;
     const userId = sessionStorage.getItem('userId');
-    
+
     if (!ristoranteId || !titolo || !voto || !testo || !userId) {
         alert('Compila tutti i campi per inviare la recensione');
         return;
     }
-    
+
     try {
         const response = await window.javaConnector.creaRecensione({
             idRistorante: ristoranteId,
@@ -693,14 +687,14 @@ const inviaRecensione = async (event) => {
             testo: testo,
             voto: parseInt(voto)
         });
-        
+
         if (response.success) {
             // Resetta il form
             document.getElementById('form-nuova-recensione').reset();
-            
+
             // Mostra messaggio di successo
             alert('Recensione pubblicata con successo!');
-            
+
             // Ricarica le recensioni
             await caricaRecensioni(ristoranteId);
         } else {
@@ -717,14 +711,14 @@ const eliminaRecensione = async (recensioneId) => {
         const response = await window.javaConnector.eliminaRecensione({
             recensioneId: recensioneId
         });
-        
+
         if (response.success) {
             // Rimuovi la recensione dall'UI
             document.getElementById(`recensione-${recensioneId}`).remove();
-            
+
             // Mostra messaggio di successo
             alert('Recensione eliminata con successo!');
-            
+
             // Controlla se ci sono ancora recensioni
             const recensioniContainer = document.getElementById('recensioni-container');
             if (recensioniContainer.childElementCount === 0) {
@@ -738,18 +732,163 @@ const eliminaRecensione = async (recensioneId) => {
     }
 };
 
+// Funzione per ottenere solo la via da lat/lng (reverse geocoding OpenStreetMap Nominatim)
+const reverseGeocode = async (lat, lng, tentativi = 3) => {
+    for (let i = 0; i < tentativi; i++) {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&accept-language=it`
+            );
+            if (!response.ok) throw new Error("HTTP error " + response.status);
+            const data = await response.json();
+            if (data && data.address) {
+                const addr = data.address;
+                if (addr.road) return addr.road + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.pedestrian) return addr.pedestrian + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (addr.cycleway) return addr.cycleway + (addr.house_number ? `, ${addr.house_number}` : '');
+                if (data.display_name) return data.display_name.split(',')[0];
+            }
+            if (data && data.display_name) return data.display_name.split(',')[0];
+        } catch (e) {
+            await new Promise(res => setTimeout(res, 400));
+        }
+    }
+    return null;
+};
+
+// Funzione per aggiornare tutti gli indirizzi delle card in parallelo (come ristoratore)
+const aggiornaIndirizziCardUtente = async (ristoranti) => {
+    const toFetch = [];
+    ristoranti.forEach(ristorante => {
+        const indirizzoId = `indirizzo-ristorante-${ristorante.id}`;
+        const div = document.getElementById(indirizzoId);
+        if ((!ristorante.indirizzo || ristorante.indirizzo.trim() === "") && ristorante.latitudine && ristorante.longitudine) {
+            // Serve geocoding
+            toFetch.push({
+                id: indirizzoId,
+                lat: ristorante.latitudine,
+                lng: ristorante.longitudine
+            });
+        } else {
+            // Aggiorna comunque il DOM per evitare che rimanga il placeholder
+            if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${ristorante.indirizzo || 'Indirizzo non disponibile'}</span>`;
+        }
+    });
+    await Promise.all(toFetch.map(async (item) => {
+        const indirizzo = await reverseGeocode(item.lat, item.lng);
+        const div = document.getElementById(item.id);
+        if (div) div.innerHTML = `<i class="bi bi-geo-alt me-1"></i><span>${indirizzo || 'Indirizzo non disponibile'}</span>`;
+    }));
+};
+
+// Funzione per caricare e mostrare solo i ristoranti preferiti dell'utente
+const caricaPreferitiUtente = async () => {
+    const userId = sessionStorage.getItem('userId');
+    const alertArea = document.getElementById('alertArea');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const noRistoranti = document.getElementById('no-ristoranti');
+    const ristorantiContainer = document.getElementById('ristoranti-container');
+
+    if (!userId) {
+        if (alertArea) alertArea.innerHTML = `
+            <div class="alert alert-warning" role="alert">
+                Effettua il login per visualizzare i preferiti.
+            </div>
+        `;
+        return;
+    }
+
+    if (alertArea) alertArea.innerHTML = '';
+    if (loadingIndicator) loadingIndicator.classList.remove('d-none');
+    if (noRistoranti) noRistoranti.classList.add('d-none');
+    // Rimuovi solo le card ristorante, non loading/no-ristoranti
+    if (ristorantiContainer) {
+        Array.from(ristorantiContainer.children).forEach(child => {
+            if (
+                child.id !== 'loading-indicator' &&
+                child.id !== 'no-ristoranti'
+            ) {
+                ristorantiContainer.removeChild(child);
+            }
+        });
+    }
+
+    try {
+        // Ottieni gli ID dei preferiti
+        const res = await window.javaConnector.getRistorantiPreferitiByUtente({ userId });
+        if (res.success && Array.isArray(res.ristorantiIds) && res.ristorantiIds.length > 0) {
+            // Recupera i dettagli di ogni ristorante preferito
+            const dettagli = [];
+            for (const rid of res.ristorantiIds) {
+                try {
+                    const dettRes = await window.javaConnector.getRistoranteById({ id: rid });
+                    if (dettRes.success && dettRes.ristorante) {
+                        dettagli.push(dettRes.ristorante);
+                    }
+                } catch {}
+            }
+            if (loadingIndicator) loadingIndicator.classList.add('d-none');
+            if (noRistoranti) noRistoranti.classList.add('d-none');
+            // Rimuovi solo le card ristorante, non loading/no-ristoranti
+            if (ristorantiContainer) {
+                Array.from(ristorantiContainer.children).forEach(child => {
+                    if (
+                        child.id !== 'loading-indicator' &&
+                        child.id !== 'no-ristoranti'
+                    ) {
+                        ristorantiContainer.removeChild(child);
+                    }
+                });
+                dettagli.forEach(ristorante => {
+                    const card = creaRistoranteCard(ristorante);
+                    ristorantiContainer.appendChild(card);
+                });
+            }
+            setTimeout(abilitaSliderOrari, 0);
+            aggiornaIndirizziCardUtente(dettagli);
+        } else {
+            if (loadingIndicator) loadingIndicator.classList.add('d-none');
+            if (ristorantiContainer) {
+                Array.from(ristorantiContainer.children).forEach(child => {
+                    if (
+                        child.id !== 'loading-indicator' &&
+                        child.id !== 'no-ristoranti'
+                    ) {
+                        ristorantiContainer.removeChild(child);
+                    }
+                });
+            }
+            if (noRistoranti) {
+                noRistoranti.classList.remove('d-none');
+                const h3 = noRistoranti.querySelector('h3');
+                const p = noRistoranti.querySelector('p');
+                if (h3) h3.textContent = "Nessun preferito";
+                if (p) p.textContent = "Aggiungi ristoranti ai preferiti cliccando sul cuore.";
+            }
+            setTimeout(abilitaSliderOrari, 0);
+        }
+    } catch (error) {
+        if (loadingIndicator) loadingIndicator.classList.add('d-none');
+        if (alertArea) alertArea.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                Errore durante il caricamento dei preferiti: ${error}
+            </div>
+        `;
+    }
+};
+
 // Gestione dello stato di login
 const gestisciStatoLogin = () => {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
     const username = sessionStorage.getItem('username');
-    
+
     if (isLoggedIn && username) {
         // Mostra il menu utente loggato
         document.getElementById('logged-in-menu').classList.remove('d-none');
         document.getElementById('logged-out-menu').classList.add('d-none');
         document.getElementById('logged-out-menu-register').classList.add('d-none');
         document.getElementById('username-display').textContent = username;
-        
+
         // Mostra pulsanti che richiedono login
         document.querySelectorAll('.richiede-login').forEach(el => {
             el.classList.remove('d-none');
@@ -759,7 +898,7 @@ const gestisciStatoLogin = () => {
         document.getElementById('logged-in-menu').classList.add('d-none');
         document.getElementById('logged-out-menu').classList.remove('d-none');
         document.getElementById('logged-out-menu-register').classList.remove('d-none');
-        
+
         // Nascondi pulsanti che richiedono login
         document.querySelectorAll('.richiede-login').forEach(el => {
             el.classList.add('d-none');
@@ -771,21 +910,22 @@ const gestisciStatoLogin = () => {
 document.addEventListener('DOMContentLoaded', async () => {
     // Gestisci lo stato di login
     gestisciStatoLogin();
-    
+
     // Attendi che il bridge sia disponibile prima di chiamare la funzione
     await waitForBridge(async () => {
+        // await aggiornaPreferitiUtente(); // Recupera subito i preferiti all'avvio
         await caricaRistoranti();
     });
-    
+
     // Event listener per il pulsante di verifica indirizzo
     document.getElementById('btn-cerca-indirizzo').addEventListener('click', verificaIndirizzo);
-    
+
     // Event listener per il form dei filtri
     document.getElementById('filtri-form').addEventListener('submit', filtriRicerca);
-    
+
     // Event listener per il form di recensione
     document.getElementById('form-nuova-recensione').addEventListener('submit', inviaRecensione);
-    
+
     // Gestione il logout
     const logoutLink = document.getElementById('logout-link');
     if (logoutLink) {
@@ -795,7 +935,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.reload();
         });
     }
-    
+
     // Gestione apertura e chiusura del modal delle recensioni
     document.getElementById('recensioniModal').addEventListener('hidden.bs.modal', function () {
         // Rimuove eventuali backdrop rimasti e altri elementi problematici
@@ -804,10 +944,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
     });
-    
+
+    // Carica preferiti in memoria all'avvio se loggato (già fatto sopra)
+    // await aggiornaPreferitiUtente();
+
+    // Gestione click su "Preferiti" nella navbar
+    const btnPreferiti = document.getElementById('btn-preferiti');
+    if (btnPreferiti) {
+        btnPreferiti.addEventListener('click', async (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
+            btnPreferiti.classList.add('active');
+            await caricaPreferitiUtente();
+        });
+    }
+
+    // Gestione click su "Esplora Ristoranti" per tornare alla lista completa
+    const btnEsplora = document.querySelector('.navbar .nav-link[href="#"]');
+    if (btnEsplora) {
+        btnEsplora.addEventListener('click', async (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
+            btnEsplora.classList.add('active');
+            // if (btnPreferiti) btnPreferiti.classList.remove('active');
+            await caricaRistoranti();
+        });
+    }
+
     // Dopo ogni render delle card, abilita lo slider orari
     const oldCaricaRistoranti = caricaRistoranti;
-    caricaRistoranti = async function(...args) {
+    caricaRistoranti = async function (...args) {
         await oldCaricaRistoranti.apply(this, args);
         setTimeout(abilitaSliderOrari, 0);
     };

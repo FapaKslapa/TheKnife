@@ -2,6 +2,7 @@ package services;
 
 import com.example.cache.DataManager;
 import com.example.cache.JsonRepository;
+import com.example.cache.RelationRepository;
 import com.example.models.FiltriDiRicerca;
 import com.example.models.Ristorante;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class RistoranteService {
     private final JsonRepository<Ristorante> ristoranteRepository;
     private final DateTimeFormatter orarioFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private final RelationRepository userLikesRepo;
 
     /**
      * Costruttore che inizializza il repository dei ristoranti e lo registra nel DataManager se non è già stato registrato.
@@ -32,6 +34,8 @@ public class RistoranteService {
         // Registra il repository se non è già fatto
         dataManager.registerEntityRepository(Ristorante.class, "data/ristoranti.json");
         this.ristoranteRepository = dataManager.getRepository(Ristorante.class);
+        // Inizializza il repository dei like utente-ristorante
+        this.userLikesRepo = dataManager.getRelationRepository("userLikesRistorante");
     }
 
     /**
@@ -276,5 +280,33 @@ public class RistoranteService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return R * c; // Distanza in km
+    }
+
+    /**
+     * Aggiunge un ristorante ai preferiti dell'utente.
+     */
+    public void aggiungiRistoranteAiPreferiti(String userId, String ristoranteId) {
+        userLikesRepo.addRelation(userId, ristoranteId);
+    }
+
+    /**
+     * Rimuove un ristorante dai preferiti dell'utente.
+     */
+    public void rimuoviRistoranteDaiPreferiti(String userId, String ristoranteId) {
+        userLikesRepo.removeRelation(userId, ristoranteId);
+    }
+
+    /**
+     * Restituisce la lista degli ID dei ristoranti preferiti da un utente.
+     */
+    public List<String> getRistorantiPreferitiByUtente(String userId) {
+        return userLikesRepo.findRelatedIds(userId);
+    }
+
+    /**
+     * Verifica se un ristorante è tra i preferiti dell'utente.
+     */
+    public boolean isRistorantePreferito(String userId, String ristoranteId) {
+        return userLikesRepo.findRelatedIds(userId).contains(ristoranteId);
     }
 }

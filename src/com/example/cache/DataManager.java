@@ -36,6 +36,8 @@ public class DataManager {
         // Inizializza i repository di relazioni
         registerRelationRepository("utenti_ristoranti", "data/utenti_ristoranti.json");
         registerRelationRepository("utenti_preferiti", "data/utenti_preferiti.json");
+        // Repository per i like utente-ristorante
+        registerRelationRepository("userLikesRistorante", "data/userLikesRistorante.json");
     }
 
     /**
