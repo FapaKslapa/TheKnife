@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="example.RistoratoreRecensioniController" stylesheets="@style.css">
+    <top>
+        <HBox spacing="10" styleClass="hbox-navbar" BorderPane.alignment="TOP_CENTER">
+            <Label fx:id="ristoranteTitle" text="Recensioni" styleClass="label-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="homeBtn" text="Home" styleClass="button-navbar"/>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="false" styleClass="recensioni-scroll">
+            <VBox fx:id="recensioniBox" spacing="18" alignment="TOP_CENTER" styleClass="recensioni-root">
+                <!-- Card recensioni generate dinamicamente -->
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

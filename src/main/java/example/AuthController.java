@@ -33,12 +33,23 @@ public class AuthController {
         loginResult.setText(ok ? "Login effettuato!" : "Credenziali non valide.");
         if (ok) {
             try {
-                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/UserHomeView.fxml"));
-                javafx.scene.Parent userHomeRoot = loader.load();
-                UserHomeController ctrl = loader.getController();
-                ctrl.setUserId(utenteOpt.get().getId());
+                var utente = utenteOpt.get();
+                javafx.fxml.FXMLLoader loader;
+                javafx.scene.Parent root;
                 javafx.stage.Stage stage = (javafx.stage.Stage) homeBtn.getScene().getWindow();
-                stage.getScene().setRoot(userHomeRoot);
+                if (utente.getRuolo().name().equals("RISTORATORE")) {
+                    loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RistoratoreHomeView.fxml"));
+                    root = loader.load();
+                    example.RistoratoreHomeController ctrl = loader.getController();
+                    ctrl.setRistoratore(utente);
+                    stage.getScene().setRoot(root);
+                } else {
+                    loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/UserHomeView.fxml"));
+                    root = loader.load();
+                    UserHomeController ctrl = loader.getController();
+                    ctrl.setUserId(utente.getId());
+                    stage.getScene().setRoot(root);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
