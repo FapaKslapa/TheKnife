@@ -317,21 +317,10 @@ public class MainViewController {
 
     private void mostraDialogRegistrazione() {
         try {
-            // Carica AuthView.fxml
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/AuthView.fxml"));
-            javafx.scene.Parent authRoot = loader.load();
-            // Sostituisci la card centrale con la card di registrazione
-            VBox rootVBox = (VBox) authRoot.lookup("#rootVBox");
-            VBox authCard = (VBox) authRoot.lookup("#authRoot");
-            javafx.fxml.FXMLLoader regLoader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RegisterView.fxml"));
-            javafx.scene.Parent regRoot = regLoader.load();
-            VBox registerCard = (VBox) regRoot.lookup("#registerCard");
-            int idx = rootVBox.getChildren().indexOf(authCard);
-            if (idx != -1 && registerCard != null) {
-                rootVBox.getChildren().set(idx, registerCard);
-            }
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RegisterView.fxml"));
+            javafx.scene.Parent registerRoot = loader.load();
             Stage stage = (Stage) ristorantiPane.getScene().getWindow();
-            stage.getScene().setRoot(authRoot);
+            stage.getScene().setRoot(registerRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

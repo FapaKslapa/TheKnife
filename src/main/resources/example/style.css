@@ -368,3 +368,273 @@
     -fx-text-fill: #FF9F43;
     -fx-font-size: 16px;
 }
+
+/* AGGIUNTA STILE PER ICON-BTN */
+.icon-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 0;
+    -fx-cursor: hand;
+    -fx-font-size: 22px;
+    -fx-effect: dropshadow(gaussian, #8256D044, 2, 0.1, 0, 1);
+    -fx-border-width: 0;
+    -fx-alignment: center;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-max-width: 44;
+    -fx-max-height: 44;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-transition: all 0.2s;
+}
+.icon-btn:hover {
+    -fx-background-color: #F3E8FF;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 8, 0.18, 0, 2);
+}
+
+
+.icon-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 0;
+    -fx-cursor: hand;
+    -fx-font-size: 28px;
+    -fx-effect: dropshadow(gaussian, #8256D044, 2, 0.1, 0, 1);
+    -fx-border-width: 0;
+    -fx-alignment: center;
+    -fx-min-width: 44;
+    -fx-min-height: 44;
+    -fx-max-width: 54;
+    -fx-max-height: 54;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-transition: all 0.2s;
+}
+.icon-btn:hover {
+    -fx-background-color: #F3E8FF;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 8, 0.18, 0, 2);
+}
+
+.icon-recensioni {
+    -fx-fill: #8256D0;
+    -fx-effect: dropshadow(gaussian, #8256D044, 2, 0.1, 0, 1);
+}
+
+.icon-cuore-on {
+    -fx-fill: #FF9F43;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 2, 0.13, 0, 1);
+}
+
+.icon-cuore-off {
+    -fx-fill: #B0B0B0;
+    -fx-effect: dropshadow(gaussian, #B0B0B044, 1, 0.08, 0, 1);
+}
+
+/* Orari scroll più alto */
+.orari-scroll-wrapper-modern {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 22;
+    -fx-padding: 10 0 10 0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 8, 0.12, 0, 2);
+    -fx-min-height: 300;
+    -fx-max-height: 400;
+}
+
+
+.recensioni-root {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 0;
+    -fx-spacing: 18;
+    -fx-alignment: TOP_CENTER;
+}
+
+.recensioni-scroll {
+    -fx-background-color: #F6F7FB;
+    -fx-background-radius: 24;
+    -fx-padding: 0 0 0 0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 8, 0.12, 0, 2);
+    -fx-border-width: 0;
+    -fx-max-height: 320;
+    -fx-min-height: 220;
+}
+
+.hbox-recensioni-cards {
+    -fx-spacing: 18;
+    -fx-padding: 20 0 20 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.card-recensione {
+    -fx-background-color: linear-gradient(to bottom right, #fff 80%, #F3E8FF 100%);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 18 18 14 18;
+    -fx-effect: dropshadow(gaussian, #8256D022, 8, 0.12, 0, 2);
+    -fx-min-width: 220;
+    -fx-max-width: 260;
+    -fx-border-width: 1.5;
+    -fx-border-color: #E0E7FF;
+    -fx-spacing: 8;
+    -fx-alignment: TOP_LEFT;
+    -fx-transition: all 0.2s;
+}
+.card-recensione:hover {
+    -fx-background-color: linear-gradient(to bottom right, #F3E8FF 80%, #FFFBF3 100%);
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 16, 0.18, 0, 4);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.card-recensione .label-voto {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #FF9F43;
+}
+
+.card-recensione .label-titolo {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 2 0;
+}
+
+.card-recensione .label-testo {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 2 0;
+}
+
+.card-recensione .label-tempo {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6B7280;
+    -fx-font-weight: 600;
+    -fx-padding: 2 0 0 0;
+}
+
+.dialog-auth-card {
+    -fx-background-color: #fff;
+    -fx-background-radius: 32;
+    -fx-padding: 28 36 20 36;
+    -fx-effect: dropshadow(gaussian, #8256D044, 24, 0.22, 0, 8);
+    -fx-max-width: 420;
+    -fx-min-width: 320;
+    -fx-max-height: 420;
+    -fx-min-height: 320;
+    -fx-alignment: CENTER;
+    -fx-spacing: 14;
+    -fx-border-radius: 32;
+    -fx-border-width: 0;
+    -fx-transition: all 0.2s;
+}
+.dialog-auth-card:hover {
+    -fx-background-color: #F3E8FF;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 24, 0.25, 0, 8);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.label-auth-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 22 0;
+    -fx-alignment: CENTER;
+}
+
+.button-auth {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 24;
+    -fx-padding: 10 32;
+    -fx-effect: dropshadow(gaussian, #8256D044, 3, 0.13, 0, 2);
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-margin: 16 0 0 0;
+}
+
+.textfield-auth, .passwordfield-auth {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 14;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-font-size: 16px;
+    -fx-padding: 10 16;
+    -fx-text-fill: #333;
+    -fx-margin: 0 0 8 0;
+}
+
+.label-auth-result {
+    -fx-font-size: 15px;
+    -fx-text-fill: #EA5455;
+    -fx-padding: 8 0 0 0;
+    -fx-alignment: CENTER;
+}
+
+.grid-recensioni-cards {
+    -fx-hgap: 18;
+    -fx-vgap: 18;
+    -fx-padding: 20 24 20 24;
+    -fx-alignment: TOP_CENTER;
+}
+
+.dialog-auth-card-wide {
+    -fx-background-color: #fff;
+    -fx-background-radius: 32;
+    -fx-padding: 32 64 32 64;
+    -fx-effect: dropshadow(gaussian, #8256D044, 24, 0.22, 0, 8);
+    -fx-max-width: 820;
+    -fx-min-width: 520;
+    -fx-max-height: 320;
+    -fx-min-height: 220;
+    -fx-alignment: CENTER;
+    -fx-spacing: 18;
+    -fx-border-radius: 32;
+    -fx-border-width: 0;
+}
+
+.textfield-auth-wide {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 14;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-font-size: 17px;
+    -fx-padding: 12 20;
+    -fx-text-fill: #333;
+    -fx-min-width: 220;
+    -fx-max-width: 340;
+}
+
+.button-auth-wide {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 24;
+    -fx-padding: 12 48;
+    -fx-effect: dropshadow(gaussian, #8256D044, 3, 0.13, 0, 2);
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-margin: 18 0 0 0;
+}
+
+.stelle-inline {
+    -fx-spacing: 6;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.stelle-inline .toggle-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 28px;
+    -fx-text-fill: #FF9F43;
+    -fx-cursor: hand;
+    -fx-padding: 0 4 0 4;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 2, 0.13, 0, 1);
+    -fx-border-width: 0;
+}
+.stelle-inline .toggle-button:selected {
+    -fx-background-color: #FFF7ED;
+    -fx-text-fill: #FF9F43;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 8, 0.18, 0, 2);
+}

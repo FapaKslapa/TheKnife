@@ -28,28 +28,29 @@ public class AuthController {
 
     @FXML
     private void onLogin() {
-        boolean ok = authService.login(usernameField.getText(), passwordField.getText()).isPresent();
+        var utenteOpt = authService.login(usernameField.getText(), passwordField.getText());
+        boolean ok = utenteOpt.isPresent();
         loginResult.setText(ok ? "Login effettuato!" : "Credenziali non valide.");
-        // Puoi aggiungere qui la logica per tornare alla home dopo login
+        if (ok) {
+            try {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/UserHomeView.fxml"));
+                javafx.scene.Parent userHomeRoot = loader.load();
+                UserHomeController ctrl = loader.getController();
+                ctrl.setUserId(utenteOpt.get().getId());
+                javafx.stage.Stage stage = (javafx.stage.Stage) homeBtn.getScene().getWindow();
+                stage.getScene().setRoot(userHomeRoot);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void mostraRegistrazione() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RegisterView.fxml"));
             javafx.scene.Parent registerRoot = loader.load();
-            VBox registerCard = (VBox) registerRoot.lookup("#registerCard");
-            Label loginLink = (Label) registerRoot.lookup("#loginLink");
-            int idx = rootVBox.getChildren().indexOf(authRoot);
-            if (idx != -1 && registerCard != null) {
-                rootVBox.getChildren().set(idx, registerCard);
-            }
-            // Sostituisci il link sotto la card
-            for (int i = 0; i < rootVBox.getChildren().size(); i++) {
-                if (rootVBox.getChildren().get(i) instanceof Label && ((Label) rootVBox.getChildren().get(i)).getId() != null && ((Label) rootVBox.getChildren().get(i)).getId().equals("registerLink")) {
-                    rootVBox.getChildren().set(i, loginLink);
-                    break;
-                }
-            }
+            javafx.stage.Stage stage = (javafx.stage.Stage) homeBtn.getScene().getWindow();
+            stage.getScene().setRoot(registerRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

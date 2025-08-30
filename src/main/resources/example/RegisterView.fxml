@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <VBox fx:id="rootVBox" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="example.RegisterController"
+      stylesheets="@style.css"
       styleClass="auth-root-stack"
       alignment="TOP_CENTER"
       spacing="0">
@@ -15,7 +16,8 @@
     </HBox>
     <!-- Card centrata -->
     <StackPane VBox.vgrow="ALWAYS" alignment="CENTER">
-        <VBox fx:id="registerCard" spacing="14" alignment="CENTER" styleClass="dialog-auth-card">
+        <VBox fx:id="registerCard" spacing="14" alignment="CENTER"
+              styleClass="dialog-auth-card">
             <padding>
                 <Insets top="28" right="36" bottom="28" left="36"/>
             </padding>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+            <?import javafx.scene.control.*?>
+            <?import javafx.scene.layout.*?>
+            <?import javafx.geometry.Insets?>
+            <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+                        fx:controller="example.RecensioniRistoranteController" stylesheets="@style.css">
+                <!-- Navbar -->
+                <top>
+                    <HBox spacing="10" styleClass="hbox-navbar" BorderPane.alignment="TOP_CENTER">
+                        <Label fx:id="ristoranteTitle" text="Recensioni" styleClass="label-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="homeBtn" text="Home" styleClass="button-navbar"/>
+                    </HBox>
+                </top>
+                <!-- Recensioni cards in griglia -->
+                <center>
+                    <VBox spacing="18" alignment="TOP_CENTER" styleClass="recensioni-root" BorderPane.alignment="CENTER">
+                        <Label text="Recensioni degli utenti" styleClass="label-dialog-title"/>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="recensioni-scroll" prefHeight="320" maxHeight="420">
+                            <GridPane fx:id="recensioniCards" hgap="18" vgap="18" styleClass="grid-recensioni-cards">
+                                <padding>
+                                    <Insets top="20" right="24" bottom="20" left="24"/>
+                                </padding>
+                                <!-- Card recensioni generate dinamicamente -->
+                            </GridPane>
+                        </ScrollPane>
+                    </VBox>
+                </center>
+                <!-- Card nuova recensione ampia e centrale -->
+                <bottom>
+                    <VBox fx:id="nuovaRecensioneCard" spacing="18" alignment="CENTER" styleClass="dialog-auth-card-wide"
+                          BorderPane.alignment="CENTER">
+                        <Label text="Lascia una recensione" styleClass="label-auth-title"/>
+                        <HBox spacing="24" alignment="CENTER">
+                            <TextField fx:id="titoloField" promptText="Titolo" styleClass="textfield-auth-wide"/>
+                            <Label text="Voto:" styleClass="label-info-modern"/>
+                            <HBox fx:id="stelleBox" spacing="6" alignment="CENTER_LEFT" styleClass="stelle-inline"/>
+                        </HBox>
+                        <TextArea fx:id="testoField" promptText="Testo" styleClass="textfield-auth-wide" prefRowCount="4"/>
+                        <Button fx:id="confermaBtn" text="Conferma" styleClass="button-auth-wide"/>
+                        <Label fx:id="resultLabel" styleClass="label-auth-result"/>
+                    </VBox>
+                </bottom>
+            </BorderPane>
