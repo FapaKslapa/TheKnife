@@ -518,3 +518,72 @@
     -fx-font-size: 17px;
     -fx-text-fill: #333;
 }
+
+/* Card centrale larga per creazione ristorante */
+.dialog-ristorante-card-wide {
+    -fx-background-color: #fff;
+    -fx-background-radius: 36;
+    -fx-padding: 44 56 36 56;
+    -fx-effect: dropshadow(gaussian, #8256D044, 32, 0.22, 0, 12);
+    -fx-max-width: 720;
+    -fx-min-width: 540;
+    -fx-max-height: 680;
+    -fx-alignment: CENTER;
+    -fx-spacing: 28;
+    -fx-border-radius: 36;
+    -fx-border-width: 0;
+}
+.label-auth-title-large {
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 28 0;
+    -fx-alignment: CENTER;
+}
+.form-ristorante-fields {
+    -fx-spacing: 18;
+    -fx-padding: 0 0 0 0;
+    -fx-alignment: CENTER_LEFT;
+}
+.textfield-auth-wide {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 18;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 2;
+    -fx-font-size: 18px;
+    -fx-padding: 14 22;
+    -fx-text-fill: #333;
+    -fx-margin: 0 0 12 0;
+    -fx-min-width: 320;
+    -fx-max-width: 420;
+}
+.giorno-card-wide {
+    -fx-background-color: #F3E8FF;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-padding: 22 18 18 18;
+    -fx-effect: dropshadow(gaussian, #8256D011, 4, 0.14, 0, 2);
+    -fx-min-width: 160;
+    -fx-max-width: 220;
+    -fx-alignment: TOP_CENTER;
+    -fx-spacing: 12;
+}
+.giorno-label-large {
+    -fx-font-weight: 900;
+    -fx-font-size: 20px;
+    -fx-text-fill: #8256D0;
+    -fx-letter-spacing: 1.5px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 8 0;
+}
+.textfield-orario-wide {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 14;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-font-size: 16px;
+    -fx-padding: 10 16;
+    -fx-text-fill: #333;
+    -fx-min-width: 90;
+    -fx-max-width: 120;
+}

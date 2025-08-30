@@ -175,7 +175,15 @@ public class RistoratoreHomeController {
     }
 
     private void onNuovoRistorante(ActionEvent event) {
-        // Placeholder per la creazione di un nuovo ristorante
-        System.out.println("Apertura form nuovo ristorante");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/NuovoRistoranteView.fxml"));
+            javafx.scene.Parent root = loader.load();
+            NuovoRistoranteController ctrl = loader.getController();
+            ctrl.setRistoratore(ristoratore);
+            javafx.stage.Stage stage = (javafx.stage.Stage) nuovoRistoranteBtn.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
