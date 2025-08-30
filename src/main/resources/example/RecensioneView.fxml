@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="example.RecensioneController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Crea Recensione"/>
+    <TextField fx:id="idRistoranteField" promptText="ID Ristorante"/>
+    <TextField fx:id="idUtenteField" promptText="ID Utente"/>
+    <TextField fx:id="votoField" promptText="Voto"/>
+    <TextField fx:id="titoloField" promptText="Titolo"/>
+    <TextField fx:id="testoField" promptText="Testo"/>
+    <Button text="Crea" onAction="#onCreaRecensione"/>
+    <Label fx:id="creaRecResult"/>
+    <Separator/>
+    <Label text="Lista Recensioni"/>
+    <Button text="Mostra Tutte" onAction="#onShowAllRecensioni"/>
+    <ListView fx:id="recensioniList"/>
+</VBox>

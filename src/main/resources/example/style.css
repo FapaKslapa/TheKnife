@@ -1,0 +1,370 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+
+.root {
+    -fx-font-family: 'Lexend', 'Segoe UI', sans-serif;
+    -fx-background-color: #F6F7FB;
+}
+
+.hbox-navbar {
+    -fx-background-color: #fff;
+    -fx-padding: 18 32 18 32;
+    -fx-effect: dropshadow(gaussian, #D1D5DB88, 8, 0.2, 0, 2);
+    -fx-border-radius: 0 0 18 18;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #F3E8FF;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+    -fx-min-height: 64;
+}
+
+.label-title {
+    -fx-text-fill: #8256D0;
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1.5px;
+    -fx-effect: dropshadow(gaussian, #8256D044, 4, 0.2, 0, 1);
+}
+
+.button-navbar {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 17px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-padding: 10 28;
+    -fx-effect: dropshadow(gaussian, #8256D044, 4, 0.1, 0, 1);
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-transition: all 0.2s;
+}
+.button-navbar:hover {
+    -fx-background-color: linear-gradient(to right, #FF9F43 60%, #8256D0 100%);
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 8, 0.18, 0, 2);
+}
+
+.ristoranti-flow {
+    -fx-padding: 32;
+    -fx-background-color: transparent;
+}
+
+.card-ristorante-modern {
+    -fx-background-color: linear-gradient(to bottom right, #fff 70%, #F3E8FF 100%);
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-padding: 32 24 32 24;
+    -fx-effect: dropshadow(gaussian, #8256D022, 18, 0.18, 0, 6);
+    -fx-min-width: 320;
+    -fx-max-width: 360;
+    -fx-border-width: 2;
+    -fx-border-color: #E0E7FF;
+    -fx-alignment: TOP_LEFT;
+    -fx-spacing: 16;
+    -fx-transition: all 0.2s;
+}
+
+.card-ristorante-modern:hover {
+    -fx-background-color: linear-gradient(to bottom right, #F3E8FF 80%, #FFFBF3 100%);
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 24, 0.25, 0, 8);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.label-nome-modern {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8256D0;
+    -fx-letter-spacing: 1px;
+    -fx-effect: dropshadow(gaussian, #8256D044, 3, 0.2, 0, 1);
+}
+
+.label-info-modern {
+    -fx-font-size: 16px;
+    -fx-text-fill: #6B7280;
+    -fx-font-weight: 600;
+    -fx-padding: 2 0 2 0;
+}
+
+.price-tag-modern {
+    -fx-background-color: linear-gradient(to right, #FF9F43 60%, #8256D0 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 20;
+    -fx-background-radius: 30;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 3, 0.2, 0, 1);
+    -fx-alignment: CENTER_LEFT;
+    -fx-letter-spacing: 1px;
+}
+
+.ristorante-indirizzo-modern {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 4 0;
+}
+
+.label-telefono-modern {
+    -fx-font-size: 15px;
+    -fx-text-fill: #00CFE8;
+    -fx-font-weight: 700;
+}
+
+.label-consegna-modern {
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #28C76F;
+}
+
+.label-consegna-modern.no {
+    -fx-text-fill: #EA5455;
+}
+
+.orari-scroll-wrapper-modern {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 22;
+    -fx-padding: 10 0 10 0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 8, 0.12, 0, 2);
+    -fx-min-height: 132;
+    -fx-max-height: 160;
+}
+
+.orari-scroll-inner-modern {
+    -fx-spacing: 24;
+    -fx-padding: 20 36 20 36;
+}
+
+.giorno-card-modern {
+    -fx-background-color: #F3E8FF;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 18 12 16 12;
+    -fx-effect: dropshadow(gaussian, #8256D011, 3, 0.12, 0, 1);
+    -fx-min-width: 110;
+    -fx-max-width: 150;
+    -fx-alignment: TOP_CENTER;
+    -fx-transition: all 0.2s;
+}
+
+.giorno-card-modern.oggi {
+    -fx-border-color: #FF9F43;
+    -fx-border-width: 2.5;
+    -fx-background-color: #FFF7ED;
+}
+
+.giorno-label-modern {
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+    -fx-text-fill: #8256D0;
+    -fx-letter-spacing: 1px;
+    -fx-alignment: CENTER;
+}
+
+.orari-list-modern {
+    -fx-spacing: 5;
+    -fx-padding: 5 0 0 0;
+}
+
+.orario-item-modern {
+    -fx-background-color: #E0E7FF;
+    -fx-background-radius: 8;
+    -fx-padding: 4 12;
+    -fx-font-size: 15px;
+    -fx-text-fill: #8256D0;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, #8256D011, 2, 0.12, 0, 1);
+    -fx-alignment: CENTER;
+    -fx-min-height: 30;
+}
+
+.orario-item-modern.text-danger-modern {
+    -fx-background-color: #FFE4E6;
+    -fx-text-fill: #EA5455;
+    -fx-font-weight: 800;
+    -fx-border-color: #EA5455;
+    -fx-border-width: 1.5;
+}
+
+.button-recensioni {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-padding: 8 24;
+    -fx-effect: dropshadow(gaussian, #8256D044, 2, 0.1, 0, 1);
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-margin: 12 0 0 0;
+}
+
+.overlay-recensioni {
+    -fx-background-color: rgba(30, 27, 60, 0.18);
+    -fx-alignment: CENTER;
+    -fx-padding: 0;
+}
+
+.dialog-recensioni {
+    -fx-background-color: #fff;
+    -fx-background-radius: 18;
+    -fx-padding: 32 32 24 32;
+    -fx-effect: dropshadow(gaussian, #8256D044, 16, 0.18, 0, 4);
+    -fx-max-width: 540;
+    -fx-min-width: 340;
+    -fx-alignment: TOP_CENTER;
+}
+
+.label-dialog-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 18 0;
+}
+
+.hbox-recensioni-cards {
+    -fx-spacing: 18;
+    -fx-padding: 0 0 0 0;
+}
+
+.card-recensione {
+    -fx-background-color: linear-gradient(to bottom right, #F3E8FF 80%, #fff 100%);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-padding: 18 18 14 18;
+    -fx-effect: dropshadow(gaussian, #8256D022, 8, 0.12, 0, 2);
+    -fx-min-width: 220;
+    -fx-max-width: 260;
+    -fx-border-width: 1.5;
+    -fx-border-color: #E0E7FF;
+    -fx-spacing: 8;
+}
+
+.card-recensione .label-voto {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #FF9F43;
+}
+
+.card-recensione .label-titolo {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 2 0;
+}
+
+.card-recensione .label-testo {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 2 0;
+}
+
+.card-recensione .label-tempo {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6B7280;
+    -fx-font-weight: 600;
+    -fx-padding: 2 0 0 0;
+}
+
+.button-close-recensioni {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8256D0;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 0 0 0;
+    -fx-cursor: hand;
+    -fx-alignment: TOP_RIGHT;
+}
+
+.dialog-auth {
+    -fx-background-color: #fff;
+    -fx-background-radius: 18;
+    -fx-padding: 32 32 24 32;
+    -fx-effect: dropshadow(gaussian, #8256D044, 16, 0.18, 0, 4);
+    -fx-max-width: 400;
+    -fx-min-width: 320;
+    -fx-alignment: TOP_CENTER;
+}
+
+
+.auth-root-stack {
+    -fx-background-color: linear-gradient(to bottom right, #F6F7FB 80%, #F3E8FF 100%);
+    -fx-alignment: CENTER;
+    -fx-padding: 0;
+    -fx-min-height: 600;
+}
+
+.dialog-auth-card {
+    -fx-background-color: #fff;
+    -fx-background-radius: 32;
+    -fx-padding: 28 36 20 36;
+    -fx-effect: dropshadow(gaussian, #8256D044, 24, 0.22, 0, 8);
+    -fx-max-width: 420;
+    -fx-min-width: 320;
+    -fx-max-height: 420;
+    -fx-min-height: 320;
+    -fx-alignment: CENTER;
+    -fx-spacing: 14;
+    -fx-border-radius: 32;
+    -fx-border-width: 0;
+    -fx-transition: all 0.2s;
+}
+.dialog-auth-card:hover {
+    -fx-background-color: #F3E8FF;
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 24, 0.25, 0, 8);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.label-auth-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8256D0;
+    -fx-padding: 0 0 22 0;
+    -fx-alignment: CENTER;
+}
+
+.button-auth {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 24;
+    -fx-padding: 10 32;
+    -fx-effect: dropshadow(gaussian, #8256D044, 3, 0.13, 0, 2);
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-margin: 16 0 0 0;
+}
+
+.textfield-auth, .passwordfield-auth {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 14;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-font-size: 16px;
+    -fx-padding: 10 16;
+    -fx-text-fill: #333;
+    -fx-margin: 0 0 8 0;
+}
+
+.label-auth-result {
+    -fx-font-size: 15px;
+    -fx-text-fill: #EA5455;
+    -fx-padding: 8 0 0 0;
+    -fx-alignment: CENTER;
+}
+
+.label-auth-link {
+    -fx-font-size: 15px;
+    -fx-text-fill: #8256D0;
+    -fx-font-weight: 700;
+    -fx-padding: 18 0 0 0;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-underline: true;
+    -fx-effect: dropshadow(gaussian, #8256D044, 2, 0.13, 0, 1);
+    -fx-transition: all 0.2s;
+}
+.label-auth-link:hover {
+    -fx-text-fill: #FF9F43;
+    -fx-font-size: 16px;
+}
