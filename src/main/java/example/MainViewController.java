@@ -1,5 +1,6 @@
 package example;
 
+import example.models.FiltriDiRicerca;
 import example.models.Recensione;
 import example.models.Ristorante;
 import javafx.animation.FadeTransition;
@@ -7,11 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -24,34 +21,192 @@ import services.ReverseGeocodingService;
 import services.RistoranteService;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import javafx.collections.FXCollections;
+
+/**
+ * Controller per la vista principale dell'applicazione TheKnife.
+ * Questa classe gestisce la visualizzazione e l'interazione con la lista dei ristoranti
+ * disponibili per tutti gli utenti, anche quelli non autenticati.
+ * 
+ * <p>Funzionalità principali:
+ * <ul>
+ *   <li>Visualizzazione dei ristoranti in formato card</li>
+ *   <li>Filtraggio dei ristoranti per tipo di cucina, fascia di prezzo, distanza, ecc.</li>
+ *   <li>Visualizzazione degli orari di apertura dei ristoranti</li>
+ *   <li>Consultazione delle recensioni dei ristoranti</li>
+ *   <li>Navigazione verso le pagine di login e registrazione</li>
+ * </ul>
+ */
 public class MainViewController {
-    @FXML
-    private FlowPane ristorantiPane;
-    @FXML
-    private Button loginBtn, registerBtn;
+    /** Pannello che contiene le card dei ristoranti */
+    @FXML private FlowPane ristorantiPane;
+    
+    /** Pulsanti per login, registrazione e gestione filtri */
+    @FXML private Button loginBtn, registerBtn, resetFiltriBtn, cercaBtn;
+    
+    /** ComboBox per i filtri: tipo di cucina, fascia di prezzo e distanza */
+    @FXML private ComboBox<String> tipoCucinaCombo, fasciaPrezzoCombo, distanzaCombo;
+    
+    /** Checkbox per filtri aggiuntivi: consegna a domicilio e ristoranti aperti ora */
+    @FXML private CheckBox consegnaCheckbox, apertoOraCheckbox;
+    
+    /** Campo di testo per inserire la posizione di riferimento per il filtro di distanza */
+    @FXML private TextField posizioneField;
 
+    /** Servizio per la gestione dell'autenticazione degli utenti */
     private final AuthService authService = new AuthService();
+    
+    /** Servizio per la gestione delle operazioni sui ristoranti */
     private final RistoranteService ristoranteService = new RistoranteService();
+    
+    /** Servizio per la gestione delle recensioni */
     private final RecensioneService recensioneService = new RecensioneService();
+    
+    /** Servizio per convertire coordinate in indirizzi e viceversa */
     private final ReverseGeocodingService geocodingService = new ReverseGeocodingService();
 
-    // Overlay root
+    /** Riferimento al pannello principale per mostrare overlay */
     private StackPane mainRoot;
 
+    /**
+     * Inizializza la vista dopo che gli elementi FXML sono stati caricati.
+     * Configura i listener per i pulsanti, inizializza i filtri e carica i ristoranti.
+     */
     @FXML
     public void initialize() {
         Scene scene = ristorantiPane.getScene();
         if (scene != null && scene.getRoot() instanceof StackPane) {
             mainRoot = (StackPane) scene.getRoot();
         }
+
+        // Inizializzazione filtri
+        initFiltri();
+
+        // Carica tutti i ristoranti
         mostraCardRistoranti();
+
+        // Gestione login e registrazione
         loginBtn.setOnAction(e -> mostraDialogLogin());
         registerBtn.setOnAction(e -> mostraDialogRegistrazione());
     }
 
+    /**
+     * Inizializza i componenti dell'interfaccia per i filtri di ricerca.
+     * Configura le ComboBox per tipo di cucina, fasce di prezzo e distanza,
+     * e imposta i listener per i pulsanti di reset e ricerca.
+     */
+    private void initFiltri() {
+        // Tipi di cucina
+        List<String> tipiCucina = Arrays.asList("Tutti", "Italiana", "Cinese", "Messicana", "Indiana", "Giapponese");
+        tipoCucinaCombo.setItems(FXCollections.observableArrayList(tipiCucina));
+        tipoCucinaCombo.getSelectionModel().selectFirst();
+
+        // Fasce di prezzo
+        List<String> fascePrezzo = Arrays.asList("Tutte", "€", "€€", "€€€");
+        fasciaPrezzoCombo.setItems(FXCollections.observableArrayList(fascePrezzo));
+        fasciaPrezzoCombo.getSelectionModel().selectFirst();
+
+        // Distanze (in km)
+        List<String> distanze = Arrays.asList("Tutte", "5 km", "10 km", "20 km", "50 km");
+        distanzaCombo.setItems(FXCollections.observableArrayList(distanze));
+        distanzaCombo.getSelectionModel().selectFirst();
+
+        // Gestione eventi
+        resetFiltriBtn.setOnAction(e -> resetFiltri());
+        cercaBtn.setOnAction(e -> applicaFiltri());
+    }
+
+    /**
+     * Reimposta tutti i filtri ai valori predefiniti e mostra nuovamente tutti i ristoranti.
+     * Azzera le ComboBox, deseleziona le CheckBox e pulisce il campo di testo della posizione.
+     */
+    private void resetFiltri() {
+        tipoCucinaCombo.getSelectionModel().selectFirst();
+        fasciaPrezzoCombo.getSelectionModel().selectFirst();
+        distanzaCombo.getSelectionModel().selectFirst();
+        consegnaCheckbox.setSelected(false);
+        apertoOraCheckbox.setSelected(false);
+        posizioneField.clear();
+
+        // Mostra tutti i ristoranti
+        mostraCardRistoranti();
+    }
+
+    /**
+     * Applica i filtri selezionati dall'utente e mostra i ristoranti filtrati.
+     * Utilizza il pattern Builder per costruire l'oggetto FiltriDiRicerca.
+     * Gestisce anche la conversione da indirizzo a coordinate per il filtro di distanza.
+     */
+    private void applicaFiltri() {
+        String tipoCucina = tipoCucinaCombo.getValue();
+        String fasciaPrezzo = fasciaPrezzoCombo.getValue();
+        String distanza = distanzaCombo.getValue();
+        boolean consegna = consegnaCheckbox.isSelected();
+        boolean apertoOra = apertoOraCheckbox.isSelected();
+        String posizione = posizioneField.getText();
+
+        // Usa FiltriDiRicerca.Builder per creare l'oggetto filtri
+        FiltriDiRicerca.Builder builder = new FiltriDiRicerca.Builder();
+
+        // Tipo di cucina
+        if (tipoCucina != null && !"Tutti".equals(tipoCucina)) {
+            builder.tipoCucina(tipoCucina);
+        }
+
+        // Fascia di prezzo
+        if (fasciaPrezzo != null && !"Tutte".equals(fasciaPrezzo)) {
+            int fascia = switch (fasciaPrezzo) {
+                case "€" -> 1;
+                case "€€" -> 2;
+                case "€€€" -> 3;
+                default -> 0;
+            };
+            builder.fasciaPrezzo(fascia);
+        }
+
+        // Consegna a domicilio
+        if (consegna) {
+            builder.consegnaDomicilio(true);
+        }
+
+        // Aperto ora
+        if (apertoOra) {
+            builder.apertoOra(true);
+        }
+
+        // Posizione e distanza
+        if (posizione != null && !posizione.trim().isEmpty() && distanza != null && !"Tutte".equals(distanza)) {
+            try {
+                // Ottieni le coordinate dalla posizione inserita
+                double[] coordinate = geocodingService.geocode(posizione);
+                if (coordinate != null) {
+                    // Estrai il valore numerico dalla stringa di distanza (es. "5 km" -> 5)
+                    int distanzaKm = Integer.parseInt(distanza.split(" ")[0]);
+                    builder.posizione(coordinate[0], coordinate[1], distanzaKm);
+                }
+            } catch (Exception ex) {
+                // Gestisci eventuali errori di geocoding
+                System.err.println("Errore nel geocoding: " + ex.getMessage());
+            }
+        }
+
+        // Costruisci l'oggetto filtri e applica al servizio
+        FiltriDiRicerca filtri = builder.build();
+        List<Ristorante> ristorantiFiltrati = ristoranteService.filtriRicerca(filtri);
+
+        mostraRistorantiFiltrati(ristorantiFiltrati);
+    }
+
+    /**
+     * Carica tutti i ristoranti dal servizio e li mostra nell'interfaccia.
+     * Configura lo stile del pannello che contiene le card e memorizza
+     * la lista completa dei ristoranti per un uso successivo.
+     */
     private void mostraCardRistoranti() {
         ristorantiPane.getChildren().clear();
         ristorantiPane.setHgap(24);
@@ -59,6 +214,43 @@ public class MainViewController {
         ristorantiPane.getStyleClass().add("ristoranti-flow");
 
         List<Ristorante> ristoranti = ristoranteService.getAllRistoranti();
+        /** Lista completa dei ristoranti (cache per non dover ricaricare dopo il filtraggio) */
+        mostraRistorantiFiltrati(ristoranti);
+    }
+
+    /**
+     * Visualizza i ristoranti filtrati nell'interfaccia utente.
+     * Se la lista è vuota, mostra un messaggio appropriato.
+     * Altrimenti, crea una card per ogni ristorante con tutte le informazioni rilevanti.
+     * 
+     * @param ristoranti Lista dei ristoranti da visualizzare
+     */
+    private void mostraRistorantiFiltrati(List<Ristorante> ristoranti) {
+        ristorantiPane.getChildren().clear();
+
+        if (ristoranti.isEmpty()) {
+            // Mostra messaggio quando non ci sono risultati
+            VBox emptyState = new VBox(16);
+            emptyState.setStyle("-fx-alignment: center; -fx-padding: 80px 0;");
+
+            Label iconLabel = new Label("🔍");
+            iconLabel.setStyle("-fx-font-size: 60px; -fx-text-fill: #CCCCCC;");
+
+            Label titleLabel = new Label("Nessun ristorante corrisponde ai filtri");
+            titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+            Label subtitleLabel = new Label("Prova a modificare i filtri di ricerca");
+            subtitleLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #777777;");
+
+            Button resetBtn = new Button("Reset filtri");
+            resetBtn.getStyleClass().add("button-reset");
+            resetBtn.setOnAction(e -> resetFiltri());
+
+            emptyState.getChildren().addAll(iconLabel, titleLabel, subtitleLabel, resetBtn);
+            ristorantiPane.getChildren().add(emptyState);
+            return;
+        }
+
         for (Ristorante r : ristoranti) {
             VBox card = new VBox(14);
             card.getStyleClass().add("card-ristorante-modern");
@@ -96,14 +288,28 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Genera una rappresentazione visiva della fascia di prezzo.
+     * Converte il valore numerico in una stringa di simboli "€".
+     * 
+     * @param fascia Valore numerico della fascia di prezzo (1-3)
+     * @return Stringa che rappresenta visivamente la fascia di prezzo (es. "€○○" per fascia 1)
+     */
     private String renderPrezzi(int fascia) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 3; i++) {
-            sb.append(i < fascia ? "€" : "€");
+            sb.append(i < fascia ? "€" : "○");
         }
         return sb.toString();
     }
 
+    /**
+     * Crea un componente scrollabile che mostra gli orari di apertura del ristorante per ogni giorno della settimana.
+     * Evidenzia il giorno corrente e distingue visivamente i giorni di chiusura.
+     * 
+     * @param orariApertura Mappa che contiene gli orari di apertura per ogni giorno della settimana
+     * @return Componente Node che mostra gli orari in formato scrollabile
+     */
     private Node creaOrariScorrevoli(Map<String, String> orariApertura) {
         String[] giorni = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
         String[] labels = {"Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"};
@@ -153,7 +359,13 @@ public class MainViewController {
         return scroll;
     }
 
-    // Overlay recensioni con card scorrevoli
+    /**
+     * Mostra le recensioni di un ristorante in un overlay scorrevole.
+     * Se la configurazione principale non lo consente, utilizza un modale classico
+     * come fallback chiamando {@link #mostraDialogRecensioni}.
+     * 
+     * @param ristorante Il ristorante di cui visualizzare le recensioni
+     */
     private void mostraOverlayRecensioni(Ristorante ristorante) {
         if (mainRoot == null) {
             mostraDialogRecensioni(ristorante);
@@ -241,7 +453,12 @@ public class MainViewController {
         fade.play();
     }
 
-    // Fallback modale classico
+    /**
+     * Mostra le recensioni di un ristorante in una finestra modale classica.
+     * Utilizzato come fallback quando l'overlay non può essere mostrato.
+     * 
+     * @param ristorante Il ristorante di cui visualizzare le recensioni
+     */
     private void mostraDialogRecensioni(Ristorante ristorante) {
         Stage dialog = new Stage();
         dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
@@ -299,11 +516,15 @@ public class MainViewController {
         root.getChildren().addAll(title, scroll);
 
         Scene scene = new Scene(root, 540, 340);
-        scene.getStylesheets().add(getClass().getResource("/example/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/example/style.css")).toExternalForm());
         dialog.setScene(scene);
         dialog.showAndWait();
     }
 
+    /**
+     * Naviga alla pagina di login dell'applicazione.
+     * Carica la vista di autenticazione e la imposta come radice della scena corrente.
+     */
     private void mostraDialogLogin() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/AuthView.fxml"));
@@ -315,6 +536,10 @@ public class MainViewController {
         }
     }
 
+    /**
+     * Naviga alla pagina di registrazione dell'applicazione.
+     * Carica la vista di registrazione e la imposta come radice della scena corrente.
+     */
     private void mostraDialogRegistrazione() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RegisterView.fxml"));
@@ -326,3 +551,4 @@ public class MainViewController {
         }
     }
 }
+

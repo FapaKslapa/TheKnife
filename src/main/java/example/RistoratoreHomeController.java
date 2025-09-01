@@ -17,29 +17,59 @@ import javafx.scene.shape.SVGPath;
 
 import java.util.List;
 
+/**
+ * Controller per la gestione della schermata principale del ristoratore nell'applicazione TheKnife.
+ * Questa classe si occupa di visualizzare e gestire tutti i ristoranti di proprietà di un ristoratore,
+ * permettendo di visualizzare le loro informazioni dettagliate, accedere alle recensioni e
+ * modificare le informazioni del ristorante. Offre anche funzionalità per aggiungere nuovi ristoranti
+ * e per effettuare il logout dall'applicazione.
+ */
 public class RistoratoreHomeController {
+    /** Pannello per la visualizzazione dei ristoranti del ristoratore */
     @FXML
     private FlowPane ristorantiPane;
+    /** Pulsante per effettuare il logout */
     @FXML
     private Button logoutBtn;
+    /** Pulsante per creare un nuovo ristorante */
     @FXML
     private Button nuovoRistoranteBtn;
 
+    /** Utente corrente con ruolo di ristoratore */
     private Utente ristoratore;
+    /** Servizio per la gestione delle operazioni sui ristoranti */
     private RistoranteService ristoranteService;
 
+    /**
+     * Imposta l'utente ristoratore attuale e inizializza il servizio ristoranti.
+     * Dopo aver impostato i valori, visualizza automaticamente i ristoranti di proprietà.
+     *
+     * @param ristoratore L'utente con ruolo di ristoratore da impostare
+     */
     public void setRistoratore(Utente ristoratore) {
         this.ristoratore = ristoratore;
         this.ristoranteService = new RistoranteService();
         mostraRistorantiPropri();
     }
 
+    /**
+     * Inizializza la schermata principale del ristoratore.
+     * Questo metodo viene chiamato automaticamente dopo che il file FXML è stato caricato.
+     * Configura i listener per i pulsanti di logout e creazione nuovo ristorante.
+     */
     @FXML
     public void initialize() {
         logoutBtn.setOnAction(this::onLogout);
         nuovoRistoranteBtn.setOnAction(this::onNuovoRistorante);
     }
 
+    /**
+     * Visualizza tutti i ristoranti di proprietà del ristoratore corrente.
+     * Per ogni ristorante crea una card visuale contenente tutte le informazioni principali,
+     * come nome, tipo di cucina, fascia di prezzo, indirizzo, numero di telefono,
+     * informazioni sulla consegna a domicilio e orari di apertura. Aggiunge inoltre
+     * pulsanti per visualizzare le recensioni e modificare il ristorante.
+     */
     private void mostraRistorantiPropri() {
         ristorantiPane.getChildren().clear();
         if (ristoratore == null) return;
@@ -105,6 +135,14 @@ public class RistoratoreHomeController {
         }
     }
 
+    /**
+     * Genera una rappresentazione visuale della fascia di prezzo del ristorante.
+     * Converte il valore numerico della fascia prezzo in una stringa di simboli €,
+     * dove il numero di simboli evidenziati corrisponde al valore della fascia.
+     *
+     * @param fascia Il valore numerico della fascia di prezzo
+     * @return Una stringa che rappresenta visivamente la fascia di prezzo
+     */
     private String renderPrezzi(int fascia) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 3; i++) {
@@ -113,6 +151,15 @@ public class RistoratoreHomeController {
         return sb.toString();
     }
 
+    /**
+     * Crea un componente scorrevole per visualizzare gli orari di apertura del ristorante.
+     * Il componente mostra gli orari per tutti i giorni della settimana, evidenziando
+     * il giorno corrente. Per ogni giorno, visualizza le fasce orarie di apertura o
+     * indica se il ristorante è chiuso.
+     *
+     * @param orariApertura Mappa contenente gli orari di apertura per ogni giorno della settimana
+     * @return Un componente JavaFX che visualizza gli orari di apertura in modo scorrevole
+     */
     private javafx.scene.Node creaOrariScorrevoli(java.util.Map<String, String> orariApertura) {
         String[] giorni = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
         String[] labels = {"Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"};
@@ -162,6 +209,13 @@ public class RistoratoreHomeController {
         return scroll;
     }
 
+    /**
+     * Naviga alla schermata di visualizzazione delle recensioni per un ristorante specifico.
+     * Carica la vista delle recensioni e passa il contesto (ristoratore e ristorante)
+     * al controller corrispondente.
+     *
+     * @param ristorante Il ristorante di cui visualizzare le recensioni
+     */
     private void mostraRecensioni(Ristorante ristorante) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RistoratoreRecensioniView.fxml"));
@@ -175,6 +229,13 @@ public class RistoratoreHomeController {
         }
     }
 
+    /**
+     * Naviga alla schermata di modifica delle informazioni di un ristorante specifico.
+     * Carica la vista di modifica e passa il contesto (ristoratore e ristorante)
+     * al controller corrispondente.
+     *
+     * @param ristorante Il ristorante da modificare
+     */
     private void mostraModificaRistorante(Ristorante ristorante) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/example/ModificaRistoranteView.fxml"));
@@ -188,6 +249,12 @@ public class RistoratoreHomeController {
         }
     }
 
+    /**
+     * Gestisce l'evento di logout dell'utente.
+     * Naviga alla schermata di autenticazione, terminando la sessione corrente del ristoratore.
+     *
+     * @param event L'evento di azione che ha attivato il logout
+     */
     private void onLogout(ActionEvent event) {
         try {
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
@@ -198,6 +265,13 @@ public class RistoratoreHomeController {
         }
     }
 
+    /**
+     * Gestisce l'evento di creazione di un nuovo ristorante.
+     * Naviga alla schermata di creazione di un nuovo ristorante e passa
+     * l'utente ristoratore corrente al controller corrispondente.
+     *
+     * @param event L'evento di azione che ha attivato la creazione di un nuovo ristorante
+     */
     private void onNuovoRistorante(ActionEvent event) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/NuovoRistoranteView.fxml"));

@@ -14,17 +14,40 @@ import services.AuthService;
 
 import java.util.List;
 
+/**
+ * Controller per la gestione delle recensioni di un ristorante nell'applicazione TheKnife.
+ * Questa classe si occupa della visualizzazione e della gestione delle recensioni
+ * relative a un ristorante specifico, permettendo al ristoratore di rispondere a ciascuna
+ * recensione o modificare le risposte già pubblicate. Fornisce anche statistiche
+ * relative alle recensioni ricevute, come il voto medio e il numero di risposte date.
+ */
 public class RistoratoreRecensioniController {
+    /** Etichetta per visualizzare il titolo della pagina con il nome del ristorante */
     @FXML private Label ristoranteTitle;
+    /** Pulsante per tornare alla home del ristoratore */
     @FXML private Button homeBtn;
+    /** Contenitore per la visualizzazione delle recensioni e delle relative risposte */
     @FXML private VBox recensioniBox;
 
+    /** ID dell'utente ristoratore corrente */
     private String ristoratoreId;
+    /** Ristorante di cui si stanno visualizzando le recensioni */
     private Ristorante ristorante;
+    /** Servizio per la gestione delle operazioni sulle recensioni */
     private final RecensioneService recensioneService = new RecensioneService();
+    /** Servizio per la gestione delle operazioni sui ristoranti */
     private final RistoranteService ristoranteService = new RistoranteService();
+    /** Servizio per la gestione dell'autenticazione e delle operazioni sugli utenti */
     private final AuthService authService = new AuthService();
 
+    /**
+     * Imposta il contesto per la visualizzazione delle recensioni.
+     * Inizializza il controller con l'ID del ristoratore e il ristorante specifico,
+     * imposta il titolo della pagina e carica le recensioni relative al ristorante.
+     *
+     * @param ristoratoreId L'ID dell'utente ristoratore
+     * @param ristorante Il ristorante di cui visualizzare le recensioni
+     */
     public void setContext(String ristoratoreId, Ristorante ristorante) {
         this.ristoratoreId = ristoratoreId;
         this.ristorante = ristorante;
@@ -32,11 +55,23 @@ public class RistoratoreRecensioniController {
         mostraRecensioni();
     }
 
+    /**
+     * Inizializza la schermata delle recensioni.
+     * Questo metodo viene chiamato automaticamente dopo che il file FXML è stato caricato.
+     * Configura i listener per i pulsanti di navigazione.
+     */
     @FXML
     public void initialize() {
         homeBtn.setOnAction(e -> vaiHome());
     }
 
+    /**
+     * Visualizza tutte le recensioni del ristorante corrente.
+     * Questo metodo costruisce dinamicamente l'interfaccia utente per mostrare le recensioni,
+     * le statistiche correlate (voto medio, numero di recensioni, risposte date) e
+     * permette di rispondere alle recensioni o modificare le risposte esistenti.
+     * Se non ci sono recensioni, mostra un messaggio appropriato.
+     */
     private void mostraRecensioni() {
         recensioniBox.getChildren().clear();
 
@@ -218,6 +253,15 @@ public class RistoratoreRecensioniController {
         }
     }
 
+    /**
+     * Mostra un dialog per modificare una risposta esistente a una recensione.
+     * Crea e configura un dialog modale che permette al ristoratore di modificare
+     * il testo della risposta. Se confermata, la modifica viene salvata e
+     * l'interfaccia viene aggiornata per mostrare la risposta modificata.
+     *
+     * @param recensione La recensione a cui è associata la risposta da modificare
+     * @param risposta La risposta da modificare
+     */
     private void mostraModificaRisposta(Recensione recensione, Risposta risposta) {
         // Creo un dialog per modificare la risposta
         Dialog<String> dialog = new Dialog<>();
@@ -264,6 +308,11 @@ public class RistoratoreRecensioniController {
         });
     }
 
+    /**
+     * Naviga alla schermata principale del ristoratore.
+     * Carica la vista home del ristoratore e passa il contesto dell'utente
+     * ristoratore corrente al controller corrispondente.
+     */
     private void vaiHome() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RistoratoreHomeView.fxml"));

@@ -11,6 +11,57 @@
                         <Button fx:id="logoutBtn" text="Logout" styleClass="button-navbar"/>
                         <Button fx:id="preferitiBtn" text="Preferiti" styleClass="button-navbar"/>
                     </HBox>
+
+                    <!-- Pannello filtri -->
+                    <VBox styleClass="filtri-panel" spacing="15">
+                        <padding>
+                            <Insets top="20" right="32" bottom="15" left="32"/>
+                        </padding>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="Filtri di ricerca" styleClass="filtri-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="resetFiltriBtn" text="Reset" styleClass="button-reset"/>
+                        </HBox>
+
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <!-- Tipo cucina -->
+                            <VBox spacing="5">
+                                <Label text="Tipo di cucina" styleClass="filtri-label"/>
+                                <ComboBox fx:id="tipoCucinaCombo" prefWidth="150" promptText="Seleziona..."/>
+                            </VBox>
+
+                            <!-- Fascia prezzo -->
+                            <VBox spacing="5">
+                                <Label text="Fascia di prezzo" styleClass="filtri-label"/>
+                                <ComboBox fx:id="fasciaPrezzoCombo" prefWidth="150" promptText="Seleziona..."/>
+                            </VBox>
+
+                            <!-- Consegna a domicilio -->
+                            <VBox spacing="5">
+                                <Label text="Servizi" styleClass="filtri-label"/>
+                                <CheckBox fx:id="consegnaCheckbox" text="Consegna a domicilio"/>
+                            </VBox>
+
+                            <!-- Aperto ora -->
+                            <VBox spacing="5">
+                                <Label text="Disponibilità" styleClass="filtri-label"/>
+                                <CheckBox fx:id="apertoOraCheckbox" text="Aperto ora"/>
+                            </VBox>
+
+                            <!-- Posizione -->
+                            <VBox spacing="5">
+                                <Label text="Posizione" styleClass="filtri-label"/>
+                                <HBox spacing="8">
+                                    <TextField fx:id="posizioneField" promptText="Inserisci indirizzo" prefWidth="200"/>
+                                    <ComboBox fx:id="distanzaCombo" prefWidth="120" promptText="Distanza"/>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Bottone ricerca -->
+                            <Button fx:id="cercaBtn" text="Cerca" styleClass="button-cerca"/>
+                        </HBox>
+                    </VBox>
+
                     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                         <FlowPane fx:id="ristorantiPane" hgap="32" vgap="32" styleClass="ristoranti-flow">
                             <padding>

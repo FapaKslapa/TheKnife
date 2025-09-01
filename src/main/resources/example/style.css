@@ -412,6 +412,13 @@
     -fx-background-color: transparent;
 }
 
+/* Stili per il FlowPane delle recensioni */
+.recensioni-flow {
+    -fx-padding: 16;
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+}
+
 .card-recensione-grande {
     -fx-background-color: linear-gradient(to bottom right, #fff 80%, #F3E8FF 100%);
     -fx-background-radius: 28;
@@ -421,8 +428,10 @@
     -fx-border-width: 2;
     -fx-border-color: #E0E7FF;
     -fx-alignment: TOP_LEFT;
-    -fx-max-width: 1000;
     -fx-transition: all 0.2s;
+    -fx-pref-width: 380px;
+    -fx-max-width: 420px;
+    -fx-min-width: 320px;
 }
 
 .card-recensione-grande:hover {
@@ -534,4 +543,291 @@
 
 .icon-btn:hover .icon-navbar {
     -fx-fill: #FFFFFF;
+}
+
+/* Stili specifici per la pagina recensioni */
+.recensioni-root {
+    -fx-padding: 32 48 32 48;
+    -fx-background-color: transparent;
+}
+
+/* Form compatto per le recensioni */
+.dialog-auth-card-slim {
+    -fx-background-color: #fff;
+    -fx-background-radius: 18;
+    -fx-padding: 18 24 18 24;
+    -fx-effect: dropshadow(gaussian, #8256D022, 16, 0.15, 0, 4);
+    -fx-border-radius: 18;
+    -fx-border-width: 1;
+    -fx-border-color: #E0E7FF;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12;
+}
+
+.dialog-auth-card-slim:hover {
+    -fx-background-color: #F9F5FF;
+    -fx-effect: dropshadow(gaussian, #8256D033, 20, 0.2, 0, 6);
+}
+
+/* Titolo più piccolo per il form */
+.label-auth-title-small {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #8256D0;
+}
+
+/* Campi di input compatti */
+.textfield-auth-compact {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 12;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-font-size: 15px;
+    -fx-padding: 8 14;
+    -fx-text-fill: #333;
+}
+
+/* Pulsanti mini e accent */
+.button-auth-mini {
+    -fx-background-color: #8256D0;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 12;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button-auth-accent {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 12;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button-auth-warning {
+    -fx-background-color: #FF9F43;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 12;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button-close-mini {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8256D0;
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 8;
+    -fx-cursor: hand;
+}
+
+.button-close-mini:hover {
+    -fx-text-fill: #FF9F43;
+}
+
+/* Stelle Rating Box */
+.stelle-rating-box {
+    -fx-background-color: #FFF7ED;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5;
+    -fx-border-color: #FF9F4344;
+    -fx-padding: 8 16;
+
+    -fx-alignment: center-left;
+    -fx-min-height: 36;
+    -fx-effect: dropshadow(gaussian, #FF9F4322, 4, 0.1, 0, 2);
+}
+
+/* Stile per la visualizzazione delle stelle nelle recensioni */
+.stelle-recensione {
+    -fx-background-color: #FFF7ED;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-border-color: #FF9F4344;
+    -fx-padding: 2 8;
+    -fx-spacing: 2;
+    -fx-alignment: center;
+    -fx-min-height: 28;
+}
+
+/* Pannello filtri */
+.filtri-panel {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-width: 1.5;
+    -fx-border-color: #E0E7FF;
+    -fx-effect: dropshadow(gaussian, #8256D022, 10, 0.15, 0, 3);
+}
+
+.filtri-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8256D0;
+    -fx-letter-spacing: 0.5px;
+}
+
+.filtri-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6B7280;
+}
+
+.button-reset {
+    -fx-background-color: #F3E8FF;
+    -fx-text-fill: #8256D0;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-padding: 6 16;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5;
+    -fx-border-color: #E0E7FF;
+    -fx-effect: dropshadow(gaussian, #8256D022, 3, 0.1, 0, 1);
+    -fx-cursor: hand;
+}
+
+.button-reset:hover {
+    -fx-background-color: #8256D0;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, #8256D044, 6, 0.15, 0, 2);
+}
+
+.button-cerca {
+    -fx-background-color: linear-gradient(to right, #8256D0 60%, #FF9F43 100%);
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 14;
+    -fx-padding: 8 24;
+    -fx-effect: dropshadow(gaussian, #8256D044, 4, 0.12, 0, 2);
+    -fx-cursor: hand;
+}
+
+.button-cerca:hover {
+    -fx-background-color: linear-gradient(to right, #FF9F43 60%, #8256D0 100%);
+    -fx-effect: dropshadow(gaussian, #FF9F43AA, 8, 0.18, 0, 3);
+}
+
+/* Stili migliorati per ComboBox */
+.combo-box {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 12;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-font-size: 14px;
+    -fx-padding: 4 8;
+}
+
+.combo-box:focused, .combo-box:hover {
+    -fx-border-color: #8256D0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 4, 0.15, 0, 2);
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #333333;
+    -fx-padding: 4 8;
+    -fx-font-weight: 500;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #8256D0;
+}
+
+/* Stili per la lista popup */
+.combo-box-popup .list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, #8256D033, 8, 0.15, 0, 3);
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #333333;
+    -fx-padding: 6 12;
+    -fx-background-radius: 0;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #F3E8FF;
+    -fx-text-fill: #8256D0;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #F3E8FF;
+    -fx-text-fill: #8256D0;
+    -fx-font-weight: 700;
+}
+
+/* Stili per checkbox */
+.check-box {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-padding: 5 0;
+}
+
+.check-box .box {
+    -fx-background-color: #F3F4F6;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.check-box:hover .box {
+    -fx-border-color: #8256D0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 3, 0.1, 0, 1);
+}
+
+.check-box:selected .box {
+    -fx-background-color: #8256D0;
+    -fx-border-color: #8256D0;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #FFFFFF;
+}
+
+/* Stili per TextField */
+.text-field {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 12;
+    -fx-border-color: #E0E7FF;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-font-size: 14px;
+    -fx-padding: 7 12;
+    -fx-text-fill: #333333;
+}
+
+.text-field:focused {
+    -fx-border-color: #8256D0;
+    -fx-effect: dropshadow(gaussian, #8256D022, 4, 0.15, 0, 2);
+}
+
+/* Stili per label dei risultati vuoti */
+.no-results-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6B7280;
+    -fx-padding: 40 0;
+    -fx-alignment: center;
 }

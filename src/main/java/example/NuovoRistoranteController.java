@@ -11,25 +11,72 @@ import services.ReverseGeocodingService;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Controller per la creazione di un nuovo ristorante.
+ * Questa classe gestisce l'interfaccia utente che permette ai ristoratori
+ * di inserire tutte le informazioni necessarie per creare un nuovo ristorante.
+ *
+ * <p>Funzionalità principali:
+ * <ul>
+ *   <li>Inserimento delle informazioni base del ristorante (nome, tipo cucina, ecc.)</li>
+ *   <li>Configurazione degli orari di apertura per ogni giorno della settimana</li>
+ *   <li>Validazione dei dati inseriti prima della creazione</li>
+ *   <li>Georeferenziazione dell'indirizzo in coordinate geografiche</li>
+ *   <li>Registrazione del nuovo ristorante nel sistema</li>
+ * </ul>
+ */
 public class NuovoRistoranteController {
+    /** Campo di testo per il nome del ristorante */
     @FXML private TextField nomeField;
+
+    /** Campo di testo per il tipo di cucina */
     @FXML private TextField tipoCucinaField;
+
+    /** Selezione per la fascia di prezzo (1-3) */
     @FXML private ComboBox<String> fasciaPrezzoBox;
+
+    /** Campo di testo per il numero di telefono */
     @FXML private TextField telefonoField;
+
+    /** Campo di testo per l'indirizzo del ristorante */
     @FXML private TextField indirizzoField;
+
+    /** Checkbox per indicare se il ristorante offre servizio di consegna a domicilio */
     @FXML private CheckBox consegnaCheck;
+
+    /** Contenitore per le card degli orari di apertura */
     @FXML private HBox orariBox;
+
+    /** Pulsanti per la conferma o l'annullamento della creazione */
     @FXML private Button confermaBtn, annullaBtn;
+
+    /** Etichetta per mostrare il risultato delle operazioni */
     @FXML private Label resultLabel;
 
+    /** Utente ristoratore proprietario del nuovo ristorante */
     private Utente ristoratore;
+
+    /** Servizio per le operazioni sui ristoranti */
     private final RistoranteService ristoranteService = new RistoranteService();
+
+    /** Servizio per la conversione tra indirizzi e coordinate geografiche */
     private final ReverseGeocodingService geocodingService = new ReverseGeocodingService();
 
+    /**
+     * Imposta l'utente ristoratore proprietario del nuovo ristorante.
+     * Questo metodo deve essere chiamato prima di utilizzare il controller.
+     *
+     * @param ristoratore L'utente ristoratore che sta creando il nuovo ristorante
+     */
     public void setRistoratore(Utente ristoratore) {
         this.ristoratore = ristoratore;
     }
 
+    /**
+     * Inizializza la vista dopo che gli elementi FXML sono stati caricati.
+     * Configura i controlli dell'interfaccia, crea le card per gli orari
+     * e imposta i listener per i pulsanti.
+     */
     @FXML
     public void initialize() {
         fasciaPrezzoBox.getItems().addAll("1", "2", "3");
@@ -38,6 +85,16 @@ public class NuovoRistoranteController {
         annullaBtn.setOnAction(e -> tornaHome());
     }
 
+    /**
+     * Crea le card per la gestione degli orari di apertura per ogni giorno della settimana.
+     * Ogni card contiene:
+     * <ul>
+     *   <li>Campi per la prima fascia oraria (apertura e chiusura)</li>
+     *   <li>Campi per la seconda fascia oraria (apertura e chiusura)</li>
+     *   <li>Checkbox per indicare se il ristorante è chiuso quel giorno</li>
+     * </ul>
+     * I dati inseriti vengono salvati in UserData per essere recuperati in seguito.
+     */
     private void creaCardOrari() {
         String[] giorni = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
         String[] labels = {"Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"};
@@ -91,6 +148,12 @@ public class NuovoRistoranteController {
         }
     }
 
+    /**
+     * Gestisce la conferma della creazione del nuovo ristorante.
+     * Raccoglie tutti i dati inseriti dall'utente, li valida e,
+     * se corretti, procede con la creazione del nuovo ristorante.
+     * In caso di successo, ritorna alla home del ristoratore.
+     */
     private void onConferma() {
         String nome = nomeField.getText();
         String tipoCucina = tipoCucinaField.getText();
@@ -163,6 +226,12 @@ public class NuovoRistoranteController {
         tornaHome();
     }
 
+    /**
+     * Verifica che l'orario inserito sia in un formato valido (HH:mm).
+     *
+     * @param orario Stringa contenente l'orario da validare
+     * @return true se l'orario è nel formato corretto, false altrimenti
+     */
     private boolean isOrarioValido(String orario) {
         // Formato HH:mm
         if (orario == null || orario.length() != 5) return false;
@@ -177,6 +246,10 @@ public class NuovoRistoranteController {
         }
     }
 
+    /**
+     * Naviga alla home page del ristoratore.
+     * Carica la vista della home del ristoratore e passa l'oggetto ristoratore al controller.
+     */
     private void tornaHome() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RistoratoreHomeView.fxml"));

@@ -12,22 +12,65 @@ import services.ReverseGeocodingService;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Controller per la modifica delle informazioni di un ristorante.
+ * Questa classe gestisce l'interfaccia utente che permette ai ristoratori
+ * di modificare i dettagli del proprio ristorante.
+ *
+ * <p>Funzionalità principali:
+ * <ul>
+ *   <li>Modifica delle informazioni base del ristorante (nome, tipo cucina, ecc.)</li>
+ *   <li>Gestione degli orari di apertura per ogni giorno della settimana</li>
+ *   <li>Validazione dei dati inseriti</li>
+ *   <li>Salvataggio delle modifiche nel sistema</li>
+ * </ul>
+ */
 public class ModificaRistoranteController {
+    /** Campo di testo per il nome del ristorante */
     @FXML private TextField nomeField;
+
+    /** Campo di testo per il tipo di cucina */
     @FXML private TextField tipoCucinaField;
+
+    /** Selezione per la fascia di prezzo (1-3) */
     @FXML private ComboBox<String> fasciaPrezzoBox;
+
+    /** Campo di testo per il numero di telefono */
     @FXML private TextField telefonoField;
+
+    /** Campo di testo per l'indirizzo del ristorante */
     @FXML private TextField indirizzoField;
+
+    /** Checkbox per indicare se il ristorante offre servizio di consegna a domicilio */
     @FXML private CheckBox consegnaCheck;
+
+    /** Contenitore per le card degli orari di apertura */
     @FXML private HBox orariBox;
+
+    /** Pulsanti per la conferma o l'annullamento delle modifiche */
     @FXML private Button confermaBtn, annullaBtn;
+
+    /** Etichetta per mostrare il risultato delle operazioni */
     @FXML private Label resultLabel;
 
+    /** Utente ristoratore proprietario del ristorante */
     private Utente ristoratore;
+
+    /** Ristorante da modificare */
     private Ristorante ristorante;
+
+    /** Servizio per le operazioni sui ristoranti */
     private final RistoranteService ristoranteService = new RistoranteService();
+
+    /** Servizio per la conversione tra indirizzi e coordinate geografiche */
     private final ReverseGeocodingService geocodingService = new ReverseGeocodingService();
 
+    /**
+     * Imposta il ristorante da modificare e popola i campi dell'interfaccia.
+     * Utilizzato quando l'utente ristoratore è già noto al controller.
+     *
+     * @param ristorante Il ristorante di cui modificare i dati
+     */
     public void setRistorante(Ristorante ristorante) {
         this.ristorante = ristorante;
         popolaCampi();
@@ -35,6 +78,14 @@ public class ModificaRistoranteController {
         popolaOrari(ristorante.getOrariApertura());
     }
 
+    /**
+     * Imposta sia il ristoratore che il ristorante da modificare.
+     * Utilizzato quando si naviga da una vista che non ha informazioni
+     * sul ristoratore corrente.
+     *
+     * @param ristoratore L'utente ristoratore proprietario del ristorante
+     * @param ristorante Il ristorante di cui modificare i dati
+     */
     public void setContext(Utente ristoratore, Ristorante ristorante) {
         this.ristoratore = ristoratore;
         this.ristorante = ristorante;
@@ -43,6 +94,10 @@ public class ModificaRistoranteController {
         popolaOrari(ristorante.getOrariApertura());
     }
 
+    /**
+     * Inizializza la vista dopo che gli elementi FXML sono stati caricati.
+     * Configura i controlli dell'interfaccia e imposta i listener per i pulsanti.
+     */
     @FXML
     public void initialize() {
         fasciaPrezzoBox.getItems().addAll("1", "2", "3");
@@ -55,6 +110,10 @@ public class ModificaRistoranteController {
         annullaBtn.setOnAction(e -> tornaHome());
     }
 
+    /**
+     * Popola i campi dell'interfaccia con i dati del ristorante.
+     * Converte le coordinate geografiche in un indirizzo leggibile.
+     */
     private void popolaCampi() {
         if (ristorante == null) return;
         nomeField.setText(ristorante.getNome());
@@ -67,6 +126,16 @@ public class ModificaRistoranteController {
         // popolaOrari(ristorante.getOrariApertura());
     }
 
+    /**
+     * Crea le card per la gestione degli orari di apertura per ogni giorno della settimana.
+     * Ogni card contiene:
+     * <ul>
+     *   <li>Campi per la prima fascia oraria (apertura e chiusura)</li>
+     *   <li>Campi per la seconda fascia oraria (apertura e chiusura)</li>
+     *   <li>Checkbox per indicare se il ristorante è chiuso quel giorno</li>
+     * </ul>
+     * I dati inseriti vengono salvati in UserData per essere recuperati in seguito.
+     */
     private void creaCardOrari() {
         String[] giorni = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
         String[] labels = {"Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"};
@@ -120,6 +189,12 @@ public class ModificaRistoranteController {
         }
     }
 
+    /**
+     * Popola i campi degli orari di apertura con i dati esistenti del ristorante.
+     * Gestisce anche il caso di giorni di chiusura e fasce orarie multiple.
+     *
+     * @param orariApertura Mappa contenente gli orari di apertura per ogni giorno della settimana
+     */
     private void popolaOrari(Map<String, String> orariApertura) {
         String[] giorniOrdinati = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
         for (String giorno : giorniOrdinati) {
@@ -172,6 +247,11 @@ public class ModificaRistoranteController {
         }
     }
 
+    /**
+     * Gestisce la conferma delle modifiche al ristorante.
+     * Raccoglie tutti i dati inseriti, li valida e invia la richiesta di modifica.
+     * In caso di successo, ritorna alla home del ristoratore.
+     */
     private void onConferma() {
         String nome = nomeField.getText();
         String tipoCucina = tipoCucinaField.getText();
@@ -250,6 +330,12 @@ public class ModificaRistoranteController {
         }
     }
 
+    /**
+     * Verifica che l'orario inserito sia in un formato valido (HH:mm).
+     *
+     * @param orario Stringa contenente l'orario da validare
+     * @return true se l'orario è nel formato corretto, false altrimenti
+     */
     private boolean isOrarioValido(String orario) {
         // Formato HH:mm
         if (orario == null || orario.length() != 5) return false;
@@ -264,6 +350,10 @@ public class ModificaRistoranteController {
         }
     }
 
+    /**
+     * Naviga alla home page del ristoratore.
+     * Carica la vista della home del ristoratore e passa l'oggetto ristoratore al controller.
+     */
     private void tornaHome() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/RistoratoreHomeView.fxml"));

@@ -6,18 +6,37 @@ import javafx.scene.layout.VBox;
 import services.AuthService;
 import example.models.Utente;
 
+/**
+ * Controller per la gestione della schermata di registrazione.
+ * Questa classe gestisce tutte le interazioni dell'utente con il form di registrazione,
+ * inclusa la validazione dei dati inseriti e l'invio delle informazioni al servizio di autenticazione.
+ */
 public class RegisterController {
+    /** Campo di testo per l'inserimento del nome utente */
     @FXML private TextField usernameField, emailField;
+    /** Campo password per l'inserimento della password e della sua conferma */
     @FXML private PasswordField passwordField, confirmPasswordField;
+    /** Menu a tendina per la selezione del ruolo utente */
     @FXML private ComboBox<String> ruoloBox;
+    /** Etichetta per mostrare il risultato dell'operazione di registrazione */
     @FXML private Label registerResult;
+    /** Pulsanti per navigare alla home e alla schermata di login */
     @FXML private Button homeBtn, loginBtn;
+    /** Collegamento per passare alla schermata di login */
     @FXML private Label loginLink;
+    /** Contenitore principale per la schermata di registrazione */
     @FXML private VBox registerRootVBox;
+    /** Contenitore per il form di registrazione */
     @FXML private VBox registerCard;
 
+    /** Servizio per la gestione dell'autenticazione */
     private final AuthService authService = new AuthService();
 
+    /**
+     * Inizializza la schermata di registrazione.
+     * Questo metodo viene chiamato automaticamente dopo che il file FXML è stato caricato.
+     * Configura i listener per i pulsanti e popola il menu a tendina dei ruoli.
+     */
     @FXML
     public void initialize() {
         homeBtn.setOnAction(e -> vaiHome());
@@ -27,6 +46,11 @@ public class RegisterController {
         loginLink.setOnMouseClicked(e -> mostraLoginCard());
     }
 
+    /**
+     * Gestisce l'evento di registrazione quando l'utente conferma l'inserimento dei dati.
+     * Esegue la validazione dei campi inseriti e, se validi, procede con la registrazione
+     * dell'utente tramite il servizio di autenticazione.
+     */
     @FXML
     private void onRegister() {
         String username = usernameField.getText();
@@ -47,6 +71,11 @@ public class RegisterController {
         registerResult.setText(ok ? "Registrazione avvenuta!" : "Username o email già esistenti.");
     }
 
+    /**
+     * Naviga alla schermata principale dell'applicazione.
+     * Carica il file FXML della vista principale e sostituisce il contenuto
+     * della finestra corrente con la nuova vista.
+     */
     private void vaiHome() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/MainView.fxml"));
@@ -58,6 +87,11 @@ public class RegisterController {
         }
     }
 
+    /**
+     * Naviga alla schermata di login.
+     * Carica il file FXML della vista di autenticazione e sostituisce il contenuto
+     * della finestra corrente con la nuova vista.
+     */
     private void vaiLogin() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/AuthView.fxml"));
@@ -69,6 +103,11 @@ public class RegisterController {
         }
     }
 
+    /**
+     * Sostituisce il form di registrazione con quello di login senza cambiare pagina.
+     * Carica il componente di login dal file FXML corrispondente e lo inserisce
+     * all'interno del layout attuale, mantenendo la stessa finestra.
+     */
     private void mostraLoginCard() {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/example/AuthView.fxml"));

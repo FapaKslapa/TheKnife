@@ -7,7 +7,29 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Servizio per la conversione di coordinate geografiche in indirizzi e viceversa.
+ * Questa classe utilizza l'API di OpenStreetMap Nominatim per effettuare operazioni di:
+ * <ul>
+ *   <li>Reverse geocoding: conversione di coordinate (latitudine, longitudine) in indirizzi leggibili</li>
+ *   <li>Geocoding: conversione di indirizzi testuali in coordinate geografiche</li>
+ * </ul>
+ * Il servizio gestisce automaticamente la validazione dei dati, la formattazione delle richieste,
+ * e la gestione degli errori di comunicazione con l'API esterna.
+ */
 public class ReverseGeocodingService {
+
+    /**
+     * Converte coordinate geografiche in un indirizzo leggibile.
+     * Effettua una richiesta all'API Nominatim di OpenStreetMap per ottenere l'indirizzo
+     * corrispondente alle coordinate specificate. Il metodo include validazione delle coordinate
+     * e gestione degli errori di comunicazione.
+     *
+     * @param lat Latitudine della posizione (deve essere compresa tra -90 e 90)
+     * @param lon Longitudine della posizione (deve essere compresa tra -180 e 180)
+     * @return Una stringa contenente l'indirizzo completo corrispondente alle coordinate,
+     *         o un messaggio di errore se la conversione non è possibile
+     */
     public String getAddress(double lat, double lon) {
         // Validazione base: lat [-90,90], lon [-180,180]
         if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return "Coordinate non valide";
@@ -48,6 +70,16 @@ public class ReverseGeocodingService {
         }
     }
 
+    /**
+     * Converte un indirizzo testuale in coordinate geografiche.
+     * Effettua una richiesta all'API Nominatim di OpenStreetMap per ottenere le coordinate
+     * corrispondenti all'indirizzo specificato. Il metodo include validazione dell'input
+     * e gestione degli errori di comunicazione.
+     *
+     * @param address L'indirizzo da convertire in coordinate (non può essere null o vuoto)
+     * @return Un array di double contenente [latitudine, longitudine] in caso di successo,
+     *         o null se l'indirizzo non può essere convertito in coordinate valide
+     */
     public double[] geocode(String address) {
         if (address == null || address.trim().isEmpty()) return null;
         try {
