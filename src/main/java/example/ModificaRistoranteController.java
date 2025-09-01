@@ -1,5 +1,6 @@
 package example;
 
+import example.models.Ristorante;
 import example.models.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,7 +12,7 @@ import services.ReverseGeocodingService;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class NuovoRistoranteController {
+public class ModificaRistoranteController {
     @FXML private TextField nomeField;
     @FXML private TextField tipoCucinaField;
     @FXML private ComboBox<String> fasciaPrezzoBox;
@@ -23,19 +24,47 @@ public class NuovoRistoranteController {
     @FXML private Label resultLabel;
 
     private Utente ristoratore;
+    private Ristorante ristorante;
     private final RistoranteService ristoranteService = new RistoranteService();
     private final ReverseGeocodingService geocodingService = new ReverseGeocodingService();
 
-    public void setRistoratore(Utente ristoratore) {
+    public void setRistorante(Ristorante ristorante) {
+        this.ristorante = ristorante;
+        popolaCampi();
+        // Popola orari dopo aver creato le card
+        popolaOrari(ristorante.getOrariApertura());
+    }
+
+    public void setContext(Utente ristoratore, Ristorante ristorante) {
         this.ristoratore = ristoratore;
+        this.ristorante = ristorante;
+        popolaCampi();
+        // Popola orari dopo aver creato le card
+        popolaOrari(ristorante.getOrariApertura());
     }
 
     @FXML
     public void initialize() {
         fasciaPrezzoBox.getItems().addAll("1", "2", "3");
         creaCardOrari();
+        // Popola orari se il ristorante è già stato impostato prima dell'initialize
+        if (ristorante != null) {
+            popolaOrari(ristorante.getOrariApertura());
+        }
         confermaBtn.setOnAction(e -> onConferma());
         annullaBtn.setOnAction(e -> tornaHome());
+    }
+
+    private void popolaCampi() {
+        if (ristorante == null) return;
+        nomeField.setText(ristorante.getNome());
+        tipoCucinaField.setText(ristorante.getTipoCucina());
+        fasciaPrezzoBox.setValue(String.valueOf(ristorante.getFasciaPrezzo()));
+        telefonoField.setText(ristorante.getNumeroTelefono());
+        indirizzoField.setText(geocodingService.getAddress(ristorante.getLatitudine(), ristorante.getLongitudine()));
+        consegnaCheck.setSelected(ristorante.isConsegnaDomicilio());
+        // RIMUOVI questa chiamata, ora viene gestita in setContext/setRistorante
+        // popolaOrari(ristorante.getOrariApertura());
     }
 
     private void creaCardOrari() {
@@ -88,6 +117,58 @@ public class NuovoRistoranteController {
             card.setUserData(new Object[]{apertura1, chiusura1, apertura2, chiusura2, chiuso, giorni[i]});
             card.getChildren().addAll(giornoLabel, fascia1Row, fascia2Row, chiusoRow);
             orariBox.getChildren().add(card);
+        }
+    }
+
+    private void popolaOrari(Map<String, String> orariApertura) {
+        String[] giorniOrdinati = {"lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"};
+        for (String giorno : giorniOrdinati) {
+            for (javafx.scene.Node node : orariBox.getChildren()) {
+                VBox card = (VBox) node;
+                Object[] data = (Object[]) card.getUserData();
+                String giornoCard = (String) data[5];
+                if (giornoCard.equals(giorno)) {
+                    TextField apertura1 = (TextField) data[0];
+                    TextField chiusura1 = (TextField) data[1];
+                    TextField apertura2 = (TextField) data[2];
+                    TextField chiusura2 = (TextField) data[3];
+                    CheckBox chiuso = (CheckBox) data[4];
+                    String orario = orariApertura != null ? orariApertura.getOrDefault(giorno, "chiuso") : "chiuso";
+                    if (orario.equalsIgnoreCase("chiuso") || orario.equalsIgnoreCase("Chiuso")) {
+                        chiuso.setSelected(true);
+                        apertura1.setText("");
+                        chiusura1.setText("");
+                        apertura2.setText("");
+                        chiusura2.setText("");
+                    } else {
+                        chiuso.setSelected(false);
+                        String[] fasce = orario.split(",");
+                        if (fasce.length > 0) {
+                            String[] parts1 = fasce[0].trim().split("-");
+                            if (parts1.length == 2) {
+                                apertura1.setText(parts1[0].trim());
+                                chiusura1.setText(parts1[1].trim());
+                            } else {
+                                apertura1.setText("");
+                                chiusura1.setText("");
+                            }
+                        }
+                        if (fasce.length > 1) {
+                            String[] parts2 = fasce[1].trim().split("-");
+                            if (parts2.length == 2) {
+                                apertura2.setText(parts2[0].trim());
+                                chiusura2.setText(parts2[1].trim());
+                            } else {
+                                apertura2.setText("");
+                                chiusura2.setText("");
+                            }
+                        } else {
+                            apertura2.setText("");
+                            chiusura2.setText("");
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -158,9 +239,15 @@ public class NuovoRistoranteController {
             resultLabel.setText("Errore nella geolocalizzazione dell'indirizzo!");
             return;
         }
-        var ristorante = ristoranteService.creaRistorante(nome, tipoCucina, fasciaPrezzo, orariApertura, lat, lon, ristoratore.getId(), telefono, consegna);
-        resultLabel.setText("Ristorante creato!");
-        tornaHome();
+        var opt = ristoranteService.modificaRistorante(
+            ristorante.getId(), nome, tipoCucina, fasciaPrezzo, orariApertura, lat, lon, telefono, consegna
+        );
+        if (opt.isPresent()) {
+            resultLabel.setText("Modifiche salvate!");
+            tornaHome();
+        } else {
+            resultLabel.setText("Errore nella modifica del ristorante!");
+        }
     }
 
     private boolean isOrarioValido(String orario) {

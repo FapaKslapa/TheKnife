@@ -13,6 +13,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.RistoranteService;
+import javafx.scene.shape.SVGPath;
 
 import java.util.List;
 
@@ -75,17 +76,27 @@ public class RistoratoreHomeController {
             actions.setPadding(new javafx.geometry.Insets(8, 0, 0, 0));
             actions.setStyle("-fx-alignment: center-left;");
 
-            // Solo pulsante recensioni (fumetto viola)
-            javafx.scene.text.Text recensioniIcon = new javafx.scene.text.Text("\uD83D\uDCAC");
-            recensioniIcon.setFont(javafx.scene.text.Font.font(28));
-            recensioniIcon.getStyleClass().add("icon-recensioni");
+            // Pulsante recensioni: icona chat rounded, light mode
+            SVGPath recensioniIcon = new SVGPath();
+            recensioniIcon.setContent("M20 2H4c-1.1 0-2 .9-2 2v16l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"); // chat bubble rounded
+            recensioniIcon.getStyleClass().add("icon-navbar");
             Button recensioniBtn = new Button();
             recensioniBtn.getStyleClass().add("icon-btn");
             recensioniBtn.setTooltip(new Tooltip("Recensioni"));
             recensioniBtn.setGraphic(recensioniIcon);
             recensioniBtn.setOnAction(e -> mostraRecensioni(r));
 
-            actions.getChildren().addAll(recensioniBtn);
+            // Pulsante modifica: icona edit rounded, light mode
+            SVGPath modificaIcon = new SVGPath();
+            modificaIcon.setContent("M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zm14.71-10.04a1.003 1.003 0 0 0 0-1.42l-2.54-2.54a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.83-1.83z"); // edit rounded
+            modificaIcon.getStyleClass().add("icon-navbar");
+            Button modificaBtn = new Button();
+            modificaBtn.getStyleClass().add("icon-btn");
+            modificaBtn.setTooltip(new Tooltip("Modifica ristorante"));
+            modificaBtn.setGraphic(modificaIcon);
+            modificaBtn.setOnAction(e -> mostraModificaRistorante(r));
+
+            actions.getChildren().addAll(recensioniBtn, modificaBtn);
 
             card.getChildren().addAll(
                 nome, tipo, prezzo, indirizzoLabel, telefono, consegna, orariTitle, orariScorrevoli, actions
@@ -158,6 +169,19 @@ public class RistoratoreHomeController {
             RistoratoreRecensioniController ctrl = loader.getController();
             ctrl.setContext(ristoratore.getId(), ristorante);
             javafx.stage.Stage stage = (javafx.stage.Stage) ristorantiPane.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void mostraModificaRistorante(Ristorante ristorante) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/example/ModificaRistoranteView.fxml"));
+            javafx.scene.Parent root = loader.load();
+            ModificaRistoranteController ctrl = loader.getController();
+            ctrl.setContext(ristoratore, ristorante);
+            Stage stage = (Stage) ristorantiPane.getScene().getWindow();
             stage.getScene().setRoot(root);
         } catch (Exception ex) {
             ex.printStackTrace();

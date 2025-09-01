@@ -2,22 +2,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="example.NuovoRistoranteController" stylesheets="@style.css">
+           fx:controller="example.ModificaRistoranteController" stylesheets="@style.css">
     <VBox spacing="0" alignment="TOP_CENTER" StackPane.alignment="TOP_CENTER" style="-fx-padding: 0 24 0 24;">
         <!-- Navbar -->
         <HBox spacing="16" styleClass="hbox-navbar" style="-fx-padding: 0 0 24 0;">
             <Label text="TheKnife" styleClass="label-title" style="-fx-font-size: 28px;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="annullaBtn" text="Annulla" styleClass="button-navbar" style="-fx-padding: 8 24;"/>
-            <Button fx:id="confermaBtn" text="Conferma" styleClass="button-navbar" style="-fx-padding: 8 24;"/>
+            <Button fx:id="confermaBtn" text="Salva modifiche" styleClass="button-navbar" style="-fx-padding: 8 24;"/>
         </HBox>
         <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" style="-fx-background-color:transparent; -fx-padding: 0;">
             <StackPane alignment="CENTER">
                 <VBox spacing="36" alignment="CENTER" styleClass="dialog-ristorante-card-wide" maxWidth="1100" minWidth="700" prefWidth="1000" style="-fx-padding: 54 72 44 72; -fx-background-radius: 36; -fx-background-color: #fff;">
                     <!-- Titolo principale -->
                     <HBox spacing="18" alignment="CENTER_LEFT">
-                        <Label text="Crea un nuovo ristorante" styleClass="label-auth-title-large" style="-fx-font-size: 34px; -fx-padding: 0 0 0 0;"/>
-                        <Label text="🍽️" style="-fx-font-size: 34px;"/>
+                        <Label text="Modifica ristorante" styleClass="label-auth-title-large" style="-fx-font-size: 34px; -fx-padding: 0 0 0 0;"/>
+                        <Label text="✏️" style="-fx-font-size: 34px;"/>
                     </HBox>
                     <!-- Sezione dati principali -->
                     <VBox spacing="28" alignment="CENTER_LEFT" styleClass="form-ristorante-fields" style="-fx-padding: 0 0 12 0;">
