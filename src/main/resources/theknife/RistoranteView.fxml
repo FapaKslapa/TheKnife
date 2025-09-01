@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="theknife.RistoranteController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Crea Ristorante"/>
+    <TextField fx:id="nomeField" promptText="Nome"/>
+    <TextField fx:id="tipoCucinaField" promptText="Tipo Cucina"/>
+    <TextField fx:id="fasciaPrezzoField" promptText="Fascia Prezzo"/>
+    <TextField fx:id="orariAperturaField" promptText="Orari (JSON)"/>
+    <TextField fx:id="latitudineField" promptText="Latitudine"/>
+    <TextField fx:id="longitudineField" promptText="Longitudine"/>
+    <TextField fx:id="idProprietarioField" promptText="ID Proprietario"/>
+    <TextField fx:id="numeroTelefonoField" promptText="Numero Telefono"/>
+    <CheckBox fx:id="consegnaDomicilioBox" text="Consegna a domicilio"/>
+    <Button text="Crea" onAction="#onCreaRistorante"/>
+    <Label fx:id="creaResult"/>
+    <Separator/>
+    <Label text="Lista Ristoranti"/>
+    <Button text="Mostra Tutti" onAction="#onShowAll"/>
+    <ListView fx:id="ristorantiList"/>
+</VBox>

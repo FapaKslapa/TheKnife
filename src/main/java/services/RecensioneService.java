@@ -1,10 +1,13 @@
+// Marocco Stefano 762192 VA
+// Marin Marco 760622 VA
+// Gerti Alessia 762405 VA
 package services;
 
-import example.cache.DataManager;
-import example.cache.JsonRepository;
-import example.cache.RelationRepository;
-import example.models.Recensione;
-import example.models.Risposta;
+import theknife.cache.DataManager;
+import theknife.cache.JsonRepository;
+import theknife.cache.RelationRepository;
+import theknife.models.Recensione;
+import theknife.models.Risposta;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

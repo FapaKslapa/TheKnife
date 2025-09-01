@@ -1,0 +1,52 @@
+Id,Nome,TipoCucina,FasciaPrezzo,Latitudine,Longitudine,Telefono,ConsegnaDomicilio
+r-0001,Da Enzo al 29,Romana,2,41.8872,12.4758,3310000001,true
+r-0002,Trattoria Milanese,Lombarda,1,45.4642,9.1898,3310000002,false
+r-0003,Osteria Vini e Vecchi Sapori,Toscana,3,43.7696,11.2558,3310000003,true
+r-0004,Pizzeria Sorbillo,Napoletana,2,40.8522,14.2581,3310000004,false
+r-0005,Antica Trattoria della Pesa,Lombarda,1,45.4781,9.1847,3310000005,true
+r-0006,Ristorante La Pergola,Gourmet,2,41.9361,12.4406,3310000006,false
+r-0007,Trattoria da Burde,Toscana,3,43.8037,11.2076,3310000007,true
+r-0008,Ristorante Quadri,Veneta,2,45.4342,12.3387,3310000008,false
+r-0009,Ristorante Il Desco,Veneta,1,45.4384,10.9928,3310000009,true
+r-0010,Ristorante Il Principe,Siciliana,2,38.1157,13.3615,3310000010,false
+r-0011,Ristorante Undici,Italiana,2,45.60,9.33,3310000011,true
+r-0012,Ristorante Dodici,Cinese,1,45.61,9.34,3310000012,false
+r-0013,Ristorante Tredici,Giapponese,3,45.62,9.35,3310000013,true
+r-0014,Ristorante Quattordici,Messicana,2,45.63,9.36,3310000014,false
+r-0015,Ristorante Quindici,Greca,1,45.64,9.37,3310000015,true
+r-0016,Ristorante Sedici,Americana,2,45.65,9.38,3310000016,false
+r-0017,Ristorante Diciassette,Francese,3,45.66,9.39,3310000017,true
+r-0018,Ristorante Diciotto,Spagnola,2,45.67,9.40,3310000018,false
+r-0019,Ristorante Diciannove,Vegetariana,1,45.68,9.41,3310000019,true
+r-0020,Ristorante Venti,Vegana,2,45.69,9.42,3310000020,false
+r-0021,Ristorante Ventuno,Italiana,2,45.70,9.43,3310000021,true
+r-0022,Ristorante Ventidue,Cinese,1,45.71,9.44,3310000022,false
+r-0023,Ristorante Ventitre,Giapponese,3,45.72,9.45,3310000023,true
+r-0024,Ristorante Ventiquattro,Messicana,2,45.73,9.46,3310000024,false
+r-0025,Ristorante Venticinque,Greca,1,45.74,9.47,3310000025,true
+r-0026,Ristorante Ventisei,Americana,2,45.75,9.48,3310000026,false
+r-0027,Ristorante Ventisette,Francese,3,45.76,9.49,3310000027,true
+r-0028,Ristorante Ventotto,Spagnola,2,45.77,9.50,3310000028,false
+r-0029,Ristorante Ventinove,Vegetariana,1,45.78,9.51,3310000029,true
+r-0030,Ristorante Trenta,Vegana,2,45.79,9.52,3310000030,false
+r-0031,Ristorante Trentuno,Italiana,2,45.80,9.53,3310000031,true
+r-0032,Ristorante Trentadue,Cinese,1,45.81,9.54,3310000032,false
+r-0033,Ristorante Trentatre,Giapponese,3,45.82,9.55,3310000033,true
+r-0034,Ristorante Trentaquattro,Messicana,2,45.83,9.56,3310000034,false
+r-0035,Ristorante Trentacinque,Greca,1,45.84,9.57,3310000035,true
+r-0036,Ristorante Trentasei,Americana,2,45.85,9.58,3310000036,false
+r-0037,Ristorante Trentasette,Francese,3,45.86,9.59,3310000037,true
+r-0038,Ristorante Trentotto,Spagnola,2,45.87,9.60,3310000038,false
+r-0039,Ristorante Trentanove,Vegetariana,1,45.88,9.61,3310000039,true
+r-0040,Ristorante Quaranta,Vegana,2,45.89,9.62,3310000040,false
+r-0041,Ristorante Quarantuno,Italiana,2,45.90,9.63,3310000041,true
+r-0042,Ristorante Quarantadue,Cinese,1,45.91,9.64,3310000042,false
+r-0043,Ristorante Quarantatre,Giapponese,3,45.92,9.65,3310000043,true
+r-0044,Ristorante Quarantaquattro,Messicana,2,45.93,9.66,3310000044,false
+r-0045,Ristorante Quarantacinque,Greca,1,45.94,9.67,3310000045,true
+r-0046,Ristorante Quarantasei,Americana,2,45.95,9.68,3310000046,false
+r-0047,Ristorante Quarantasette,Francese,3,45.96,9.69,3310000047,true
+r-0048,Ristorante Quarantotto,Spagnola,2,45.97,9.70,3310000048,false
+r-0049,Ristorante Quarantanove,Vegetariana,1,45.98,9.71,3310000049,true
+r-0050,Ristorante Cinquanta,Vegana,2,45.99,9.72,3310000050,false
+

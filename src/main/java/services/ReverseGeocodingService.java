@@ -1,3 +1,6 @@
+// Marocco Stefano 762192 VA
+// Marin Marco 760622 VA
+// Gerti Alessia 762405 VA
 package services;
 
 import org.json.JSONObject;

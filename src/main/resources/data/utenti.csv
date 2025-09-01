@@ -1,0 +1,13 @@
+Id,Username,Password,Email,Ruolo
+2dbbc667-445d-4b4e-9dd1-4fce0cbb885d,Marco,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,stefanomarocco0@gmail.com,UTENTE
+r1-1111-1111-1111-111111111111,ristoratore1,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore1@email.com,RISTORATORE
+r2-2222-2222-2222-222222222222,ristoratore2,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore2@email.com,RISTORATORE
+r3-3333-3333-3333-333333333333,Stefano,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore3@email.com,RISTORATORE
+u1-4444-4444-4444-444444444444,utente1,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente1@email.com,UTENTE
+u2-5555-5555-5555-555555555555,utente2,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente2@email.com,UTENTE
+u3-6666-6666-6666-666666666666,Ginevra,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente3@email.com,UTENTE
+u4-7777-7777-7777-777777777777,utente4,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente4@email.com,UTENTE
+u5-8888-8888-8888-888888888888,Alessia,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente5@email.com,UTENTE
+u6-9999-9999-9999-999999999999,utente6,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente6@email.com,UTENTE
+u7-1010-1010-1010-101010101010,utente7,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente7@email.com,UTENTE
+

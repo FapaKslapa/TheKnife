@@ -1,165 +1,74 @@
 # TheKnife
 
 Laboratorio A - Insubria 2024/2025
-Per far runnare il codice va inserita questa VM option:
 
-```bash
---module-path
-"PathToProject/TheKnife/lib/PathToCorrectJavaFx/lib"
---add-modules
-javafx.controls,javafx.fxml,javafx.web
---add-exports=javafx.web/com.sun.webkit=ALL-UNNAMED
---add-exports=javafx.web/com.sun.javafx.webkit=ALL-UNNAMED
---enable-native-access=javafx.graphics,javafx.web
+## Introduzione
+
+TheKnife è un progetto Java sviluppato per la gestione di utenti, ristoranti, recensioni e relazioni tra questi, con interfaccia grafica moderna basata su JavaFX e AtlantaFX. Il progetto è stato migrato dalla vecchia architettura WebView/Bridge a una soluzione nativa JavaFX, sfruttando AtlantaFX per uno stile visivo avanzato e componenti UI evolute.
+
+## Distribuzione: JAR e EXE
+
+Il progetto viene distribuito in due modalità:
+
+- **JAR Maven**: generato tramite Maven, necessita di JavaFX installato sul sistema per essere eseguito correttamente. Assicurarsi che le librerie JavaFX siano disponibili nel classpath o installate localmente.
+- **EXE con jpackage**: è stato creato un eseguibile Windows tramite jpackage, che include tutte le dipendenze necessarie (JavaFX compreso) e non richiede configurazioni aggiuntive. L'EXE si trova nella cartella `TheKnife/` e può essere avviato direttamente.
+
+## Dipendenze e configurazione Maven
+
+Il progetto utilizza Maven per la gestione delle dipendenze. Le principali librerie sono:
+
+- **JavaFX**: framework per la creazione di interfacce grafiche moderne in Java.
+- **AtlantaFX**: tema e componenti aggiuntivi per JavaFX, per un look professionale.
+- **Gson**: serializzazione/deserializzazione JSON.
+- **Bcrypt**: hashing sicuro delle password.
+
+Le dipendenze sono dichiarate nel file `pom.xml`. Esempio:
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>21.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>io.github.palexdev</groupId>
+        <artifactId>atlantafx-base</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.10.1</version>
+    </dependency>
+    <dependency>
+        <groupId>at.favre.lib</groupId>
+        <artifactId>bcrypt</artifactId>
+        <version>0.9.0</version>
+    </dependency>
+</dependencies>
 ```
 
-Inoltre vanno inserite le librerie Gson, JavaFX e Bcrypt (sono nella cartella lib)
-## 1. Introduzione al Bridge
+Per avviare il progetto, Maven gestisce automaticamente il classpath e le dipendenze. Non è più necessario configurare manualmente le VM options per JavaFX, ma per il JAR è necessario che JavaFX sia installato.
 
-Questo progetto utilizza un bridge personalizzato che permette la comunicazione bidirezionale tra JavaScript (lato
-frontend) e Java (lato backend) all'interno di una WebView JavaFX.
+## Architettura e moduli
 
-## 2. Cos'è JSON
+Il progetto è strutturato in moduli principali:
 
-JSON (JavaScript Object Notation) è un formato di scambio dati leggero e indipendente dal linguaggio. È basato sulla
-sintassi degli oggetti JavaScript ed è facile da leggere e scrivere per gli umani, ma anche semplice da generare e
-analizzare per le macchine.
+- **Utenti**: gestione registrazione, login, preferenze.
+- **Ristoranti**: CRUD ristoranti, filtri di ricerca.
+- **Recensioni**: creazione e visualizzazione recensioni.
+- **Risposte**: gestione risposte alle recensioni.
+- **Relazioni**: utenti-ristoranti, utenti-preferiti, like, ecc.
 
-Esempio di documento JSON:
+La persistenza dei dati avviene tramite file JSON, gestiti da repository dedicati (JsonRepository, RelationRepository) e orchestrati dal DataManager.
 
-```json
-{
-  "nome": "Mario",
-  "età": 30,
-  "indirizzo": {
-    "via": "Via Roma 123",
-    "città": "Milano"
-  },
-  "numeriTelefono": [
-    "+39 123456789",
-    "+39 987654321"
-  ]
-}
-```
-
-## 3. Come funziona la libreria GSON
-
-GSON è una libreria Java sviluppata da Google che consente di convertire oggetti Java in formato JSON e viceversa. Nel
-nostro progetto, utilizziamo GSON per:
-
-- **Serializzazione**: convertire oggetti Java in stringhe JSON
-- **Deserializzazione**: convertire stringhe JSON in oggetti Java
-
-Esempio di serializzazione:
-
-```java
-Gson gson = new Gson();
-Map<String, Object> dati = Map.of("nome", "Mario", "età", 30);
-String jsonString = gson.toJson(dati);  // Risultato: {"nome":"Mario","età":30}
-```
-
-Esempio di deserializzazione:
-
-```java
-Gson gson = new Gson();
-String jsonString = "{\"nome\":\"Mario\",\"età\":30}";
-Map<String, Object> dati = gson.fromJson(jsonString, Map.class);
-// dati contiene ora: {nome=Mario, età=30}
-```
-
-## 4. Come registrare metodi nel Bridge
-
-Il nostro `JavaScriptBridge` permette di registrare metodi Java che possono essere chiamati da JavaScript. Per
-registrare un nuovo metodo:
-
-```java
-// Nel Main.java, dopo aver creato il bridge
-bridge.registerMethod("nomeFunzione",args ->{
-        // Elaborazione dei parametri ricevuti
-        // args è una stringa JSON con i parametri
-
-        // Restituzione del risultato come Map
-        return Map.
-
-of("chiave1","valore1","chiave2",42);
-});
-```
-
-## 5. Come gestire parametri e risultati
-
-### Ricevere parametri da JavaScript
-
-Quando JavaScript chiama un metodo Java, i parametri vengono passati come JSON. In Java:
-
-```java
-bridge.registerMethod("calcolaArea",args ->{
-// args è una stringa JSON come: {"base": 10, "altezza": 5}
-
-// Deserializza i parametri in una Map
-Map<String, Object> parametri = gson.fromJson(args, Map.class);
-
-// Estrai i valori dalla Map
-double base = ((Number) parametri.get("base")).doubleValue();
-double altezza = ((Number) parametri.get("altezza")).doubleValue();
-
-// Calcola il risultato
-double area = base * altezza;
-
-// Restituisci il risultato come Map
-    return Map.
-
-of("area",area);
-});
-```
-
-### Chiamare il metodo da JavaScript
-
-Nel codice HTML/JavaScript, puoi chiamare la funzione così:
-
-```javascript
-// Chiama il metodo Java e passa i parametri come oggetto JS
-const risultato = window.javaConnector.calcolaArea({base: 10, altezza: 5});
-
-// Il risultato è un oggetto JavaScript: {area: 50}
-console.log("L'area è: " + risultato.area);
-```
-
-### Gestire tipi di dato complessi
-
-Per strutture dati più complesse:
-
-```java
-bridge.registerMethod("elaboraDati",args ->{
-Map<String, Object> parametri = gson.fromJson(args, Map.class);
-
-// Accesso a array
-List<Object> elenco = (List<Object>) parametri.get("elementi");
-
-// Accesso a oggetti annidati
-Map<String, Object> persona = (Map<String, Object>) parametri.get("persona");
-String nome = (String) persona.get("nome");
-
-// Restituisci risultati complessi
-Map<String, Object> risultato = new HashMap<>();
-    risultato.
-
-put("stato","completato");
-    risultato.
-
-put("totaleElementi",elenco.size());
-        risultato.
-
-put("dettagli",Map.of("processoCompleto", true,"tempoElaborazione",0.5));
-
-        return risultato;
-});
-```
-
-## 6. Best practices e gestione della memoria
-
-Usiamo il package Cache per definire un sistema di memoria ottimizzato e persistente:
-
-L'accesso ai file è gestito attraverso DataManager e JsonRepository, come funziona:
+## Esempio di utilizzo delle repository
 
 ```java
 public class Ristorante extends BaseEntity {
@@ -167,70 +76,23 @@ public class Ristorante extends BaseEntity {
     private String indirizzo;
     // altri campi, getter e setter
 }
-```
 
-Estendendo Base Identity garantiamo un id unico e personale
-
-```java
 DataManager dm = DataManager.getInstance();
-dm.
+dm.registerEntityRepository(Ristorante.class, "data/ristoranti.json");
+dm.registerRelationRepository("utenti_preferiti", "data/utenti_preferiti.json");
 
-registerEntityRepository(Ristorante .class, "data/ristoranti.json");
-dm.
-
-registerRelationRepository("utenti_preferiti","data/utenti_preferiti.json");
-```
-
-Registro la nuova entità e il nuovo oggetto nel dataManager, oltre che la relazione che deve avere
-
-```java
-// Ottieni repository
 JsonRepository<Ristorante> ristorantiRepo = dm.getRepository(Ristorante.class);
 RelationRepository preferitiRepo = dm.getRelationRepository("utenti_preferiti");
 
-// Crea e salva entità
 Ristorante ristorante = new Ristorante();
-ristorante.
+ristorante.setNome("Trattoria da Luigi");
+ristorante.setIndirizzo("Via Roma 123");
+ristorantiRepo.save(ristorante);
 
-setNome("Trattoria da Luigi");
-ristorante.
-
-setIndirizzo("Via Roma 123");
-ristorantiRepo.
-
-save(ristorante); // Genera ID e salva su JSON automaticamente
-
-// Crea relazioni
-preferitiRepo.
-
-addRelation("utente123",ristorante.getId()); // Salva automaticamente
+preferitiRepo.addRelation("utente123", ristorante.getId());
 ```
 
-Così uso i repository tramite DataManager (da usare in un controller dedicato)
-
-Ecco un esempio completo su come usarlo su recuperare i dati di un utente e i suoi ristoranti preferiti:
-
-Definisco le entità necessarie:
-
-```java
-public class Utente extends BaseEntity {
-    private String nome;
-    private String email;
-    private String password;
-
-    // getter e setter
-}
-
-public class Ristorante extends BaseEntity {
-    private String nome;
-    private String indirizzo;
-    private String categoria;
-
-    // getter e setter
-}
-```
-
-Creo un controller dedicato:
+## Esempio di controller
 
 ```java
 public class UtentiController {
@@ -245,12 +107,10 @@ public class UtentiController {
         this.preferiti = dm.getRelationRepository("utenti_preferiti");
     }
 
-    // Ottieni un utente per ID
     public Optional<Utente> getUtenteById(String id) {
         return utentiRepo.findById(id);
     }
 
-    // Ottieni tutti i ristoranti preferiti di un utente
     public List<Ristorante> getRistorantiPreferiti(String utenteId) {
         List<String> preferitiIds = preferiti.findRelatedIds(utenteId);
         return preferitiIds.stream()
@@ -262,62 +122,89 @@ public class UtentiController {
 }
 ```
 
-Registro nel main i nuovi servizi oltre che definire il main:
+## UI con JavaFX e AtlantaFX
+
+L’interfaccia è sviluppata con FXML e controller JavaFX. AtlantaFX viene importato per applicare temi e componenti avanzati:
 
 ```java
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.atlantafx.base.theme.PrimerDark;
 
-@Override
-public void start(Stage primaryStage) {
-    try {
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-
-        // Crea e configura il bridge
-        JavaScriptBridge bridge = new JavaScriptBridge(webEngine);
-
-        // Inizializzazione dei repository
-        DataManager dm = DataManager.getInstance();
-        dm.registerEntityRepository(Utente.class, "data/utenti.json");
-        dm.registerEntityRepository(Ristorante.class, "data/ristoranti.json");
-        dm.registerRelationRepository("utenti_preferiti", "data/utenti_preferiti.json");
-
-        // Inizializza il controller
-        UtentiController utentiController = new UtentiController();
-
-        // Registra metodo per ottenere i dati di un utente
-        bridge.registerMethod("getUtente", args -> {
-            Map<String, Object> params = gson.fromJson(args, Map.class);
-            String utenteId = (String) params.get("id");
-
-            Optional<Utente> utente = utentiController.getUtenteById(utenteId);
-
-            if (utente.isPresent()) {
-                return Map.of("success", true, "utente", utente.get());
-            } else {
-                return Map.of("success", false, "message", "Utente non trovato");
-            }
-        });
-
-        // Metodo per ottenere i ristoranti preferiti di un utente
-        bridge.registerMethod("getRistorantiPreferiti", args -> {
-            Map<String, Object> params = gson.fromJson(args, Map.class);
-            String utenteId = (String) params.get("utenteId");
-
-            List<Ristorante> preferiti = utentiController.getRistorantiPreferiti(utenteId);
-            return Map.of("success", true, "preferiti", preferiti);
-        });
-
-        // Carica HTML e resto del codice
-        // ...
-    } catch (Exception e) {
-        // Gestione errori
+public class Main extends Application {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainView.fxml"));
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(new PrimerDark().getUserAgentStylesheet());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("TheKnife");
+        primaryStage.show();
     }
 }
 ```
 
-## 7. Fasi del lavoro
+## Pattern progettuali utilizzati
 
-- Utenti, Ristoranti, utenti - ristoranti, utenti - ristorantiLike: Alessia
-- recensioni, ristoranti - recensioni, utenti - recensione: Marco
-- risposte, risposte - recensione, utente - recensione (like): Stefano
+### 1. Pattern Builder per i filtri di ricerca
+
+Per la gestione dei filtri di ricerca sui ristoranti e sulle recensioni, è stato adottato il **pattern Builder**. Questo pattern consente di costruire oggetti filtro in modo flessibile e leggibile, permettendo di combinare diversi criteri (es. tipo cucina, valutazione, località) senza dover gestire costruttori complessi o molteplici parametri opzionali. Il builder facilita l'estensione futura dei filtri e migliora la manutenibilità del codice.
+
+Esempio:
+```java
+RistoranteFilter filter = RistoranteFilter.builder()
+    .tipoCucina("Italiana")
+    .valutazioneMinima(4)
+    .localita("Varese")
+    .build();
+```
+
+### 2. Pattern MVC con FXML in JavaFX
+
+Per la realizzazione dell'interfaccia grafica, è stato utilizzato il **pattern Model-View-Controller (MVC)** tramite FXML. In questo approccio:
+- La **View** è definita nei file FXML, che descrivono la struttura e i componenti dell'interfaccia.
+- Il **Controller** è una classe Java che gestisce la logica e gli eventi della view, collegata tramite l'attributo `fx:controller`.
+- Il **Model** è rappresentato dalle classi Java standard che gestiscono i dati e la logica di business.
+
+Questa separazione consente di mantenere il codice ordinato, favorisce la riusabilità e semplifica la manutenzione. I controller interagiscono con i modelli e aggiornano la view in modo reattivo.
+
+Esempio di collegamento FXML:
+```xml
+<AnchorPane fx:controller="theknife.MainViewController" ...>
+    <!-- componenti UI -->
+</AnchorPane>
+```
+
+Esempio di controller:
+```java
+public class MainViewController {
+    @FXML private Button cercaButton;
+    // ...
+    @FXML
+    private void onCercaClicked() {
+        // logica di ricerca
+    }
+}
+```
+
+## Best practices
+
+- Utilizza Maven per la gestione delle dipendenze e build.
+- Organizza i controller per responsabilità (Utenti, Ristoranti, Recensioni, ecc.).
+- Gestisci la persistenza tramite repository e DataManager.
+- Applica AtlantaFX per una UI moderna e accessibile.
+- Proteggi le password con Bcrypt.
+
+## Fasi del lavoro e suddivisione
+
+- Utenti, Ristoranti, utenti-ristoranti, utenti-ristorantiLike: Alessia
+- Recensioni, ristoranti-recensioni, utenti-recensione: Marco
+- Risposte, risposte-recensione, utente-recensioneLike: Stefano
 - Filtri di ricerca: Ginevra
+
+## Note finali
+
+Per domande o problemi tecnici, consulta la documentazione JavaFX, AtlantaFX e le guide Maven. Tutte le dipendenze sono gestite automaticamente tramite Maven.

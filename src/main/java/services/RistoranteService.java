@@ -1,10 +1,13 @@
+// Marocco Stefano 762192 VA
+// Marin Marco 760622 VA
+// Gerti Alessia 762405 VA
 package services;
 
-import example.cache.DataManager;
-import example.cache.JsonRepository;
-import example.cache.RelationRepository;
-import example.models.FiltriDiRicerca;
-import example.models.Ristorante;
+import theknife.cache.DataManager;
+import theknife.cache.JsonRepository;
+import theknife.cache.RelationRepository;
+import theknife.models.FiltriDiRicerca;
+import theknife.models.Ristorante;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -270,6 +273,13 @@ public class RistoranteService {
 
             risultati = risultati.stream()
                     .filter(r -> isRistoranteAperto(r, giornoCorrente, oraCorrente))
+                    .collect(Collectors.toList());
+        }
+
+        if (filtri.getNomeParziale() != null && !filtri.getNomeParziale().trim().isEmpty()) {
+            String nomeParzialeLower = filtri.getNomeParziale().toLowerCase();
+            risultati = risultati.stream()
+                    .filter(r -> r.getNome() != null && r.getNome().toLowerCase().contains(nomeParzialeLower))
                     .collect(Collectors.toList());
         }
 

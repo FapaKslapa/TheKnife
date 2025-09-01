@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="theknife.RecensioneController" stylesheets="@style.css">
+    <!-- Navbar con titolo e pulsanti -->
+    <top>
+        <HBox spacing="10" styleClass="hbox-navbar" BorderPane.alignment="TOP_CENTER">
+            <Label text="Gestione Recensioni" styleClass="label-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="homeBtn" text="Home" styleClass="button-navbar" onAction="#onHome"/>
+        </HBox>
+    </top>
+
+    <!-- Contenuto principale -->
+    <center>
+        <VBox spacing="24" styleClass="recensioni-root">
+            <!-- Separatore -->
+            <HBox alignment="CENTER">
+                <padding>
+                    <Insets top="12" bottom="12"/>
+                </padding>
+                <Separator HBox.hgrow="ALWAYS"/>
+                <Label text="Recensioni" styleClass="label-info-modern"
+                      style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 0 12 0 12;"/>
+                <Separator HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- Statistiche recensioni -->
+            <HBox fx:id="statsBox" spacing="24" alignment="CENTER" style="-fx-padding: 10 0 10 0;">
+                <Label fx:id="countLabel" styleClass="label-info-modern"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label fx:id="mediaLabel" styleClass="label-voto-grande"/>
+                <Label fx:id="risposteLabel" styleClass="label-info-modern"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Filtri e lista recensioni -->
+            <VBox spacing="12">
+                <HBox spacing="16" alignment="CENTER_LEFT">
+                    <Button text="Aggiorna" onAction="#onShowAllRecensioni" styleClass="button-auth-mini"/>
+                    <ComboBox fx:id="filtroComboBox" promptText="Filtra recensioni" styleClass="textfield-auth" prefWidth="180"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="nuovaRecensioneBtn" text="+ Nuova recensione" onAction="#toggleNuovaRecensione"
+                            styleClass="button-auth-accent"/>
+                </HBox>
+
+                <!-- Sezione Crea Recensione (collassabile) -->
+                <VBox fx:id="creaRecensioneCard" spacing="12" styleClass="dialog-auth-card-slim"
+                      visible="false" managed="false">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="Nuova Recensione" styleClass="label-auth-title-small"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="chiudiFormBtn" text="×" onAction="#toggleNuovaRecensione"
+                                styleClass="button-close-mini"/>
+                    </HBox>
+
+                    <HBox spacing="12" alignment="CENTER">
+                        <TextField fx:id="idRistoranteField" promptText="ID Ristorante" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="idUtenteField" promptText="ID Utente" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="titoloField" promptText="Titolo recensione" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <TextArea fx:id="testoField" promptText="Scrivi qui il testo della recensione..."
+                         styleClass="textfield-auth-compact" prefRowCount="2"/>
+
+                    <HBox spacing="12" alignment="CENTER">
+                        <Label text="Valutazione:" styleClass="label-info-modern"/>
+                        <HBox fx:id="stelleBox" spacing="2" alignment="CENTER" styleClass="stelle-rating-box"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="creaRecResult" styleClass="label-auth-result" HBox.hgrow="ALWAYS"/>
+                        <Button text="Pubblica" onAction="#onCreaRecensione"
+                               styleClass="button-auth-accent"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sezione Modifica Recensione (collassabile) -->
+                <VBox fx:id="modificaRecensioneCard" spacing="12" styleClass="dialog-auth-card-slim"
+                      visible="false" managed="false">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="Modifica Recensione" styleClass="label-auth-title-small"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="annullaModificaBtn" text="×" onAction="#annullaModificaRecensione"
+                                styleClass="button-close-mini"/>
+                    </HBox>
+                    <HBox spacing="12" alignment="CENTER">
+                        <TextField fx:id="modIdRistoranteField" promptText="ID Ristorante" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS" editable="false"/>
+                        <TextField fx:id="modIdUtenteField" promptText="ID Utente" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS" editable="false"/>
+                        <TextField fx:id="modTitoloField" promptText="Titolo recensione" styleClass="textfield-auth-compact"
+                                  HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <TextArea fx:id="modTestoField" promptText="Modifica il testo della recensione..."
+                         styleClass="textfield-auth-compact" prefRowCount="2"/>
+                    <HBox spacing="12" alignment="CENTER">
+                        <Label text="Valutazione:" styleClass="label-info-modern"/>
+                        <HBox fx:id="modStelleBox" spacing="2" alignment="CENTER" styleClass="stelle-rating-box"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="modRecResult" styleClass="label-auth-result" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="salvaModificaBtn" text="Salva" onAction="#salvaModificaRecensione"
+                               styleClass="button-auth-accent"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Lista recensioni -->
+                <ScrollPane fitToWidth="true" styleClass="recensioni-scroll" VBox.vgrow="ALWAYS" prefHeight="440">
+                    <VBox spacing="18">
+                        <padding>
+                            <Insets top="8" right="8" bottom="8" left="8"/>
+                        </padding>
+                        <FlowPane fx:id="recensioniContainer" hgap="16" vgap="16" alignment="CENTER"
+                                  prefWrapLength="1000" styleClass="recensioni-flow">
+                            <!-- Le recensioni verranno generate dinamicamente qui -->
+                        </FlowPane>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
