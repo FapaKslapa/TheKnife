@@ -50,7 +50,7 @@ public class Main extends Application {
         try {
             // Importa i dati dal CSV se necessario
             System.out.println("Verifica del database ristoranti...");
-            importRistorantiFromCSV();
+            //importRistorantiFromCSV();
             System.out.println("Verifica database completata.");
 
             System.out.println("Impostazione tema grafico...");
