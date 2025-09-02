@@ -1,0 +1,1002 @@
+[
+  {
+    "nome": "Da Enzo al 29",
+    "tipoCucina": "Romana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 41.8872,
+    "longitudine": 12.4758,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000001",
+    "consegnaDomicilio": true,
+    "id": "r-0001"
+  },
+  {
+    "nome": "Trattoria Milanese",
+    "tipoCucina": "Lombarda",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.4642,
+    "longitudine": 9.1898,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000002",
+    "consegnaDomicilio": false,
+    "id": "r-0002"
+  },
+  {
+    "nome": "Osteria Vini e Vecchi Sapori",
+    "tipoCucina": "Toscana",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 43.7696,
+    "longitudine": 11.2558,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000003",
+    "consegnaDomicilio": true,
+    "id": "r-0003"
+  },
+  {
+    "nome": "Pizzeria Sorbillo",
+    "tipoCucina": "Napoletana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 40.8522,
+    "longitudine": 14.2581,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000004",
+    "consegnaDomicilio": false,
+    "id": "r-0004"
+  },
+  {
+    "nome": "Antica Trattoria della Pesa",
+    "tipoCucina": "Lombarda",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.4781,
+    "longitudine": 9.1847,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000005",
+    "consegnaDomicilio": true,
+    "id": "r-0005"
+  },
+  {
+    "nome": "Ristorante La Pergola",
+    "tipoCucina": "Gourmet",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 41.9361,
+    "longitudine": 12.4406,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000006",
+    "consegnaDomicilio": false,
+    "id": "r-0006"
+  },
+  {
+    "nome": "Trattoria da Burde",
+    "tipoCucina": "Toscana",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 43.8037,
+    "longitudine": 11.2076,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000007",
+    "consegnaDomicilio": true,
+    "id": "r-0007"
+  },
+  {
+    "nome": "Ristorante Quadri",
+    "tipoCucina": "Veneta",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.4342,
+    "longitudine": 12.3387,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000008",
+    "consegnaDomicilio": false,
+    "id": "r-0008"
+  },
+  {
+    "nome": "Ristorante Il Desco",
+    "tipoCucina": "Veneta",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.4384,
+    "longitudine": 10.9928,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000009",
+    "consegnaDomicilio": true,
+    "id": "r-0009"
+  },
+  {
+    "nome": "Ristorante Il Principe",
+    "tipoCucina": "Siciliana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 38.1157,
+    "longitudine": 13.3615,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000010",
+    "consegnaDomicilio": false,
+    "id": "r-0010"
+  },
+  {
+    "nome": "Ristorante Undici",
+    "tipoCucina": "Italiana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.6,
+    "longitudine": 9.33,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000011",
+    "consegnaDomicilio": true,
+    "id": "r-0011"
+  },
+  {
+    "nome": "Ristorante Dodici",
+    "tipoCucina": "Cinese",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.61,
+    "longitudine": 9.34,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000012",
+    "consegnaDomicilio": false,
+    "id": "r-0012"
+  },
+  {
+    "nome": "Ristorante Tredici",
+    "tipoCucina": "Giapponese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.62,
+    "longitudine": 9.35,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000013",
+    "consegnaDomicilio": true,
+    "id": "r-0013"
+  },
+  {
+    "nome": "Ristorante Quattordici",
+    "tipoCucina": "Messicana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.63,
+    "longitudine": 9.36,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000014",
+    "consegnaDomicilio": false,
+    "id": "r-0014"
+  },
+  {
+    "nome": "Ristorante Quindici",
+    "tipoCucina": "Greca",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.64,
+    "longitudine": 9.37,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000015",
+    "consegnaDomicilio": true,
+    "id": "r-0015"
+  },
+  {
+    "nome": "Ristorante Sedici",
+    "tipoCucina": "Americana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.65,
+    "longitudine": 9.38,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000016",
+    "consegnaDomicilio": false,
+    "id": "r-0016"
+  },
+  {
+    "nome": "Ristorante Diciassette",
+    "tipoCucina": "Francese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.66,
+    "longitudine": 9.39,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000017",
+    "consegnaDomicilio": true,
+    "id": "r-0017"
+  },
+  {
+    "nome": "Ristorante Diciotto",
+    "tipoCucina": "Spagnola",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.67,
+    "longitudine": 9.4,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000018",
+    "consegnaDomicilio": false,
+    "id": "r-0018"
+  },
+  {
+    "nome": "Ristorante Diciannove",
+    "tipoCucina": "Vegetariana",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.68,
+    "longitudine": 9.41,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000019",
+    "consegnaDomicilio": true,
+    "id": "r-0019"
+  },
+  {
+    "nome": "Ristorante Venti",
+    "tipoCucina": "Vegana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.69,
+    "longitudine": 9.42,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000020",
+    "consegnaDomicilio": false,
+    "id": "r-0020"
+  },
+  {
+    "nome": "Ristorante Ventuno",
+    "tipoCucina": "Italiana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.7,
+    "longitudine": 9.43,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000021",
+    "consegnaDomicilio": true,
+    "id": "r-0021"
+  },
+  {
+    "nome": "Ristorante Ventidue",
+    "tipoCucina": "Cinese",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.71,
+    "longitudine": 9.44,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000022",
+    "consegnaDomicilio": false,
+    "id": "r-0022"
+  },
+  {
+    "nome": "Ristorante Ventitre",
+    "tipoCucina": "Giapponese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.72,
+    "longitudine": 9.45,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000023",
+    "consegnaDomicilio": true,
+    "id": "r-0023"
+  },
+  {
+    "nome": "Ristorante Ventiquattro",
+    "tipoCucina": "Messicana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.73,
+    "longitudine": 9.46,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000024",
+    "consegnaDomicilio": false,
+    "id": "r-0024"
+  },
+  {
+    "nome": "Ristorante Venticinque",
+    "tipoCucina": "Greca",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.74,
+    "longitudine": 9.47,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000025",
+    "consegnaDomicilio": true,
+    "id": "r-0025"
+  },
+  {
+    "nome": "Ristorante Ventisei",
+    "tipoCucina": "Americana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.75,
+    "longitudine": 9.48,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000026",
+    "consegnaDomicilio": false,
+    "id": "r-0026"
+  },
+  {
+    "nome": "Ristorante Ventisette",
+    "tipoCucina": "Francese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.76,
+    "longitudine": 9.49,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000027",
+    "consegnaDomicilio": true,
+    "id": "r-0027"
+  },
+  {
+    "nome": "Ristorante Ventotto",
+    "tipoCucina": "Spagnola",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.77,
+    "longitudine": 9.5,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000028",
+    "consegnaDomicilio": false,
+    "id": "r-0028"
+  },
+  {
+    "nome": "Ristorante Ventinove",
+    "tipoCucina": "Vegetariana",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.78,
+    "longitudine": 9.51,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000029",
+    "consegnaDomicilio": true,
+    "id": "r-0029"
+  },
+  {
+    "nome": "Ristorante Trenta",
+    "tipoCucina": "Vegana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.79,
+    "longitudine": 9.52,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000030",
+    "consegnaDomicilio": false,
+    "id": "r-0030"
+  },
+  {
+    "nome": "Ristorante Trentuno",
+    "tipoCucina": "Italiana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.8,
+    "longitudine": 9.53,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000031",
+    "consegnaDomicilio": true,
+    "id": "r-0031"
+  },
+  {
+    "nome": "Ristorante Trentadue",
+    "tipoCucina": "Cinese",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.81,
+    "longitudine": 9.54,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000032",
+    "consegnaDomicilio": false,
+    "id": "r-0032"
+  },
+  {
+    "nome": "Ristorante Trentatre",
+    "tipoCucina": "Giapponese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.82,
+    "longitudine": 9.55,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000033",
+    "consegnaDomicilio": true,
+    "id": "r-0033"
+  },
+  {
+    "nome": "Ristorante Trentaquattro",
+    "tipoCucina": "Messicana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.83,
+    "longitudine": 9.56,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000034",
+    "consegnaDomicilio": false,
+    "id": "r-0034"
+  },
+  {
+    "nome": "Ristorante Trentacinque",
+    "tipoCucina": "Greca",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.84,
+    "longitudine": 9.57,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000035",
+    "consegnaDomicilio": true,
+    "id": "r-0035"
+  },
+  {
+    "nome": "Ristorante Trentasei",
+    "tipoCucina": "Americana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.85,
+    "longitudine": 9.58,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000036",
+    "consegnaDomicilio": false,
+    "id": "r-0036"
+  },
+  {
+    "nome": "Ristorante Trentasette",
+    "tipoCucina": "Francese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.86,
+    "longitudine": 9.59,
+    "idProprietario": "r1-1111-1111-1111-111111111111",
+    "numeroTelefono": "3310000037",
+    "consegnaDomicilio": true,
+    "id": "r-0037"
+  },
+  {
+    "nome": "Ristorante Trentotto",
+    "tipoCucina": "Spagnola",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.87,
+    "longitudine": 9.6,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000038",
+    "consegnaDomicilio": false,
+    "id": "r-0038"
+  },
+  {
+    "nome": "Ristorante Trentanove",
+    "tipoCucina": "Vegetariana",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.88,
+    "longitudine": 9.61,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000039",
+    "consegnaDomicilio": true,
+    "id": "r-0039"
+  },
+  {
+    "nome": "Ristorante Quaranta",
+    "tipoCucina": "Vegana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.89,
+    "longitudine": 9.62,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000040",
+    "consegnaDomicilio": false,
+    "id": "r-0040"
+  },
+  {
+    "nome": "Ristorante Quarantuno",
+    "tipoCucina": "Italiana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.9,
+    "longitudine": 9.63,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000041",
+    "consegnaDomicilio": true,
+    "id": "r-0041"
+  },
+  {
+    "nome": "Ristorante Quarantadue",
+    "tipoCucina": "Cinese",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.91,
+    "longitudine": 9.64,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000042",
+    "consegnaDomicilio": false,
+    "id": "r-0042"
+  },
+  {
+    "nome": "Ristorante Quarantatre",
+    "tipoCucina": "Giapponese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.92,
+    "longitudine": 9.65,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000043",
+    "consegnaDomicilio": true,
+    "id": "r-0043"
+  },
+  {
+    "nome": "Ristorante Quarantaquattro",
+    "tipoCucina": "Messicana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.93,
+    "longitudine": 9.66,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000044",
+    "consegnaDomicilio": false,
+    "id": "r-0044"
+  },
+  {
+    "nome": "Ristorante Quarantacinque",
+    "tipoCucina": "Greca",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.94,
+    "longitudine": 9.67,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000045",
+    "consegnaDomicilio": true,
+    "id": "r-0045"
+  },
+  {
+    "nome": "Ristorante Quarantasei",
+    "tipoCucina": "Americana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.95,
+    "longitudine": 9.68,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000046",
+    "consegnaDomicilio": false,
+    "id": "r-0046"
+  },
+  {
+    "nome": "Ristorante Quarantasette",
+    "tipoCucina": "Francese",
+    "fasciaPrezzo": 3,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.96,
+    "longitudine": 9.69,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000047",
+    "consegnaDomicilio": true,
+    "id": "r-0047"
+  },
+  {
+    "nome": "Ristorante Quarantotto",
+    "tipoCucina": "Spagnola",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.97,
+    "longitudine": 9.7,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000048",
+    "consegnaDomicilio": false,
+    "id": "r-0048"
+  },
+  {
+    "nome": "Ristorante Quarantanove",
+    "tipoCucina": "Vegetariana",
+    "fasciaPrezzo": 1,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.98,
+    "longitudine": 9.71,
+    "idProprietario": "r2-2222-2222-2222-222222222222",
+    "numeroTelefono": "3310000049",
+    "consegnaDomicilio": true,
+    "id": "r-0049"
+  },
+  {
+    "nome": "Ristorante Cinquanta",
+    "tipoCucina": "Vegana",
+    "fasciaPrezzo": 2,
+    "orariApertura": {
+      "lunedì": "12:00-15:00, 19:00-23:00",
+      "martedì": "12:00-15:00, 19:00-23:00",
+      "mercoledì": "12:00-15:00, 19:00-23:00",
+      "giovedì": "12:00-15:00, 19:00-23:00",
+      "venerdì": "12:00-15:00, 19:00-23:00",
+      "sabato": "12:00-15:00, 19:00-23:00",
+      "domenica": "12:00-15:00, 19:00-23:00"
+    },
+    "latitudine": 45.99,
+    "longitudine": 9.72,
+    "idProprietario": "r3-3333-3333-3333-333333333333",
+    "numeroTelefono": "3310000050",
+    "consegnaDomicilio": false,
+    "id": "r-0050"
+  }
+]

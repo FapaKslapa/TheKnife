@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="theknife.RistoratoreRecensioniController" stylesheets="@style.css">
+    <!-- Navbar con titolo e pulsante home -->
+    <top>
+        <HBox spacing="10" styleClass="hbox-navbar">
+            <Label fx:id="ristoranteTitle" styleClass="label-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="homeBtn" text="Home" styleClass="button-navbar"/>
+        </HBox>
+    </top>
+
+    <!-- Contenitore principale per le recensioni -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="recensioni-scroll">
+            <VBox fx:id="recensioniBox" spacing="24" styleClass="recensioni-container">
+                <padding>
+                    <Insets top="32" right="64" bottom="32" left="64"/>
+                </padding>
+                <!-- Le recensioni verranno aggiunte dinamicamente qui -->
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

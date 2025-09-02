@@ -1,0 +1,79 @@
+[
+  {
+    "username": "Marco",
+    "password": "$2a$12$fxgDMShEoQ1Q/53nHFUR4OFSPjdCTURV2cQZ2aUn7tdj8V.P9kofC",
+    "email": "stefanomarocco0@gmail.com",
+    "ruolo": "UTENTE",
+    "id": "2dbbc667-445d-4b4e-9dd1-4fce0cbb885d"
+  },
+  {
+    "username": "ristoratore1",
+    "password": "$2a$12$.fjHBLQaiDA3aER3MLCLJe6C4e5j.6Kscc0pDnshjhxOjbEbL1oge",
+    "email": "ristoratore1@email.com",
+    "ruolo": "RISTORATORE",
+    "id": "r1-1111-1111-1111-111111111111"
+  },
+  {
+    "username": "ristoratore2",
+    "password": "$2a$12$eTWa0MjPM0IkLg/HPaKkTeK0DrdRyx6ga0iu9aK5MMhoZmXOZs8X6",
+    "email": "ristoratore2@email.com",
+    "ruolo": "RISTORATORE",
+    "id": "r2-2222-2222-2222-222222222222"
+  },
+  {
+    "username": "Stefano",
+    "password": "$2a$12$9rMSYIVV4G7oXA35fVn/1eO5eJY.Uie/NGkRz7ozbHX0KPD9NpMr.",
+    "email": "ristoratore3@email.com",
+    "ruolo": "RISTORATORE",
+    "id": "r3-3333-3333-3333-333333333333"
+  },
+  {
+    "username": "utente1",
+    "password": "$2a$12$4ZFGDMlKuyDXd1egNOUXo.kKF95VAdE2xb3PGGSxdhmunsr9/ktrO",
+    "email": "utente1@email.com",
+    "ruolo": "UTENTE",
+    "id": "u1-4444-4444-4444-444444444444"
+  },
+  {
+    "username": "utente2",
+    "password": "$2a$12$JIGFwLDNJIp8XOTpCeChVe9lLri2VFHktk2wZYXKni0NKRvUZ4WyO",
+    "email": "utente2@email.com",
+    "ruolo": "UTENTE",
+    "id": "u2-5555-5555-5555-555555555555"
+  },
+  {
+    "username": "Ginevra",
+    "password": "$2a$12$yyabuY5uzBx6713EF5M5xuHXkqRFkKeze6e7DDKPwqlPt3OeQJAiC",
+    "email": "utente3@email.com",
+    "ruolo": "UTENTE",
+    "id": "u3-6666-6666-6666-666666666666"
+  },
+  {
+    "username": "utente4",
+    "password": "$2a$12$dDUh856e3YwbuDd0j818nunjJh/snTczgtf.VTtDZ2v/u63zq9Sl2",
+    "email": "utente4@email.com",
+    "ruolo": "UTENTE",
+    "id": "u4-7777-7777-7777-777777777777"
+  },
+  {
+    "username": "Alessia",
+    "password": "$2a$12$O.XkNpiDq7E1d9fAzc2You9IZCnVg4M4Hd0k2n.ED.n7Xri9hZO6.",
+    "email": "utente5@email.com",
+    "ruolo": "UTENTE",
+    "id": "u5-8888-8888-8888-888888888888"
+  },
+  {
+    "username": "utente6",
+    "password": "$2a$12$7WAOHoaouqS3zfFkrY5rTuWwFDLviIaYno2sL5fV.5zltn801Ep4i",
+    "email": "utente6@email.com",
+    "ruolo": "UTENTE",
+    "id": "u6-9999-9999-9999-999999999999"
+  },
+  {
+    "username": "utente7",
+    "password": "$2a$12$EXd8Vs.NiNXr1F0QxyHuoeZTtQd5siX1ESJiA9AUH0NsDdEP3IZMy",
+    "email": "utente7@email.com",
+    "ruolo": "UTENTE",
+    "id": "u7-1010-1010-1010-101010101010"
+  }
+]

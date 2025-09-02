@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="theknife.NuovoRistoranteController" stylesheets="@style.css">
+    <VBox spacing="0" alignment="TOP_CENTER" StackPane.alignment="TOP_CENTER" style="-fx-padding: 0 24 0 24;">
+        <!-- Navbar -->
+        <HBox spacing="16" styleClass="hbox-navbar" style="-fx-padding: 0 0 24 0;">
+            <Label text="TheKnife" styleClass="label-title" style="-fx-font-size: 28px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="annullaBtn" text="Annulla" styleClass="button-navbar" style="-fx-padding: 8 24;"/>
+            <Button fx:id="confermaBtn" text="Conferma" styleClass="button-navbar" style="-fx-padding: 8 24;"/>
+        </HBox>
+        <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" style="-fx-background-color:transparent; -fx-padding: 0;">
+            <StackPane alignment="CENTER">
+                <VBox spacing="36" alignment="CENTER" styleClass="dialog-ristorante-card-wide" maxWidth="1100" minWidth="700" prefWidth="1000" style="-fx-padding: 54 72 44 72; -fx-background-radius: 36; -fx-background-color: #fff;">
+                    <!-- Titolo principale -->
+                    <HBox spacing="18" alignment="CENTER_LEFT">
+                        <Label text="Crea un nuovo ristorante" styleClass="label-auth-title-large" style="-fx-font-size: 34px; -fx-padding: 0 0 0 0;"/>
+                        <Label text="🍽️" style="-fx-font-size: 34px;"/>
+                    </HBox>
+                    <!-- Sezione dati principali -->
+                    <VBox spacing="28" alignment="CENTER_LEFT" styleClass="form-ristorante-fields" style="-fx-padding: 0 0 12 0;">
+                        <Label text="Informazioni principali" styleClass="label-info-modern" style="-fx-font-size: 20px; -fx-padding: 0 0 8 0;"/>
+                        <Separator style="-fx-padding: 0 0 8 0;"/>
+                        <TextField fx:id="nomeField" promptText="Nome del ristorante" styleClass="textfield-auth-wide" style="-fx-pref-width: 420; -fx-font-size: 18px;"/>
+                        <TextField fx:id="tipoCucinaField" promptText="Tipo di cucina (es. Pizza, Sushi...)" styleClass="textfield-auth-wide" style="-fx-pref-width: 420; -fx-font-size: 18px;"/>
+                        <HBox spacing="18" alignment="CENTER_LEFT">
+                            <Label text="Fascia prezzo:" styleClass="label-info-modern" style="-fx-font-size: 18px;"/>
+                            <ComboBox fx:id="fasciaPrezzoBox" styleClass="textfield-auth-wide" style="-fx-pref-width: 120; -fx-font-size: 18px;"/>
+                        </HBox>
+                        <TextField fx:id="telefonoField" promptText="Telefono" styleClass="textfield-auth-wide" style="-fx-pref-width: 420; -fx-font-size: 18px;"/>
+                        <TextField fx:id="indirizzoField" promptText="Indirizzo completo" styleClass="textfield-auth-wide" style="-fx-pref-width: 420; -fx-font-size: 18px;"/>
+                        <HBox spacing="18" alignment="CENTER_LEFT">
+                            <Label text="Consegna a domicilio:" styleClass="label-info-modern" style="-fx-font-size: 18px;"/>
+                            <CheckBox fx:id="consegnaCheck" style="-fx-font-size: 18px;"/>
+                        </HBox>
+                    </VBox>
+                    <!-- Sezione orari -->
+                    <VBox spacing="18" alignment="CENTER_LEFT" style="-fx-padding: 0 0 0 0;">
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="🕒" style="-fx-font-size: 26px;"/>
+                            <Label text="Orari di apertura" styleClass="label-info-modern" style="-fx-font-size: 22px;"/>
+                        </HBox>
+                        <Separator style="-fx-padding: 0 0 8 0;"/>
+                        <ScrollPane fitToWidth="false" fitToHeight="true" maxHeight="420" minHeight="220" styleClass="orari-scroll-wrapper-modern" style="-fx-background-color:transparent; -fx-padding: 0 0 0 0;" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+                            <HBox fx:id="orariBox" spacing="40" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-padding: 32 0 32 0;">
+                                <!-- Card orari generate dal controller -->
+                            </HBox>
+                        </ScrollPane>
+                    </VBox>
+                    <!-- Messaggio risultato -->
+                    <Label fx:id="resultLabel" styleClass="label-auth-result" style="-fx-font-size: 16px; -fx-padding: 8 0 0 0;"/>
+                </VBox>
+            </StackPane>
+        </ScrollPane>
+    </VBox>
+</StackPane>

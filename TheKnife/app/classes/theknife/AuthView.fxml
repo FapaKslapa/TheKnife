@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox fx:id="rootVBox" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="theknife.AuthController"
+      stylesheets="@style.css"
+      styleClass="auth-root-stack"
+      alignment="TOP_CENTER"
+      spacing="0">
+    <!-- Navbar in alto -->
+    <HBox spacing="10" styleClass="hbox-navbar" alignment="CENTER_LEFT">
+        <Button text="Home" fx:id="homeBtn" styleClass="button-navbar"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Registrati" fx:id="registerBtn" styleClass="button-navbar"/>
+    </HBox>
+    <!-- Card centrata -->
+    <StackPane VBox.vgrow="ALWAYS" alignment="CENTER">
+        <VBox fx:id="authRoot" spacing="14" alignment="CENTER"
+              styleClass="dialog-auth-card">
+            <padding>
+                <Insets top="28" right="36" bottom="28" left="36"/>
+            </padding>
+            <Label text="Accedi" styleClass="label-auth-title"/>
+            <TextField fx:id="usernameField" promptText="Username o Email" styleClass="textfield-auth"/>
+            <PasswordField fx:id="passwordField" promptText="Password" styleClass="passwordfield-auth"/>
+            <Button text="Login" styleClass="button-auth" onAction="#onLogin"/>
+            <Label fx:id="loginResult" styleClass="label-auth-result"/>
+        </VBox>
+    </StackPane>
+    <!-- Link sotto la card -->
+    <Label text="Non hai un account? Registrati" fx:id="registerLink" styleClass="label-auth-link" alignment="CENTER"/>
+</VBox>

@@ -1,0 +1,63 @@
+Tipo,Username,Password,Email,Ruolo,Id,Nome,Cucina,Prezzo,Latitudine,Longitudine,Telefono,ConsegnaDomicilio
+UTENTE,Marco,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,stefanomarocco0@gmail.com,UTENTE,2dbbc667-445d-4b4e-9dd1-4fce0cbb885d,,,,,,,
+UTENTE,ristoratore1,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore1@email.com,RISTORATORE,r1-1111-1111-1111-111111111111,,,,,,,
+UTENTE,ristoratore2,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore2@email.com,RISTORATORE,r2-2222-2222-2222-222222222222,,,,,,,
+UTENTE,Stefano,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,ristoratore3@email.com,RISTORATORE,r3-3333-3333-3333-333333333333,,,,,,,
+UTENTE,utente1,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente1@email.com,UTENTE,u1-4444-4444-4444-444444444444,,,,,,,
+UTENTE,utente2,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente2@email.com,UTENTE,u2-5555-5555-5555-555555555555,,,,,,,
+UTENTE,Ginevra,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente3@email.com,UTENTE,u3-6666-6666-6666-666666666666,,,,,,,
+UTENTE,utente4,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente4@email.com,UTENTE,u4-7777-7777-7777-777777777777,,,,,,,
+UTENTE,Alessia,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente5@email.com,UTENTE,u5-8888-8888-8888-888888888888,,,,,,,
+UTENTE,utente6,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente6@email.com,UTENTE,u6-9999-9999-9999-999999999999,,,,,,,
+UTENTE,utente7,$2a$12$ydklgl/RLxAxOprm9xlErea/OKoe9f7C0Z2Pvu.yGmW2QQWqdWRGi,utente7@email.com,UTENTE,u7-1010-1010-1010-101010101010,,,,,,,
+RISTORANTE,,,,r-0001,Da Enzo al 29,Romana,€€,41.8872,12.4758,3310000001,true
+RISTORANTE,,,,r-0002,Trattoria Milanese,Lombarda,€,45.4642,9.1898,3310000002,false
+RISTORANTE,,,,r-0003,Osteria Vini e Vecchi Sapori,Toscana,€€€,43.7696,11.2558,3310000003,true
+RISTORANTE,,,,r-0004,Pizzeria Sorbillo,Napoletana,€€,40.8522,14.2581,3310000004,false
+RISTORANTE,,,,r-0005,Antica Trattoria della Pesa,Lombarda,€,45.4781,9.1847,3310000005,true
+RISTORANTE,,,,r-0006,Ristorante La Pergola,Gourmet,€€,41.9361,12.4406,3310000006,false
+RISTORANTE,,,,r-0007,Trattoria da Burde,Toscana,€€€,43.8037,11.2076,3310000007,true
+RISTORANTE,,,,r-0008,Ristorante Quadri,Veneta,€€,45.4342,12.3387,3310000008,false
+RISTORANTE,,,,r-0009,Ristorante Il Desco,Veneta,€,45.4384,10.9928,3310000009,true
+RISTORANTE,,,,r-0010,Ristorante Il Principe,Siciliana,€€,38.1157,13.3615,3310000010,false
+RISTORANTE,,,,r-0011,Ristorante Undici,Italiana,€€,45.60,9.33,3310000011,true
+RISTORANTE,,,,r-0012,Ristorante Dodici,Cinese,€,45.61,9.34,3310000012,false
+RISTORANTE,,,,r-0013,Ristorante Tredici,Giapponese,€€€,45.62,9.35,3310000013,true
+RISTORANTE,,,,r-0014,Ristorante Quattordici,Messicana,€€,45.63,9.36,3310000014,false
+RISTORANTE,,,,r-0015,Ristorante Quindici,Greca,€,45.64,9.37,3310000015,true
+RISTORANTE,,,,r-0016,Ristorante Sedici,Americana,€€,45.65,9.38,3310000016,false
+RISTORANTE,,,,r-0017,Ristorante Diciassette,Francese,€€€,45.66,9.39,3310000017,true
+RISTORANTE,,,,r-0018,Ristorante Diciotto,Spagnola,€€,45.67,9.40,3310000018,false
+RISTORANTE,,,,r-0019,Ristorante Diciannove,Vegetariana,€,45.68,9.41,3310000019,true
+RISTORANTE,,,,r-0020,Ristorante Venti,Vegana,€€,45.69,9.42,3310000020,false
+RISTORANTE,,,,r-0021,Ristorante Ventuno,Italiana,€€,45.70,9.43,3310000021,true
+RISTORANTE,,,,r-0022,Ristorante Ventidue,Cinese,€,45.71,9.44,3310000022,false
+RISTORANTE,,,,r-0023,Ristorante Ventitre,Giapponese,€€€,45.72,9.45,3310000023,true
+RISTORANTE,,,,r-0024,Ristorante Ventiquattro,Messicana,€€,45.73,9.46,3310000024,false
+RISTORANTE,,,,r-0025,Ristorante Venticinque,Greca,€,45.74,9.47,3310000025,true
+RISTORANTE,,,,r-0026,Ristorante Ventisei,Americana,€€,45.75,9.48,3310000026,false
+RISTORANTE,,,,r-0027,Ristorante Ventisette,Francese,€€€,45.76,9.49,3310000027,true
+RISTORANTE,,,,r-0028,Ristorante Ventotto,Spagnola,€€,45.77,9.50,3310000028,false
+RISTORANTE,,,,r-0029,Ristorante Ventinove,Vegetariana,€,45.78,9.51,3310000029,true
+RISTORANTE,,,,r-0030,Ristorante Trenta,Vegana,€€,45.79,9.52,3310000030,false
+RISTORANTE,,,,r-0031,Ristorante Trentuno,Italiana,€€,45.80,9.53,3310000031,true
+RISTORANTE,,,,r-0032,Ristorante Trentadue,Cinese,€,45.81,9.54,3310000032,false
+RISTORANTE,,,,r-0033,Ristorante Trentatre,Giapponese,€€€,45.82,9.55,3310000033,true
+RISTORANTE,,,,r-0034,Ristorante Trentaquattro,Messicana,€€,45.83,9.56,3310000034,false
+RISTORANTE,,,,r-0035,Ristorante Trentacinque,Greca,€,45.84,9.57,3310000035,true
+RISTORANTE,,,,r-0036,Ristorante Trentasei,Americana,€€,45.85,9.58,3310000036,false
+RISTORANTE,,,,r-0037,Ristorante Trentasette,Francese,€€€,45.86,9.59,3310000037,true
+RISTORANTE,,,,r-0038,Ristorante Trentotto,Spagnola,€€,45.87,9.60,3310000038,false
+RISTORANTE,,,,r-0039,Ristorante Trentanove,Vegetariana,€,45.88,9.61,3310000039,true
+RISTORANTE,,,,r-0040,Ristorante Quaranta,Vegana,€€,45.89,9.62,3310000040,false
+RISTORANTE,,,,r-0041,Ristorante Quarantuno,Italiana,€€,45.90,9.63,3310000041,true
+RISTORANTE,,,,r-0042,Ristorante Quarantadue,Cinese,€,45.91,9.64,3310000042,false
+RISTORANTE,,,,r-0043,Ristorante Quarantatre,Giapponese,€€€,45.92,9.65,3310000043,true
+RISTORANTE,,,,r-0044,Ristorante Quarantaquattro,Messicana,€€,45.93,9.66,3310000044,false
+RISTORANTE,,,,r-0045,Ristorante Quarantacinque,Greca,€,45.94,9.67,3310000045,true
+RISTORANTE,,,,r-0046,Ristorante Quarantasei,Americana,€€,45.95,9.68,3310000046,false
+RISTORANTE,,,,r-0047,Ristorante Quarantasette,Francese,€€€,45.96,9.69,3310000047,true
+RISTORANTE,,,,r-0048,Ristorante Quarantotto,Spagnola,€€,45.97,9.70,3310000048,false
+RISTORANTE,,,,r-0049,Ristorante Quarantanove,Vegetariana,€,45.98,9.71,3310000049,true
+RISTORANTE,,,,r-0050,Ristorante Cinquanta,Vegana,€€,45.99,9.72,3310000050,false
+
